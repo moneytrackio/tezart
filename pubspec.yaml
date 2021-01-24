@@ -29,3 +29,4 @@ dev_dependencies:
     sdk: flutter
   pedantic: ^1.0.0 # linter
   build_runner: ^1.10.0
+  #coverage: ^0.13.3
