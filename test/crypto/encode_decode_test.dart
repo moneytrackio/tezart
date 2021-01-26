@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tezart/crypto.dart' as crypto;
@@ -45,9 +46,13 @@ void main() {
     });
   });
 
+  // TODO: remove this test when a test calling the node is implemented
   test("ci", () async {
-    var url = 'http://localhost:20000/chains/main/mempool/pending_operations';
-    var response = await http.get(url);
+    final host = Platform.environment["TEZOS_NODE_HOST"];
+    final port = Platform.environment["TEZOS_NODE_PORT"];
+    final scheme = Platform.environment["TEZOS_NODE_SCHEME"] ?? "http";
+    final baseUrl = '$scheme://$host:$port';
+    var response = await http.get('$baseUrl/chains/main/mempool/pending_operations');
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
     expect(response.statusCode, 200);
