@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tezart/crypto.dart' as crypto;
+import 'package:http/http.dart' as http;
 
 void main() {
   final decodedAddress = Uint8List.fromList(<int>[
@@ -42,5 +43,13 @@ void main() {
     test('decodes an address correctly', () {
       expect(crypto.decodeTz(encodedAddress), decodedAddress);
     });
+  });
+
+  test("ci", () async {
+    var url = 'http://localhost:20000/chains/main/mempool/pending_operations';
+    var response = await http.get(url);
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+    expect(response.statusCode, 200);
   });
 }
