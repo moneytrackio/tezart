@@ -1,0 +1,40 @@
+name: Run tests
+on: push
+jobs:
+  unit_tests:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    # uses: docker://tqtezos/flextesa:20201214
+    # container:
+    #   image:  tqtezos/flextesa:20201214
+
+    # services:
+    #   flextesa:
+    #     image: tqtezos/flextesa:20201214
+    #     # env:
+    #     #   POSTGRES_USER: postgres
+    #     #   POSTGRES_PASSWORD: postgres
+    #     #   POSTGRES_DB: postgres
+    #     ports:
+    #     - 20000:20000
+    #     # needed because the postgres container does not provide a healthcheck
+    #     # options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    #     # options: --rm --name my-sandbox -e block_time=2 --detach tqtezos/flextesa:20201214 delphibox start
+
+    steps:
+    - run: docker run --rm --name my-sandbox --detach -p 20000:20000 tqtezos/flextesa:20201214 delphibox start
+    - name: Sleep for 30 seconds
+      uses: jakejarvis/wait-action@master
+      with:
+        time: '20s'
+    - run: curl localhost:20000/chains/main/mempool/pending_operations
+    - uses: actions/checkout@v2
+    - uses: actions/setup-java@v1
+      with:
+        java-version: '8.x'
+    - uses: subosito/flutter-action@v1
+      with:
+        flutter-version: '1.22.4'
+    - run: flutter pub get
+    - run: flutter test
+
