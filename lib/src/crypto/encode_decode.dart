@@ -40,8 +40,8 @@ Uint8List _hexPrefix(String prefix) {
 }
 
 Uint8List _ignorePrefix(Uint8List bytes) {
-  for (var prefix in _prefixes.keys) {
-    var hexPrefix = _hexPrefix(prefix);
+  for (final prefix in _prefixes.keys) {
+    final hexPrefix = _hexPrefix(prefix);
 
     if (ListEquality().equals(bytes.sublist(0, hexPrefix.length), hexPrefix)) {
       return bytes.sublist(hexPrefix.length);
@@ -51,13 +51,13 @@ Uint8List _ignorePrefix(Uint8List bytes) {
 }
 
 String encodeTz({@required String prefix, @required Uint8List bytes}) {
-  var prefixed = Uint8List.fromList(_hexPrefix(prefix) + bytes);
+  final prefixed = Uint8List.fromList(_hexPrefix(prefix) + bytes);
 
   return _encodeBase58(prefixed);
 }
 
 Uint8List decodeTz(String str) {
-  var decoded = _decodeBase58(str);
+  final decoded = _decodeBase58(str);
 
   return _ignorePrefix(decoded);
 }
