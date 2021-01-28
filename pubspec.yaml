@@ -18,10 +18,12 @@ dependencies:
   convert: ^2.1.1 # Encoders and decoders for converting between different data representations
   dio: ^3.0.10 # http client
   http: ^0.12.2 # TODO: decide whether to use http or dio
+  envify: ^2.0.0 # .env files management
 
 dev_dependencies:
   pedantic: ^1.0.0 # linter
   build_runner: ^1.10.0
   mockito: ^4.1.1 # mocks
   test: ^1.9.0
+  envify_generator: ^1.1.0 # code generation for envify
   #coverage: ^0.13.3

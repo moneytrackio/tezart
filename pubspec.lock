@@ -171,6 +171,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.5"
+  dart2_constant:
+    dependency: transitive
+    description:
+      name: dart2_constant
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2+dart2"
   dart_style:
     dependency: transitive
     description:
@@ -185,6 +192,27 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.10"
+  dotenv:
+    dependency: transitive
+    description:
+      name: dotenv
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
+  envify:
+    dependency: "direct main"
+    description:
+      name: envify
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
+  envify_generator:
+    dependency: "direct dev"
+    description:
+      name: envify_generator
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.0"
   file:
     dependency: transitive
     description:
