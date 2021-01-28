@@ -20,9 +20,8 @@ dependencies:
   http: ^0.12.2 # TODO: decide whether to use http or dio
 
 dev_dependencies:
-  flutter_test: # TODO: Do we need flutter_test ?
-    sdk: flutter
   pedantic: ^1.0.0 # linter
   build_runner: ^1.10.0
   mockito: ^4.1.1 # mocks
+  test: ^1.9.0
   #coverage: ^0.13.3

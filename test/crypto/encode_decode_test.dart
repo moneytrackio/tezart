@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 import 'dart:io';
-
-import 'package:flutter_test/flutter_test.dart';
+import 'package:test/test.dart';
 import 'package:tezart/crypto.dart' as crypto;
 import 'package:http/http.dart' as http;
 
