@@ -15,7 +15,7 @@ dependencies:
   bip39: ^1.0.3
   unorm_dart: ^0.1.2
   blake2b: # library used for hash computation
-    git: # use pub dev version when https://github.com/riclava/blake2b/pull/2 is merged
+    git: # use pub get version when https://github.com/riclava/blake2b/pull/2 is merged
       url: git://github.com/moneytrackio/blake2b
   password_hash: ^2.0.0
   convert: ^2.1.1
