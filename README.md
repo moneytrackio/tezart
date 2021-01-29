@@ -29,9 +29,7 @@ cp .env.dist .env
 
 ### Run tests
 ```
-pub get
-pub run build_runner build
-pub run test
+./tool/run_tests.sh
 ```
 
 ## Feature requests and bugs 
