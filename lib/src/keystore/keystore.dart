@@ -1,6 +1,5 @@
 part of 'package:tezart/keystore.dart';
 
-
 @immutable
 class KeyStore extends Equatable {
   static final String prefixSecretKey = 'edsk2';
@@ -93,5 +92,5 @@ class KeyStore extends Equatable {
       Sodium.cryptoSignSeedKeypair(seed);
 
   @override
-  List<Object> get props => [secretKey, mnemonic];
+  List<Object> get props => [secretKey];
 }
