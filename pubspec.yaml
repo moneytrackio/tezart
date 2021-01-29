@@ -10,22 +10,19 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  crypto: ^2.1.4
-  bs58check: ^1.0.1
-  bip39: ^1.0.3
-  unorm_dart: ^0.1.2
+  bs58check: ^1.0.1 # implementation of base58check
+  bip39: ^1.0.3 # Mnemonic code for generating deterministic keys
   blake2b: # library used for hash computation
-    git: # use pub dev version when https://github.com/riclava/blake2b/pull/2 is merged
+    git: # use pub get version when https://github.com/riclava/blake2b/pull/2 is merged
       url: git://github.com/moneytrackio/blake2b
-  password_hash: ^2.0.0
-  convert: ^2.1.1
-  dio: ^3.0.10
-  mockito: ^4.1.1
-  http: ^0.12.2
+  convert: ^2.1.1 # Encoders and decoders for converting between different data representations
+  dio: ^3.0.10 # http client
+  http: ^0.12.2 # TODO: decide whether to use http or dio
 
 dev_dependencies:
   flutter_test: # TODO: Do we need flutter_test ?
     sdk: flutter
   pedantic: ^1.0.0 # linter
   build_runner: ^1.10.0
+  mockito: ^4.1.1 # mocks
   #coverage: ^0.13.3
