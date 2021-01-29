@@ -78,3 +78,7 @@ build/
 
 # coverage
 coverage/
+
+# .env
+.env
+lib/env/env.g.dart
