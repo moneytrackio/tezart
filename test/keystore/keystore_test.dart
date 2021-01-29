@@ -1,8 +1,7 @@
-import 'dart:typed_data';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tezart/keystore.dart';
 import 'package:collection/collection.dart';
+import '../utils/crypto_common.dart' as crypto_common;
 
 Function eq = const ListEquality().equals;
 
@@ -188,8 +187,7 @@ void main() {
         150,
         100
       ];
-      final values = List<int>.generate(32, (index) => index + 1);
-      final keyPair = KeyStore.keyPairFromSeed(Uint8List.fromList(values));
+      final keyPair = KeyStore.keyPairFromSeed(crypto_common.fakeUint8List());
 
       //
       expect(eq(keyPair.pk.toList(), expectedPk), true);
@@ -265,8 +263,32 @@ void main() {
       expect(keyStore.address, 'tz1LmRFP1yFg4oTwfThfbrJx2BfZVAK2h7eW');
     });
 
-    test('#edsk computes correctly', () {
-      //TODO
+    group('#edsk', () {
+      String secretKey;
+
+      group('when the secretKey is edsk2 format', () {
+        setUp(() {
+          secretKey = 'edsk3RR5U7JsUJ8ctjsuymUPayxMm4LHXaB7VJSfeyMb8fAvbJUnsa';
+          keyStore = KeyStore.fromSecretKey(secretKey);
+        });
+
+        test('returns valid edsk format', () {
+          expect(keyStore.edsk,
+              'edskRpwW3bAgx7GsbyTrbb5NUP7b1tz34AvfV2Vm4En5LgEzeUmg3Ys815UDYNNFG6JvrrGqA9CNU2h8hsLVVLfuEQPkZNtkap');
+        });
+      });
+
+      group('when the secretKey is edsk format', () {
+        setUp(() {
+          secretKey =
+              'edskRpwW3bAgx7GsbyTrbb5NUP7b1tz34AvfV2Vm4En5LgEzeUmg3Ys815UDYNNFG6JvrrGqA9CNU2h8hsLVVLfuEQPkZNtkap';
+          keyStore = KeyStore.fromSecretKey(secretKey);
+        });
+
+        test('returns secretKey', () {
+          expect(keyStore.edsk, secretKey);
+        });
+      });
     });
   });
 }
