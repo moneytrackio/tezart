@@ -39,9 +39,11 @@ packages:
   blake2b:
     dependency: "direct main"
     description:
-      name: blake2b
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: f35595046e20f0780fac3884b0c76f347e33fcb0
+      url: "git://github.com/moneytrackio/blake2b"
+    source: git
     version: "0.1.2"
   boolean_selector:
     dependency: transitive
@@ -204,13 +206,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.0-nullsafety.1"
-  ffi:
-    dependency: transitive
-    description:
-      name: ffi
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.3"
   fixnum:
     dependency: transitive
     description:
@@ -219,17 +214,10 @@ packages:
     source: hosted
     version: "0.10.11"
   flutter:
-    dependency: "direct main"
+    dependency: transitive
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_sodium:
-    dependency: "direct main"
-    description:
-      name: flutter_sodium
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.10"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -536,4 +524,3 @@ packages:
     version: "2.2.1"
 sdks:
   dart: ">=2.10.0-110 <2.11.0"
-  flutter: ">=1.10.0 <=1.22.5"
