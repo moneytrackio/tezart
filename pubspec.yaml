@@ -23,6 +23,7 @@ dependencies:
   convert: ^2.1.1
   dio: ^3.0.10
   mockito: ^4.1.1
+  http: ^0.12.2
 
 dev_dependencies:
   flutter_test:
