@@ -8,18 +8,21 @@ class KeyStore extends Equatable {
   static final String prefixAdress = 'tz1';
 
   final String secretKey;
-
   final String mnemonic;
+  final CryptoOperation crypto;
 
-  const KeyStore._({@required this.secretKey, this.mnemonic});
+  const KeyStore._({@required this.secretKey, this.mnemonic, this.crypto});
 
-  factory KeyStore.fromSecretKey(String secretKey) {
-    return KeyStore._(secretKey: secretKey);
+  factory KeyStore.fromSecretKey(String secretKey,
+      {CryptoOperation crypto}) {
+    return KeyStore._(
+        secretKey: secretKey, crypto: crypto ?? CryptoOperation());
   }
 
-  factory KeyStore.fromMnemonic(String mnemonic) {
+  factory KeyStore.fromMnemonic(String mnemonic, {CryptoOperation crypto}) {
+    final cryptoOperation = crypto ?? CryptoOperation();
     final keyPair = keyPairFromMnemonic(mnemonic);
-    final secretKey = crypto.encodeTz(
+    final secretKey = cryptoOperation.encodeTz(
       prefix: prefixSecretKey,
       bytes: keyPair.sk,
     );
@@ -27,12 +30,14 @@ class KeyStore extends Equatable {
     return KeyStore._(
       secretKey: secretKey,
       mnemonic: mnemonic,
+      crypto: cryptoOperation,
     );
   }
 
-  factory KeyStore.random() {
-    final generated = crypto.generateMnemonic();
-    return KeyStore.fromMnemonic(generated);
+  factory KeyStore.random({CryptoOperation crypto}) {
+    final cryptoOperation = crypto ?? CryptoOperation();
+    final generated = cryptoOperation.generateMnemonic();
+    return KeyStore.fromMnemonic(generated, crypto: cryptoOperation);
   }
 
   String get publicKey {

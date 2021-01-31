@@ -10,9 +10,10 @@ import 'package:blake2b/blake2b_hash.dart';
 import 'package:bs58check/bs58check.dart' as bs58check;
 import 'package:collection/collection.dart';
 
-import 'src/crypto/exception.dart';
+import 'src/crypto/impl/exception.dart';
 
 // part implementation files
-part 'src/crypto/encode_decode.dart';
-part 'src/crypto/digest.dart';
-part 'src/crypto/mnemonic.dart';
+part 'src/crypto/impl/encode_decode.dart';
+part 'src/crypto/impl/digest.dart';
+part 'src/crypto/impl/mnemonic.dart';
+

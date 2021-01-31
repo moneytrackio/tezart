@@ -7,8 +7,8 @@ import 'package:bip39/bip39.dart' as bip39;
 import 'package:flutter_sodium/flutter_sodium.dart';
 import 'package:equatable/equatable.dart';
 
-// internal Library 
-import 'package:tezart/crypto.dart' as crypto;
+// internal Library
+import 'src/crypto/crypto_operation.dart';
 
 // part implementation files
 part 'src/keystore/keystore.dart';

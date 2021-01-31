@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tezart/src/crypto/exception.dart';
+import 'package:tezart/src/crypto/impl/exception.dart';
 import 'package:tezart/crypto.dart' as crypto;
 import '../utils/crypto_common.dart' as crypto_common;
 
