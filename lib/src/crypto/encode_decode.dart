@@ -32,8 +32,9 @@ String _encodeBase58(Uint8List payload) => bs58check.encode(payload);
 Uint8List _decodeBase58(String string) => bs58check.decode(string);
 Uint8List _hexPrefix(String prefix) {
   var hexPrefix = _prefixes[prefix];
-  if (hexPrefix == null)
+  if (hexPrefix == null) {
     throw CryptoError(errorCode: 1, message: 'prefix not found');
+  }
 
   return _prefixes[prefix];
 }
@@ -42,8 +43,9 @@ Uint8List _ignorePrefix(Uint8List bytes) {
   for (var prefix in _prefixes.keys) {
     var hexPrefix = _hexPrefix(prefix);
 
-    if (ListEquality().equals(bytes.sublist(0, hexPrefix.length), hexPrefix))
+    if (ListEquality().equals(bytes.sublist(0, hexPrefix.length), hexPrefix)) {
       return bytes.sublist(hexPrefix.length);
+    }
   }
   throw CryptoError(errorCode: 2, message: "Can\'t ignore an unknown prefix");
 }

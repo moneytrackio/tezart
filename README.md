@@ -22,6 +22,13 @@ You can use: [tqtezos's sandbox](https://assets.tqtezos.com/docs/setup/2-sandbox
 ```
 docker run --rm --name my-sandbox --detach -p 20000:20000 tqtezos/flextesa:20201214 delphibox start
 ```
+
+### Setup Lefthook
+Install lefthook following [this](https://github.com/Arkweid/lefthook/blob/master/docs/full_guide.md#installation) guide, then run :
+```
+lefthook install
+```
+
 ### Setup env variables
 ```
 cp .env.dist .env

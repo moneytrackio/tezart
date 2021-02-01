@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-import 'dart:io';
 import 'package:test/test.dart';
 import 'package:tezart/crypto.dart' as crypto;
 import 'package:http/http.dart' as http;
@@ -47,7 +46,7 @@ void main() {
   });
 
   // TODO: remove this test when a test calling the node is implemented
-  test("ci", () async {
+  test('ci', () async {
     final host = Env.tezosNodeHost;
     final port = Env.tezosNodePort;
     final scheme = Env.tezosNodeScheme;

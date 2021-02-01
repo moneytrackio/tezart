@@ -1,0 +1,11 @@
+# EXAMPLE USAGE
+# Refer for explanation to following link:
+# https://github.com/Arkweid/lefthook/blob/master/docs/full_guide.md
+#
+
+pre-commit:
+  parallel: false
+  commands:
+    dartanalyzer:
+      files: git status --short | grep '^\w.' | xargs ls -1 2>/dev/null | grep .dart$
+      run: dartanalyzer --fatal-infos --fatal-warnings {files}
