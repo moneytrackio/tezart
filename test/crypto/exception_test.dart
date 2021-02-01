@@ -11,7 +11,7 @@ int sampleWithException(final value) {
 }
 
 void main() {
-  test("Crypto Exception is throw", () {
+  test('Crypto Exception is throw', () {
     final exceptedError = 'CryptoError: got code 1 with msg $someErrorMsg.';
     expect(
         () => sampleWithException(0),
@@ -23,7 +23,7 @@ void main() {
         )));
   });
 
-  test("Crypto Exception is not throw", () {
+  test('Crypto Exception is not throw', () {
     expect(sampleWithException(1), 1);
   });
 }
