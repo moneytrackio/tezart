@@ -18,11 +18,8 @@ class KeyStore extends Equatable {
   }
 
   factory KeyStore.fromMnemonic(String mnemonic) {
-    final keyPair = keyPairFromMnemonic(mnemonic);
-    final secretKey = crypto.encodeTz(
-      prefix: prefixSecretKey,
-      bytes: keyPair.sk,
-    );
+    var bytesSecretKey = generateSecretKeyBytesFromMnemonic(mnemonic);
+    var secretKey = crypto.encodeTz(prefix: 'edsk2', bytes: bytesSecretKey);
 
     return KeyStore._(
       secretKey: secretKey,
@@ -37,7 +34,7 @@ class KeyStore extends Equatable {
 
   String get publicKey {
     final secretKeyBytes = crypto.decodeTz(secretKey);
-    final pk = keyPairFromSeed(secretKeyBytes).pk;
+    var pk = secretKeyFromSeed(secretKeyBytes).verifyKey;
 
     return crypto.encodeTz(
       prefix: prefixPublicKey,
@@ -63,11 +60,14 @@ class KeyStore extends Equatable {
     Uint8List sk;
 
     try {
-      sk = keyPairFromSeed(crypto.decodeTz(secretKey)).sk;
-    } on RangeError {
-      // RangeError <=> the key is already of type edsk2
-      return secretKey;
-    }
+      sk = secretKeyFromSeed(crypto.decodeTz(secretKey));
+
+      } catch(e) {
+        if (RegExp(r'SigningKey must be created from a 32 byte seed').hasMatch(e.message)) {
+          return secretKey;
+        }
+        rethrow;
+      }
 
     return crypto.encodeTz(
       prefix: prefixSecretKeyAlternative,
@@ -76,20 +76,16 @@ class KeyStore extends Equatable {
   }
 
   @visibleForTesting
-  static KeyPair keyPairFromMnemonic(String mnemonic) {
+  static ByteList generateSecretKeyBytesFromMnemonic(String mnemonic) {
     final seed = bip39.mnemonicToSeed(mnemonic);
     final seedLength32 = seed.sublist(0, 32);
-    final keys = keyPairFromSeed(seedLength32);
 
-    final sk = keys.sk.sublist(0, 32);
-    final pk = keys.pk;
-
-    return KeyPair(pk: pk, sk: sk);
+    return secretKeyFromSeed(seedLength32).sublist(0, 32);
   }
 
   @visibleForTesting
-  static KeyPair keyPairFromSeed(Uint8List seed) =>
-      Sodium.cryptoSignSeedKeypair(seed);
+  static SigningKey secretKeyFromSeed(Uint8List seed) =>
+      SigningKey.fromSeed(seed);
 
   @override
   List<Object> get props => [secretKey];

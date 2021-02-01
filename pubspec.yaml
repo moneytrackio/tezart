@@ -19,6 +19,8 @@ dependencies:
   dio: ^3.0.10 # http client
   http: ^0.12.2 # TODO: decide whether to use http or dio
   envify: ^2.0.0 # .env files management
+  equatable: ^1.2.5
+  pinenacl: 0.1.5 # Dart implementation of TweetNacl
 
 dev_dependencies:
   pedantic: ^1.9.0 # linter
