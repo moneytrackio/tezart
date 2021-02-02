@@ -1,9 +1,7 @@
 import 'package:test/test.dart';
 import 'package:tezart/crypto.dart';
+import '../utils/common.dart' as common;
 import './utils/common.dart' as crypto_common;
-import 'package:collection/collection.dart';
-
-Function eq = const ListEquality().equals;
 
 void main() {
   group('.secretKeyBytesFromMnemonic', () {
@@ -13,7 +11,7 @@ void main() {
       final expectedSk = [ 98, 205, 166, 170, 210, 8, 237, 237, 195, 178, 37, 31, 210, 237, 240, 73, 87, 247, 165, 70, 0, 137, 133, 110, 21, 130, 35, 21, 173, 194, 215, 96 ];
 
       final secretKeyBytes = secretKeyBytesFromMnemonic(mnemonic);
-      expect(eq(secretKeyBytes, expectedSk), true);
+      expect(common.listEquals(secretKeyBytes, expectedSk), true);
     });
   });
 
@@ -23,7 +21,7 @@ void main() {
 
       final secretKeyBytes = secretKeyBytesFromSeed(crypto_common.fakeUint8List());
 
-      expect(eq(secretKeyBytes, expectedSk), true);
+      expect(common.listEquals(secretKeyBytes, expectedSk), true);
     });
   });
 }
