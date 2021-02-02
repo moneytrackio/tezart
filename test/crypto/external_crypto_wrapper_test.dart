@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
 import 'package:tezart/crypto.dart';
-import '../utils/crypto_common.dart' as crypto_common;
+import './utils/common.dart' as crypto_common;
 import 'package:collection/collection.dart';
 
 Function eq = const ListEquality().equals;
@@ -27,4 +27,3 @@ void main() {
     });
   });
 }
-

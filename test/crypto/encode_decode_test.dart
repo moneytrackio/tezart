@@ -1,25 +1,28 @@
+import 'dart:typed_data';
+
 import 'package:test/test.dart';
 import 'package:tezart/crypto.dart' as crypto;
 import 'package:http/http.dart' as http;
 import 'package:tezart/env/env.dart';
 import 'package:tezart/src/crypto/exception.dart';
-import '../utils/crypto_common.dart' as crypto_common;
+import './utils/common.dart' as crypto_common;
 
 void main() {
   final encodedAddress = 'tz1XpNacx7vQ9y8ugdAc8p99LVfjudKjagVq';
+  final decodedAddress = Uint8List.fromList(<int>[ 133, 150, 69, 73, 131, 91, 131, 238, 27, 209, 60, 160, 78, 103, 17, 231, 140, 79, 21, 176 ]);
 
   // Encode
   group('.encodeTz', () {
     test('encodes addresses correctly', () {
       expect(
-          crypto.encodeTz(prefix: 'tz1', bytes: crypto_common.decodedAddress),
+          crypto.encodeTz(prefix: 'tz1', bytes: decodedAddress),
           encodedAddress);
     });
 
     test('encodes throw error', () {
       expect(
           () => crypto.encodeTz(
-              prefix: null, bytes: crypto_common.decodedAddress),
+              prefix: null, bytes: decodedAddress),
           throwsA(predicate((e) => e is CryptoError)));
     });
   });
@@ -27,7 +30,7 @@ void main() {
   // Decode
   group('.decodeTz', () {
     test('decodes an address correctly', () {
-      expect(crypto.decodeTz(encodedAddress), crypto_common.decodedAddress);
+      expect(crypto.decodeTz(encodedAddress), decodedAddress);
     });
   });
 
