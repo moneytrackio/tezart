@@ -7,10 +7,10 @@ import 'package:tezart/crypto.dart' as crypto;
 
 @immutable
 class KeyStore extends Equatable {
-  static final String prefixSecretKey = 'edsk2';
-  static final String prefixSecretKeyAlternative = 'edsk';
-  static final String prefixPublicKey = 'edpk';
-  static final String prefixAdress = 'tz1';
+  static const String prefixSecretKey = 'edsk2';
+  static const String prefixSecretKeyAlternative = 'edsk';
+  static const String prefixPublicKey = 'edpk';
+  static const String prefixAdress = 'tz1';
 
   final String secretKey;
 
