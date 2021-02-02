@@ -1,4 +1,9 @@
-part of 'package:tezart/crypto.dart';
+import 'dart:typed_data';
+import 'package:meta/meta.dart';
+import 'package:collection/collection.dart';
+import 'package:bs58check/bs58check.dart' as bs58check;
+
+import 'exception.dart';
 
 final _prefixes = {
   'tz1': Uint8List.fromList([6, 161, 159]),

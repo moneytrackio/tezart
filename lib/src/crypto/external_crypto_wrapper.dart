@@ -1,4 +1,8 @@
-part of 'package:tezart/crypto.dart';
+import 'dart:typed_data';
+
+import 'package:bip39/bip39.dart' as bip39;
+import 'package:meta/meta.dart';
+import 'package:pinenacl/api.dart';
 
 // These methods are a wrapper of (Nacl|PineNacl|Bouncy Castle) lib methods
 Uint8List secretKeyBytesFromMnemonic(String mnemonic) {

@@ -1,4 +1,9 @@
-part of 'package:tezart/keystore.dart';
+import 'dart:typed_data';
+import 'package:meta/meta.dart';
+import 'package:equatable/equatable.dart';
+
+// internal Library 
+import 'package:tezart/crypto.dart' as crypto;
 
 @immutable
 class KeyStore extends Equatable {
