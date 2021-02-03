@@ -104,11 +104,7 @@ void main() {
   });
 
   group('signature methods', () {
-<<<<<<< HEAD
     final keystore = Keystore.fromMnemonic(mnemonic);
-=======
-    final keystore = KeyStore.fromMnemonic(mnemonic);
->>>>>>> feat(signature): implement signature library
 
     group('.signBytes', () {
       final bytes = Uint8List.fromList([123, 78, 19]);
@@ -116,11 +112,7 @@ void main() {
 
       test('it returns a valid signature', () {
         final result = subject;
-<<<<<<< HEAD
         final expectedResult = Signature.fromBytes(bytes: bytes, keystore: keystore);
-=======
-        final expectedResult = Signature.fromBytes(bytes: bytes, keyStore: keystore);
->>>>>>> feat(signature): implement signature library
 
         expect(result, equals(expectedResult));
       });
