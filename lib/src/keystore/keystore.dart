@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 
 // internal Library
 import 'package:tezart/crypto.dart' as crypto;
+import 'package:tezart/signature.dart';
 
 @immutable
 class KeyStore extends Equatable {
@@ -78,6 +79,10 @@ class KeyStore extends Equatable {
       bytes: sk,
     );
   }
+
+  // signature methods
+  Signature signBytes(Uint8List bytes) => Signature.fromBytes(bytes: bytes, keyStore: this);
+  Signature signHex(String data) => Signature.fromHex(data: data, keyStore: this);
 
   @override
   List<Object> get props => [secretKey];

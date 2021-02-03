@@ -1,5 +1,8 @@
+import 'dart:typed_data';
+
 import 'package:test/test.dart';
 import 'package:tezart/keystore.dart';
+import 'package:tezart/signature.dart';
 
 void main() {
   const mnemonic =
@@ -96,6 +99,34 @@ void main() {
         test('returns secretKey', () {
           expect(keyStore.edsk, secretKey);
         });
+      });
+    });
+  });
+
+  group('signature methods', () {
+    final keystore = KeyStore.fromMnemonic(mnemonic);
+
+    group('.signBytes', () {
+      final bytes = Uint8List.fromList([123, 78, 19]);
+      final subject = keystore.signBytes(bytes);
+
+      test('it returns a valid signature', () {
+        final result = subject;
+        final expectedResult = Signature.fromBytes(bytes: bytes, keyStore: keystore);
+
+        expect(result, equals(expectedResult));
+      });
+    });
+
+    group('.signHex', () {
+      final hex = '5483953ab23b';
+      final subject = keystore.signHex(hex);
+
+      test('it returns a valid signature', () {
+        final result = subject;
+        final expectedResult = Signature.fromHex(data: hex, keyStore: keystore);
+
+        expect(result, equals(expectedResult));
       });
     });
   });
