@@ -9,69 +9,69 @@ void main() {
       'brief hello carry loop squeeze unknown click abstract lounge figure logic oblige child ripple about vacant scheme magnet open enroll stuff valve hobby what';
 
   test('.random', () {
-    final keyStore = KeyStore.random();
-    expect(keyStore.mnemonic, isNotNull);
+    final keystore = Keystore.random();
+    expect(keystore.mnemonic, isNotNull);
   });
 
   group('.fromMnemonic', () {
-    KeyStore keyStore;
+    Keystore keystore;
     setUp(() {
-      keyStore = KeyStore.fromMnemonic(mnemonic);
+      keystore = Keystore.fromMnemonic(mnemonic);
     });
 
     test('sets mnemonic correctly', () {
-      expect(keyStore.mnemonic, mnemonic);
+      expect(keystore.mnemonic, mnemonic);
     });
 
     test('computes secretKey correctly', () {
-      expect(keyStore.secretKey, 'edsk3RR5U7JsUJ8ctjsuymUPayxMm4LHXaB7VJSfeyMb8fAvbJUnsa');
+      expect(keystore.secretKey, 'edsk3RR5U7JsUJ8ctjsuymUPayxMm4LHXaB7VJSfeyMb8fAvbJUnsa');
     });
   });
 
   group('.fromSecretKey', () {
-    KeyStore keyStore;
+    Keystore keystore;
     String secretKey;
 
     setUp(() {
       secretKey = 'edsk3RR5U7JsUJ8ctjsuymUPayxMm4LHXaB7VJSfeyMb8fAvbJUnsa';
-      keyStore = KeyStore.fromSecretKey(secretKey);
+      keystore = Keystore.fromSecretKey(secretKey);
     });
 
     test('sets secretKey correctly', () {
-      expect(keyStore.secretKey, secretKey);
+      expect(keystore.secretKey, secretKey);
     });
 
     test('sets mnemonic to null', () {
-      expect(keyStore.mnemonic, null);
+      expect(keystore.mnemonic, null);
     });
   });
 
   group('compare keystore', () {
     test('is equals', () {
-      final k1 = KeyStore.fromSecretKey('pouet');
-      final k2 = KeyStore.fromSecretKey('pouet');
+      final k1 = Keystore.fromSecretKey('pouet');
+      final k2 = Keystore.fromSecretKey('pouet');
       expect(k1, k2);
     });
     test('is not equals', () {
-      final k1 = KeyStore.fromSecretKey('pouet');
-      final k2 = KeyStore.fromSecretKey('yeaahh');
+      final k1 = Keystore.fromSecretKey('pouet');
+      final k2 = Keystore.fromSecretKey('yeaahh');
       expect(k1, isNot(k2));
     });
   });
 
   group('getters', () {
-    KeyStore keyStore;
+    Keystore keystore;
     setUp(() {
       const secretKey = 'edsk3RR5U7JsUJ8ctjsuymUPayxMm4LHXaB7VJSfeyMb8fAvbJUnsa';
 
-      keyStore = KeyStore.fromSecretKey(secretKey);
+      keystore = Keystore.fromSecretKey(secretKey);
     });
     test('#publicKey computes the publicKey correctly', () {
-      expect(keyStore.publicKey, 'edpkvGRiJj7mCSZtcTabQkfgKky8AEDGPTCmmWyT1Vg17Lqt3cD5TU');
+      expect(keystore.publicKey, 'edpkvGRiJj7mCSZtcTabQkfgKky8AEDGPTCmmWyT1Vg17Lqt3cD5TU');
     });
 
     test('#address computes correctly', () {
-      expect(keyStore.address, 'tz1LmRFP1yFg4oTwfThfbrJx2BfZVAK2h7eW');
+      expect(keystore.address, 'tz1LmRFP1yFg4oTwfThfbrJx2BfZVAK2h7eW');
     });
 
     group('#edsk', () {
@@ -80,11 +80,11 @@ void main() {
       group('when the secretKey is edsk2 format', () {
         setUp(() {
           secretKey = 'edsk3RR5U7JsUJ8ctjsuymUPayxMm4LHXaB7VJSfeyMb8fAvbJUnsa';
-          keyStore = KeyStore.fromSecretKey(secretKey);
+          keystore = Keystore.fromSecretKey(secretKey);
         });
 
         test('returns valid edsk format', () {
-          expect(keyStore.edsk,
+          expect(keystore.edsk,
               'edskRpwW3bAgx7GsbyTrbb5NUP7b1tz34AvfV2Vm4En5LgEzeUmg3Ys815UDYNNFG6JvrrGqA9CNU2h8hsLVVLfuEQPkZNtkap');
         });
       });
@@ -93,18 +93,18 @@ void main() {
         setUp(() {
           secretKey =
               'edskRpwW3bAgx7GsbyTrbb5NUP7b1tz34AvfV2Vm4En5LgEzeUmg3Ys815UDYNNFG6JvrrGqA9CNU2h8hsLVVLfuEQPkZNtkap';
-          keyStore = KeyStore.fromSecretKey(secretKey);
+          keystore = Keystore.fromSecretKey(secretKey);
         });
 
         test('returns secretKey', () {
-          expect(keyStore.edsk, secretKey);
+          expect(keystore.edsk, secretKey);
         });
       });
     });
   });
 
   group('signature methods', () {
-    final keystore = KeyStore.fromMnemonic(mnemonic);
+    final keystore = Keystore.fromMnemonic(mnemonic);
 
     group('.signBytes', () {
       final bytes = Uint8List.fromList([123, 78, 19]);
@@ -112,7 +112,7 @@ void main() {
 
       test('it returns a valid signature', () {
         final result = subject;
-        final expectedResult = Signature.fromBytes(bytes: bytes, keyStore: keystore);
+        final expectedResult = Signature.fromBytes(bytes: bytes, keystore: keystore);
 
         expect(result, equals(expectedResult));
       });
@@ -124,7 +124,7 @@ void main() {
 
       test('it returns a valid signature', () {
         final result = subject;
-        final expectedResult = Signature.fromHex(data: hex, keyStore: keystore);
+        final expectedResult = Signature.fromHex(data: hex, keystore: keystore);
 
         expect(result, equals(expectedResult));
       });

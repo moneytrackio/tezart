@@ -7,7 +7,7 @@ import 'package:tezart/crypto.dart' as crypto;
 import 'package:tezart/signature.dart';
 
 @immutable
-class KeyStore extends Equatable {
+class Keystore extends Equatable {
   static const String prefixSecretKey = 'edsk2';
   static const String prefixSecretKeyAlternative = 'edsk';
   static const String prefixPublicKey = 'edpk';
@@ -17,25 +17,25 @@ class KeyStore extends Equatable {
 
   final String mnemonic;
 
-  const KeyStore._({@required this.secretKey, this.mnemonic});
+  const Keystore._({@required this.secretKey, this.mnemonic});
 
-  factory KeyStore.fromSecretKey(String secretKey) {
-    return KeyStore._(secretKey: secretKey);
+  factory Keystore.fromSecretKey(String secretKey) {
+    return Keystore._(secretKey: secretKey);
   }
 
-  factory KeyStore.fromMnemonic(String mnemonic) {
+  factory Keystore.fromMnemonic(String mnemonic) {
     var bytesSecretKey = crypto.secretKeyBytesFromMnemonic(mnemonic);
     var secretKey = crypto.encodeTz(prefix: prefixSecretKey, bytes: bytesSecretKey);
 
-    return KeyStore._(
+    return Keystore._(
       secretKey: secretKey,
       mnemonic: mnemonic,
     );
   }
 
-  factory KeyStore.random() {
+  factory Keystore.random() {
     final generated = crypto.generateMnemonic();
-    return KeyStore.fromMnemonic(generated);
+    return Keystore.fromMnemonic(generated);
   }
 
   String get publicKey {
@@ -81,8 +81,8 @@ class KeyStore extends Equatable {
   }
 
   // signature methods
-  Signature signBytes(Uint8List bytes) => Signature.fromBytes(bytes: bytes, keyStore: this);
-  Signature signHex(String data) => Signature.fromHex(data: data, keyStore: this);
+  Signature signBytes(Uint8List bytes) => Signature.fromBytes(bytes: bytes, keystore: this);
+  Signature signHex(String data) => Signature.fromHex(data: data, keystore: this);
 
   @override
   List<Object> get props => [secretKey];
