@@ -4,8 +4,12 @@
 #
 
 pre-commit:
-  parallel: false
+  parallel: true
   commands:
     dartanalyzer:
-      files: git status --short | grep '^\w.' | xargs ls -1 2>/dev/null | grep .dart$
+      files: &staged_files git status --short | grep '^\w.' | xargs ls -1 2>/dev/null | grep .dart$
       run: dartanalyzer --fatal-infos --fatal-warnings {files}
+
+    dartfmt:
+      files: *staged_files
+      run: dartfmt --set-exit-if-changed -l "120" -n {files}
