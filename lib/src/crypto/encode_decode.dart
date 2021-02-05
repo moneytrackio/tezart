@@ -46,7 +46,7 @@ Uint8List hexPrefix(String prefix) {
   return _prefixes[prefix];
 }
 
- @visibleForTesting
+@visibleForTesting
 Uint8List ignorePrefix(Uint8List bytes) {
   for (final prefix in _prefixes.keys) {
     final value = hexPrefix(prefix);

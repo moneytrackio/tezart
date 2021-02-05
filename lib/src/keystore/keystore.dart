@@ -2,7 +2,7 @@ import 'dart:typed_data';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 
-// internal Library 
+// internal Library
 import 'package:tezart/crypto.dart' as crypto;
 
 @immutable
@@ -66,13 +66,12 @@ class KeyStore extends Equatable {
 
     try {
       sk = crypto.secretKeyBytesFromSeed(crypto.decodeTz(secretKey));
-
-      } catch(e) {
-        if (RegExp(r'SigningKey must be created from a 32 byte seed').hasMatch(e.message)) {
-          return secretKey;
-        }
-        rethrow;
+    } catch (e) {
+      if (RegExp(r'SigningKey must be created from a 32 byte seed').hasMatch(e.message)) {
+        return secretKey;
       }
+      rethrow;
+    }
 
     return crypto.encodeTz(
       prefix: prefixSecretKeyAlternative,

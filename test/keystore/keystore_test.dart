@@ -21,8 +21,7 @@ void main() {
     });
 
     test('computes secretKey correctly', () {
-      expect(keyStore.secretKey,
-          'edsk3RR5U7JsUJ8ctjsuymUPayxMm4LHXaB7VJSfeyMb8fAvbJUnsa');
+      expect(keyStore.secretKey, 'edsk3RR5U7JsUJ8ctjsuymUPayxMm4LHXaB7VJSfeyMb8fAvbJUnsa');
     });
   });
 
@@ -60,14 +59,12 @@ void main() {
   group('getters', () {
     KeyStore keyStore;
     setUp(() {
-      const secretKey =
-          'edsk3RR5U7JsUJ8ctjsuymUPayxMm4LHXaB7VJSfeyMb8fAvbJUnsa';
+      const secretKey = 'edsk3RR5U7JsUJ8ctjsuymUPayxMm4LHXaB7VJSfeyMb8fAvbJUnsa';
 
       keyStore = KeyStore.fromSecretKey(secretKey);
     });
     test('#publicKey computes the publicKey correctly', () {
-      expect(keyStore.publicKey,
-          'edpkvGRiJj7mCSZtcTabQkfgKky8AEDGPTCmmWyT1Vg17Lqt3cD5TU');
+      expect(keyStore.publicKey, 'edpkvGRiJj7mCSZtcTabQkfgKky8AEDGPTCmmWyT1Vg17Lqt3cD5TU');
     });
 
     test('#address computes correctly', () {

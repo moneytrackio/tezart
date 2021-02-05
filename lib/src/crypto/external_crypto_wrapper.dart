@@ -12,12 +12,9 @@ Uint8List secretKeyBytesFromMnemonic(String mnemonic) {
   return secretKeyBytesFromSeed(seedLength32).sublist(0, 32);
 }
 
-Uint8List secretKeyBytesFromSeed(Uint8List seed) =>
-    signingKeyFromSeed(seed);
+Uint8List secretKeyBytesFromSeed(Uint8List seed) => signingKeyFromSeed(seed);
 
-Uint8List publicKeyBytesFromSeed(Uint8List seed) =>
-    signingKeyFromSeed(seed).verifyKey;
+Uint8List publicKeyBytesFromSeed(Uint8List seed) => signingKeyFromSeed(seed).verifyKey;
 
 @visibleForTesting
-SigningKey signingKeyFromSeed(Uint8List seed) =>
-  SigningKey.fromSeed(seed);
+SigningKey signingKeyFromSeed(Uint8List seed) => SigningKey.fromSeed(seed);
