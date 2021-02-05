@@ -1,0 +1,43 @@
+import 'package:meta/meta.dart';
+
+import 'tezart_http_client.dart';
+import 'rpc_interface_paths.dart' as paths;
+
+class RpcInterface {
+  static const randomSignature =
+      'edsigu165B7VFf3Dpw2QABVzEtCxJY2gsNBNcE3Ti7rRxtDUjqTFRpg67EdAQmY6YWPE5tKJDMnSTJDFu65gic8uLjbW2YwGvAZ';
+  final TezartHttpClient httpClient;
+
+  RpcInterface({ @required String host, String port = '80', String scheme = 'http'}):
+      httpClient = TezartHttpClient(host: host, port: port, scheme: scheme);
+
+  Future<String> branch([chain = 'main', level = 'head']) async {
+    var response = await httpClient.get(paths.branch(chain: chain, level: level));
+
+    return response.data;
+  }
+
+  Future<String> chainId([chain = 'main']) async {
+    var response = await httpClient.get(paths.chainId(chain));
+
+    return response.data;
+  }
+
+  Future<String> protocol([chain = 'main', level = 'head']) async {
+    var response = await httpClient.get(paths.protocol(chain: chain, level: level));
+
+    return response.data['protocol'];
+  }
+
+  Future<int> counter(String source, [chain = 'main', level = 'head']) async {
+    final response = await httpClient.get(paths.counter(source: source, chain: chain, level: level));
+
+    return int.parse(response.data);
+  }
+
+  Future<Map<String,dynamic>> pendingOperations([chain = 'main']) async {
+    final response = await httpClient.get(paths.pendingOperations(chain));
+
+    return response.data;
+  }
+}
