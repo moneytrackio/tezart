@@ -15,30 +15,24 @@ class Signature extends Equatable {
   static final _watermarkValue = {
     'block': '01',
     'endorsement': '02',
-    'generic': '03'
+    'generic': '03',
   };
 
-  Signature._({ @required this.bytes,
-                @required this.keyStore,
-                this.watermark });
+  Signature._({@required this.bytes, @required this.keyStore, this.watermark});
 
-  factory Signature.fromBytes({ @required Uint8List bytes,
-                                @required KeyStore keyStore,
-                                String watermark }) {
-    return Signature._(bytes: bytes,
-                       watermark: watermark,
-                       keyStore: keyStore);
+  factory Signature.fromBytes({@required Uint8List bytes, @required KeyStore keyStore, String watermark}) {
+    return Signature._(bytes: bytes, watermark: watermark, keyStore: keyStore);
   }
 
-  factory Signature.fromHex({ @required String data, @required KeyStore keyStore, String watermark }) {
+  factory Signature.fromHex({@required String data, @required KeyStore keyStore, String watermark}) {
     var bytes = crypto.hexDecode(data);
 
     return Signature.fromBytes(bytes: bytes, keyStore: keyStore, watermark: watermark);
   }
 
   Uint8List get signedBytes {
-    final watermarkedBytes = watermark == null ? bytes :
-      Uint8List.fromList(crypto.hexDecode(_watermarkValue[watermark]) + bytes);
+    final watermarkedBytes =
+        watermark == null ? bytes : Uint8List.fromList(crypto.hexDecode(_watermarkValue[watermark]) + bytes);
     var hashedBytes = crypto.hashWithDigestSize(size: 256, bytes: watermarkedBytes);
     var edskSecretKey = keyStore.edsk;
     var sk = crypto.decodeTz(edskSecretKey);
