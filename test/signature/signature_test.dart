@@ -4,6 +4,8 @@ import 'package:test/test.dart';
 import 'package:tezart/keystore.dart';
 import 'package:tezart/signature.dart';
 
+import 'expected_results/signature.dart' as expected_results;
+
 void main() {
   final keystore = KeyStore.fromSecretKey('edsk3RR5U7JsUJ8ctjsuymUPayxMm4LHXaB7VJSfeyMb8fAvbJUnsa');
 
@@ -43,73 +45,7 @@ void main() {
       final result = subject('generic');
 
       test('it returns a valid signed bytes list', () {
-        final expectedResult = Uint8List.fromList([
-          229,
-          200,
-          154,
-          36,
-          32,
-          132,
-          19,
-          20,
-          182,
-          171,
-          138,
-          236,
-          220,
-          221,
-          197,
-          249,
-          28,
-          130,
-          199,
-          91,
-          74,
-          119,
-          121,
-          58,
-          106,
-          46,
-          67,
-          233,
-          219,
-          89,
-          170,
-          254,
-          172,
-          19,
-          33,
-          175,
-          87,
-          254,
-          50,
-          110,
-          74,
-          23,
-          192,
-          131,
-          254,
-          35,
-          249,
-          178,
-          212,
-          43,
-          204,
-          6,
-          171,
-          159,
-          202,
-          40,
-          26,
-          1,
-          148,
-          228,
-          95,
-          238,
-          116,
-          1
-        ]);
-        expect(result, equals(expectedResult));
+        expect(result, equals(expected_results.signedBytesWithGenericWatermark));
       });
     });
 
@@ -117,73 +53,7 @@ void main() {
       final result = subject(null);
 
       test('it returns a valid signed bytes list', () {
-        final expectedResult = Uint8List.fromList([
-          134,
-          66,
-          236,
-          139,
-          243,
-          129,
-          54,
-          21,
-          127,
-          15,
-          182,
-          124,
-          172,
-          50,
-          74,
-          29,
-          45,
-          186,
-          68,
-          32,
-          239,
-          78,
-          235,
-          120,
-          229,
-          125,
-          143,
-          113,
-          250,
-          81,
-          51,
-          113,
-          15,
-          147,
-          236,
-          109,
-          70,
-          210,
-          70,
-          113,
-          132,
-          194,
-          20,
-          146,
-          9,
-          60,
-          32,
-          73,
-          135,
-          63,
-          9,
-          174,
-          164,
-          45,
-          132,
-          98,
-          183,
-          118,
-          219,
-          210,
-          203,
-          241,
-          241,
-          2
-        ]);
-        expect(result, equals(expectedResult));
+        expect(result, equals(expected_results.signedBytesWithNullWatermark));
       });
     });
   });
