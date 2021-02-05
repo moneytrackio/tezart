@@ -8,3 +8,11 @@ final counter = ({ @required String chain, @required String level, @required Str
     'chains/$chain/blocks/$level/context/contracts/$source/counter';
 
 final protocol = ({ @required String chain, @required String level }) => 'chains/$chain/blocks/$level/metadata';
+
+final forgeOperations = ({ @required String chain,  @required String level}) =>
+    'chains/$chain/blocks/$level/helpers/forge/operations';
+
+final runOperations = ({ @required String chain, @required String level }) =>
+    'chains/$chain/blocks/$level/helpers/scripts/run_operation';
+
+final injectOperation = (String chain) => 'injection/operation?chain=$chain';

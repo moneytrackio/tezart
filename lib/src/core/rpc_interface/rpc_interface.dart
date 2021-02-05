@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'package:meta/meta.dart';
 
+import 'operation/operation.dart';
 import 'tezart_http_client.dart';
 import 'rpc_interface_paths.dart' as paths;
 
@@ -39,5 +41,38 @@ class RpcInterface {
     final response = await httpClient.get(paths.pendingOperations(chain));
 
     return response.data;
+  }
+
+  Future<String> injectOperation(String data, [chain = 'main']) async {
+    final response = await httpClient.post(paths.injectOperation(chain), data: jsonEncode(data));
+
+    return response.data;
+  }
+
+  Future<String> forgeOperations(List<Operation> operations, [chain = 'main', level = 'head']) async {
+    var content = {
+      'branch': await branch(),
+      'contents': operations.map((operation) => operation.toJson()).toList()
+    };
+    var response = await httpClient.post(
+        paths.forgeOperations(chain: chain, level: level),
+        data: content);
+
+    return response.data;
+  }
+
+  Future<List<dynamic>> runOperations(List<Operation> operations, [chain = 'main', level = 'head']) async {
+    var content = {
+      'operation': {
+        'branch': await branch(),
+        'contents': operations.map((operation) => operation.toJson()).toList(),
+        'signature': randomSignature
+      },
+      'chain_id': await chainId()
+    };
+
+    var response = await httpClient.post(paths.runOperations(chain: chain, level: level), data: content);
+
+    return response.data['contents'];
   }
 }

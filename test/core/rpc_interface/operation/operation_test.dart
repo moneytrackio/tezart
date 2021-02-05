@@ -1,9 +1,10 @@
 import 'package:test/test.dart';
 import 'package:tezart/keystore.dart';
-import 'package:tezart/src/core/rpc_interface/operation.dart';
+import 'package:tezart/src/core/rpc_interface/operation/operation.dart';
+import 'package:tezart/src/utils/enum_util.dart';
 
 void main() {
-  const kind = 'generic';
+  const kind = Kinds.generic;
   final sourceKeystore = Keystore.fromSecretKey('edsk4CCa2afKwHWGxB5oZd4jvhq6tgd5EzFaryyR4vLdC3nvpjKUG6');
   final source = sourceKeystore.address;
   final publicKey = sourceKeystore.publicKey;
@@ -30,7 +31,7 @@ void main() {
           parameters: parameters);
 
       final expectedResult = {
-        'kind': kind,
+        'kind': EnumUtil.enumToString(kind),
         'source': source,
         'public_key': publicKey,
         'destination': destination,
@@ -60,6 +61,20 @@ void main() {
       expect(operation.toJson().keys, isNot(contains('public_key')));
     });
 
+    test('returns valid Json when amount is missing', () {
+      final operation = Operation(
+          kind: kind,
+          source: source,
+          destination: destination,
+          counter: counter,
+          fee: fee,
+          gasLimit: gasLimit,
+          storageLimit: storageLimit,
+          parameters: parameters);
+
+      expect(operation.toJson().keys, isNot(contains('amount')));
+    });
+
     test('returns valid Json when parameters is missing', () {
       final operation = Operation(
           kind: kind,
@@ -78,7 +93,7 @@ void main() {
 
   group('.fromJson()', () {
     final subject = () => Operation.fromJson({
-          'kind': kind,
+          'kind': EnumUtil.enumToString(kind),
           'source': source,
           'destination': destination,
           'public_key': publicKey,
