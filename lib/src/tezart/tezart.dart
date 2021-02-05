@@ -36,4 +36,6 @@ class Tezart {
 
     return rpcInterface.injectOperation(signedOperationHex);
   }
+
+  Future<int> getBalance({@required String address}) => rpcInterface.balance(address);
 }
