@@ -76,7 +76,7 @@ void main() {
   });
 
   test('.hexEncode', () {
-    final decodedList = Uint8List.fromList([1,200, 434, 292]);
+    final decodedList = Uint8List.fromList([1, 200, 434, 292]);
     final expectedResult = '01c8b224';
     final result = crypto.hexEncode(decodedList);
 

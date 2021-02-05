@@ -12,7 +12,11 @@ class Signature extends Equatable {
   final Keystore keystore;
   final String watermark;
 
-  static final _watermarkValue = {'block': '01', 'endorsement': '02', 'generic': '03'};
+  static final _watermarkValue = {
+    'block': '01',
+    'endorsement': '02',
+    'generic': '03',
+  };
 
   Signature._({@required this.bytes, @required this.keystore, this.watermark});
 
