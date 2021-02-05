@@ -1,4 +1,9 @@
-part of 'package:tezart/crypto.dart';
+import 'dart:typed_data';
+import 'package:meta/meta.dart';
+import 'package:collection/collection.dart';
+import 'package:bs58check/bs58check.dart' as bs58check;
+
+import 'exception.dart';
 
 final _prefixes = {
   'tz1': Uint8List.fromList([6, 161, 159]),
@@ -30,34 +35,37 @@ final _prefixes = {
 
 String _encodeBase58(Uint8List payload) => bs58check.encode(payload);
 Uint8List _decodeBase58(String string) => bs58check.decode(string);
-Uint8List _hexPrefix(String prefix) {
-  var hexPrefix = _prefixes[prefix];
-  if (hexPrefix == null) {
+
+@visibleForTesting
+Uint8List hexPrefix(String prefix) {
+  final value = _prefixes[prefix];
+  if (value == null) {
     throw CryptoError(errorCode: 1, message: 'prefix not found');
   }
 
   return _prefixes[prefix];
 }
 
-Uint8List _ignorePrefix(Uint8List bytes) {
-  for (var prefix in _prefixes.keys) {
-    var hexPrefix = _hexPrefix(prefix);
+@visibleForTesting
+Uint8List ignorePrefix(Uint8List bytes) {
+  for (final prefix in _prefixes.keys) {
+    final value = hexPrefix(prefix);
 
-    if (ListEquality().equals(bytes.sublist(0, hexPrefix.length), hexPrefix)) {
-      return bytes.sublist(hexPrefix.length);
+    if (ListEquality().equals(bytes.sublist(0, value.length), value)) {
+      return bytes.sublist(value.length);
     }
   }
   throw CryptoError(errorCode: 2, message: "Can\'t ignore an unknown prefix");
 }
 
 String encodeTz({@required String prefix, @required Uint8List bytes}) {
-  var prefixed = Uint8List.fromList(_hexPrefix(prefix) + bytes);
+  final prefixed = Uint8List.fromList(hexPrefix(prefix) + bytes);
 
   return _encodeBase58(prefixed);
 }
 
 Uint8List decodeTz(String str) {
-  var decoded = _decodeBase58(str);
+  final decoded = _decodeBase58(str);
 
-  return _ignorePrefix(decoded);
+  return ignorePrefix(decoded);
 }

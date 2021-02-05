@@ -1,4 +1,5 @@
 import 'package:test/test.dart';
+
 import 'package:tezart/src/crypto/exception.dart';
 
 final someErrorMsg = 'some fake message';
@@ -16,10 +17,7 @@ void main() {
     expect(
         () => sampleWithException(0),
         throwsA(predicate(
-          (e) =>
-              e is CryptoError &&
-              e.message == someErrorMsg &&
-              e.toString() == exceptedError,
+          (e) => e is CryptoError && e.message == someErrorMsg && e.toString() == exceptedError,
         )));
   });
 
