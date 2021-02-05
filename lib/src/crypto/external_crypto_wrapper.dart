@@ -18,3 +18,9 @@ Uint8List publicKeyBytesFromSeed(Uint8List seed) => signingKeyFromSeed(seed).ver
 
 @visibleForTesting
 SigningKey signingKeyFromSeed(Uint8List seed) => SigningKey.fromSeed(seed);
+
+Uint8List signDetached({@required Uint8List bytes, @required Uint8List secretKey}) {
+  final seed = secretKey.sublist(0, 32); // the seed is the first 32 bytes of the secret key
+
+  return SigningKey(seed: seed).sign(bytes).sublist(0, 64);
+}

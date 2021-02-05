@@ -78,6 +78,7 @@ build/
 
 # coverage
 coverage/
+test/.test_coverage.dart
 
 # .env
 .env

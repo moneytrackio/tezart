@@ -5,10 +5,10 @@ import './utils/common.dart' as crypto_common;
 import 'expected_results/external_crypto_wrapper.dart' as expected_results;
 
 void main() {
-  group('.secretKeyBytesFromMnemonic', () {
-    const mnemonic =
-        'brief hello carry loop squeeze unknown click abstract lounge figure logic oblige child ripple about vacant scheme magnet open enroll stuff valve hobby what';
+  const mnemonic =
+      'brief hello carry loop squeeze unknown click abstract lounge figure logic oblige child ripple about vacant scheme magnet open enroll stuff valve hobby what';
 
+  group('.secretKeyBytesFromMnemonic', () {
     test('returns valid SigningKey', () {
       final secretKeyBytes = secretKeyBytesFromMnemonic(mnemonic);
       expect(common.listEquals(secretKeyBytes, expected_results.secretKeyFromMnemonic), true);
@@ -20,6 +20,17 @@ void main() {
       final secretKeyBytes = secretKeyBytesFromSeed(crypto_common.fakeUint8List());
 
       expect(common.listEquals(secretKeyBytes, expected_results.secretKeyBytesFromSeed), true);
+    });
+  });
+
+  group('.signDetached', () {
+    final secretKey = secretKeyBytesFromMnemonic(mnemonic);
+
+    test('returns valid signature bytes', () {
+      final bytes = crypto_common.fakeUint8List();
+      final sig = signDetached(bytes: bytes, secretKey: secretKey);
+
+      expect(common.listEquals(sig, expected_results.signatureBytes), true);
     });
   });
 }

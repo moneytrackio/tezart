@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:convert/convert.dart' show hex;
 import 'package:meta/meta.dart';
 import 'package:collection/collection.dart';
 import 'package:bs58check/bs58check.dart' as bs58check;
@@ -35,6 +36,8 @@ final _prefixes = {
 
 String _encodeBase58(Uint8List payload) => bs58check.encode(payload);
 Uint8List _decodeBase58(String string) => bs58check.decode(string);
+Uint8List hexDecode(String encoded) => Uint8List.fromList(hex.decode(encoded));
+String hexEncode(Uint8List input) => hex.encode(input.toList());
 
 @visibleForTesting
 Uint8List hexPrefix(String prefix) {
