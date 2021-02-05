@@ -1,6 +1,7 @@
 import 'package:test/test.dart';
 
 import 'package:tezart/env/env.dart';
+import 'package:tezart/keystore.dart';
 import 'package:tezart/src/core/rpc_interface/rpc_interface.dart';
 
 void main() {
@@ -54,6 +55,17 @@ void main() {
       final result = await subject();
 
       expect(result, isA<int>());
+    });
+  });
+
+  group('#balance()', () {
+    final address = Keystore.fromSecretKey(Env.originatorSk).address;
+    final subject = () => rpcInterface.balance(address);
+
+    test('it returns a positive number', () async {
+      final result = await subject();
+
+      expect(result, greaterThan(0));
     });
   });
 }
