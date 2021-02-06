@@ -68,7 +68,7 @@ tezart::_check_localhost_chain() {
 }
 
 tezart::_check_requirements() {
-	## check for dart
+	## check for docker
 	if docker --version &>/dev/null
 	then
 		log::title_success " - docker is present on your system"
