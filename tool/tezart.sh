@@ -92,13 +92,6 @@ tezart::_check_requirements() {
 		log::error_and_exit 'The Lefthook plugin is missing on your system. Please read the README.md to install it'
 	fi
 
-	## check for test_coverage
-	if test_coverage &>/dev/null
-	then
-		pub global activate test_coverage &>/dev/null && log::title_success " - test_coverage is present on your dart environment"
-	else
-		log::error_and_exit 'The dart test_coverage package is missing on your system. The script is unable to install it !'
-	fi
 }
 
 tezart::_init_env_var() {
@@ -119,8 +112,10 @@ tezart::_init_env_var() {
 tezart::run_coverage_dev() {
 	log::info "$USAGE_RUN_COVERAGE_DEV :"
 
+	pub get
+
 	# Effective test coverage
-	test_coverage --no-badge
+	pub run test_coverage
 
 	# Generate coverage info
 	genhtml -o coverage coverage/lcov.info 

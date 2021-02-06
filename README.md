@@ -1,19 +1,23 @@
 <table style="width:100%">
   <tr>
     <th>License</th>
-    <th>Github Action</th>
-    <th>Code Coverage</th>
+    <th>Github Action - Tests</th>
     <th>Coverage with codecov.io</th>
   </tr>
   <tr>
     <td>
-        <img src="https://img.shields.io/static/v1?label=License&message=MIT&color=blue"/>
+        <a href="https://github.com/moneytrackio/tezart/blob/main/LICENSE" target="_blank">
+           <img src="https://img.shields.io/static/v1?label=License&message=MIT&color=blue"/>
+        </a>
     </td>
     <td>
+        <a href="https://github.com/moneytrackio/tezart/actions?query=workflow%3A%22Run+tests%22" target="_blank">
+            <img src="https://github.com/moneytrackio/tezart/workflows/Run%20tests/badge.svg"/>
+        </a>
     </td>
-    <td>
-    </td>
-    <td>
+        <a href="https://codecov.io/gh/moneytrackio/tezart">
+            <img src="https://codecov.io/gh/moneytrackio/tezart/branch/main/graph/badge.svg?token=0BOIGV5QCT"/>
+        </a>
     </td>
   </tr>
 </table>
@@ -46,7 +50,6 @@ To ensure that you can contribute to this project, you will need to setup your e
 - [dart sdk for package development](https://dart.dev/get-dart)
 - [docker for local testing](https://docs.docker.com/get-docker/)
 - [lefthook to our git hooks](https://github.com/Arkweid/lefthook)
-- [test_coverage for our code coverage](https://pub.dev/packages/test_coverage)
 
 #### A. Dart SDK for Package development
 

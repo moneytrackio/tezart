@@ -1,5 +1,8 @@
 name: Run tests
-on: pull_request
+
+# Trigger on push
+on: push
+
 jobs:
   unit_tests:
     name: Unit tests
@@ -18,14 +21,27 @@ jobs:
     steps:
     - name: Git checkout
       uses: actions/checkout@v2
+
     - uses: cedx/setup-dart@v2
       with:
         version: 2.12.0-133.7.beta
         release-channel: beta
+
     - name: Dart pub get
       run: dart pub get
+
     - name: Dart tests
       run: |
-        cp .github/workflows/.env.ci .env
+        cp .github/workflows/.env.ci .env.tests
         pub run build_runner build
         dart test
+
+    - name: Run Coverage
+      run: |
+        pub run test_coverage
+
+    - name: Collect the code coverage
+      uses: codecov/codecov-action@v1.2.1
+      with:
+        #token: ${{secrets.CODECOV_TOKEN}} #required
+        file: ./coverage/lcov.info
