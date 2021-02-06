@@ -77,9 +77,10 @@ build/
 .fvm
 
 # coverage
+coverage_badge.svg
 coverage/
 test/.test_coverage.dart
 
 # .env
-.env
+.env.tests
 lib/env/env.g.dart
