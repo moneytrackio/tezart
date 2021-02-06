@@ -1,3 +1,23 @@
+<table style="width:100%">
+  <tr>
+    <th>License</th>
+    <th>Github Action</th>
+    <th>Code Coverage</th>
+    <th>Coverage with codecov.io</th>
+  </tr>
+  <tr>
+    <td>
+        <img src="https://img.shields.io/static/v1?label=License&message=MIT&color=blue"/>
+    </td>
+    <td>
+    </td>
+    <td>
+    </td>
+    <td>
+    </td>
+  </tr>
+</table>
+
 # tezart
 
 A dart library that connects to interact with the tezos blockchain. 
