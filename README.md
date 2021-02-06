@@ -15,7 +15,8 @@
             <img src="https://github.com/moneytrackio/tezart/workflows/Run%20tests/badge.svg"/>
         </a>
     </td>
-        <a href="https://codecov.io/gh/moneytrackio/tezart">
+    <td>
+        <a href="https://codecov.io/gh/moneytrackio/tezart" target="_blank">
             <img src="https://codecov.io/gh/moneytrackio/tezart/branch/main/graph/badge.svg?token=0BOIGV5QCT"/>
         </a>
     </td>
