@@ -17,11 +17,7 @@ void main() {
       expect(subject.bytes, equals(bytes));
     });
 
-<<<<<<< HEAD
     test('it sets keystore correctly', () {
-=======
-    test('it sets keystore correctly', (){
->>>>>>> refactor(keystore): %s/keyStore/keystore/g
       expect(subject.keystore, equals(keystore));
     });
   });
@@ -36,23 +32,14 @@ void main() {
       expect(subject.bytes, equals(bytes));
     });
 
-<<<<<<< HEAD
     test('it sets keystore correctly', () {
-=======
-    test('it sets keystore correctly', (){
->>>>>>> refactor(keystore): %s/keyStore/keystore/g
       expect(subject.keystore, equals(keystore));
     });
   });
 
   group('.signedBytes', () {
-<<<<<<< HEAD
     final subject =
         (String watermark) => Signature.fromHex(data: '123abd43', keystore: keystore, watermark: watermark).signedBytes;
-=======
-    final subject = (String watermark) =>
-        Signature.fromHex(data: '123abd43', keystore: keystore, watermark: watermark).signedBytes;
->>>>>>> refactor(keystore): %s/keyStore/keystore/g
 
     group('when watermak is not null', () {
       final result = subject('generic');
@@ -72,12 +59,7 @@ void main() {
   });
 
   group('.edsig', () {
-<<<<<<< HEAD
     final subject = () => Signature.fromHex(data: '123abd43', keystore: keystore, watermark: 'generic').edsig;
-=======
-    final subject = () =>
-        Signature.fromHex(data: '123abd43', keystore: keystore, watermark: 'generic').edsig;
->>>>>>> refactor(keystore): %s/keyStore/keystore/g
 
     test('it returns a valid edsig signature', () {
       final expectedResult =
@@ -87,12 +69,7 @@ void main() {
   });
 
   group('.hex', () {
-<<<<<<< HEAD
     final subject = () => Signature.fromHex(data: '123abd43', keystore: keystore, watermark: 'generic').hex;
-=======
-    final subject = () =>
-        Signature.fromHex(data: '123abd43', keystore: keystore, watermark: 'generic').hex;
->>>>>>> refactor(keystore): %s/keyStore/keystore/g
 
     test('it returns a valid hex signature', () {
       final expectedResult =
