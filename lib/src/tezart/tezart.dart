@@ -17,9 +17,8 @@ class Tezart {
     @required int amount,
   }) async {
     final counter = await rpcInterface.counter(source.address) + 1;
-    final operation = Operation(
+    final operation = TransactionOperation(
       amount: amount,
-      kind: Kinds.transaction,
       source: source.address,
       destination: destination,
       counter: counter,

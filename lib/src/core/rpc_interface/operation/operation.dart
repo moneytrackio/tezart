@@ -12,7 +12,23 @@ enum Kinds {
   delegation,
   origination,
   transfer,
-  reveal
+  reveal,
+}
+
+// Transaction Operation
+class TransactionOperation extends Operation {
+  TransactionOperation({
+    @required int amount,
+    @required String source,
+    @required String destination,
+    @required int counter,
+  }) : super(
+          kind: Kinds.transaction,
+          source: source,
+          destination: destination,
+          amount: amount,
+          counter: counter,
+        );
 }
 
 @JsonSerializable(includeIfNull: false)
@@ -44,19 +60,20 @@ class Operation {
   @JsonKey(name: 'storage_limit', fromJson: _stringToInt, toJson: _toString)
   final int storageLimit;
 
-  Operation({ @required this.kind,
-              @required this.source,
-              @required this.counter,
-              this.amount,
-              this.destination,
-              this.publicKey,
-              this.parameters,
-              int gasLimit,
-              int fee,
-              int storageLimit }):
-      gasLimit = gasLimit ?? defaultGasLimit[kind],
-      fee = fee ?? defaultFee[kind],
-      storageLimit = storageLimit ?? defaultStorageLimit[kind];
+  Operation(
+      {@required this.kind,
+      @required this.source,
+      @required this.counter,
+      this.amount,
+      this.destination,
+      this.publicKey,
+      this.parameters,
+      int gasLimit,
+      int fee,
+      int storageLimit})
+      : gasLimit = gasLimit ?? defaultGasLimit[kind],
+        fee = fee ?? defaultFee[kind],
+        storageLimit = storageLimit ?? defaultStorageLimit[kind];
 
   factory Operation.fromJson(Map<String, dynamic> json) => _$OperationFromJson(json);
 
