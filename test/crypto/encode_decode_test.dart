@@ -52,20 +52,4 @@ void main() {
 
     expect(result, equals(expectedResult));
   });
-
-  test('.hexDecode', () {
-    final encodedString = '12346789abcdef';
-    final expectedResult = [18, 52, 103, 137, 171, 205, 239];
-    final result = crypto.hexDecode(encodedString);
-
-    expect(listEquals(result, expectedResult), true);
-  });
-
-  test('.hexEncode', () {
-    final decodedList = Uint8List.fromList([1,200, 434, 292]);
-    final expectedResult = '01c8b224';
-    final result = crypto.hexEncode(decodedList);
-
-    expect(result, equals(expectedResult));
-  });
 }
