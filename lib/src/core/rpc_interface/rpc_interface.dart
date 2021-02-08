@@ -74,6 +74,12 @@ class RpcInterface {
     return response.data['contents'];
   }
 
+  Future<String> managerKey(String address, [chain = 'main', level = 'head']) async {
+    var response = await httpClient.get(paths.managerKey(address: address, chain: chain, level: level));
+
+    return response.data;
+  }
+
   Future<int> balance(String address, [chain = 'main', level = 'head']) async {
     var response = await httpClient.get(paths.balance(chain: chain, level: level, address: address));
 

@@ -36,5 +36,24 @@ class Tezart {
     return rpcInterface.injectOperation(signedOperationHex);
   }
 
+  Future<String> revealKey(Keystore source) async {
+    final counter = await rpcInterface.counter(source.address) + 1;
+    final operation =
+        Operation(kind: Kinds.reveal, source: source.address, counter: counter, publicKey: source.publicKey);
+
+    await rpcInterface.runOperations([operation]);
+
+    final forgedOperation = await rpcInterface.forgeOperations([operation]);
+    final signedOperationHex = Signature.fromHex(data: forgedOperation, keystore: source, watermark: 'generic').hex;
+
+    return rpcInterface.injectOperation(signedOperationHex);
+  }
+
+  Future<bool> isKeyRevealed(String address) async {
+    final managerKey = await rpcInterface.managerKey(address);
+
+    return managerKey == null ? false : true;
+  }
+
   Future<int> getBalance({@required String address}) => rpcInterface.balance(address);
 }

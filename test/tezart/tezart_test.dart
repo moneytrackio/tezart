@@ -25,4 +25,69 @@ void main() {
       expect(RegExp(r'^o\w+$').hasMatch(result), true);
     });
   });
+
+  group('#isKeyRevealed', () {
+    final subject = (String address) => tezart.isKeyRevealed(address);
+
+    group('when the key is not revealed', () {
+      final address = Keystore.random().address;
+
+      test('it returns false', () async {
+        final result = await subject(address);
+
+        expect(result, isFalse);
+      });
+    });
+
+    group('when the key is revealed', () {
+      final address = originatorKeystore.address;
+
+      test('it returns true', () async {
+        final result = await subject(address);
+
+        expect(result, isTrue);
+      });
+    });
+  });
+
+  group('#revealKey', () {
+    final subject = (Keystore keystore) => tezart.revealKey(keystore);
+    final transferToDest = (Keystore destinationKeystore) async {
+      await tezart.transfer(source: originatorKeystore, destination: destinationKeystore.address, amount: 10000);
+      // TODO: replace this line with operation monitoring
+      await Future.delayed(const Duration(seconds: 5));
+    };
+
+    group('when the key is not revealed', () {
+      final keystore = Keystore.random();
+
+      setUp(() => transferToDest(keystore));
+
+      test('it reveals the key', () async {
+        await subject(keystore);
+
+        // TODO: replace this line with operation monitoring
+        await Future.delayed(const Duration(seconds: 5));
+        final isKeyRevealed = await tezart.isKeyRevealed(keystore.address);
+
+        expect(isKeyRevealed, isTrue);
+      });
+    });
+
+    group('when the key is already revealed', () {
+      final keystore = originatorKeystore;
+
+      setUp(() => transferToDest(keystore));
+
+      test('throws an error', () async {
+        await subject(keystore);
+
+        // TODO: replace this line with operation monitoring
+        await Future.delayed(const Duration(seconds: 5));
+        final isKeyRevealed = await tezart.isKeyRevealed(keystore.address);
+
+        expect(isKeyRevealed, isTrue);
+      }, skip: 'Currently failing, waiting for exceptions handling');
+    });
+  });
 }

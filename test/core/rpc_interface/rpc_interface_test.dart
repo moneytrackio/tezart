@@ -6,6 +6,7 @@ import '../../env/env.dart';
 
 void main() {
   final rpcInterface = RpcInterface(host: Env.tezosNodeHost, port: Env.tezosNodePort, scheme: Env.tezosNodeScheme);
+  final originator = Keystore.fromSecretKey(Env.originatorSk);
 
   group('#pendingOperations()', () {
     final subject = () => rpcInterface.pendingOperations();
@@ -59,13 +60,36 @@ void main() {
   });
 
   group('#balance()', () {
-    final address = Keystore.fromSecretKey(Env.originatorSk).address;
+    final address = originator.address;
     final subject = () => rpcInterface.balance(address);
 
     test('it returns a positive number', () async {
       final result = await subject();
 
       expect(result, greaterThan(0));
+    });
+  });
+
+  group('#managerKey()', () {
+    final subject = (String address) => rpcInterface.managerKey(address);
+    group('when the address is revealed', () {
+      final address = originator.address;
+
+      test('it returns the public key', () async {
+        final result = await subject(address);
+
+        expect(result, equals(originator.publicKey));
+      });
+    });
+
+    group('when the address is unrevealed', () {
+      final address = Keystore.random().address;
+
+      test('it returns null', () async {
+        final result = await subject(address);
+
+        expect(result, isNull);
+      });
     });
   });
 }
