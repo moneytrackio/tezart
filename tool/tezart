@@ -1,0 +1,209 @@
+#!/bin/bash
+
+# exit when any command fails
+set -e
+
+###################################################################                                                                                                                                                                                                                   
+# Description : 
+# Utility functions for dev, ci/cd operations ...
+#
+###################################################################
+
+readonly BASEDIR=$( cd $( dirname $0 ) && pwd )
+
+source $BASEDIR/../tool/logger.sh
+
+#  ██╗   ██╗███████╗ █████╗  ██████╗ ███████╗
+#  ██║   ██║██╔════╝██╔══██╗██╔════╝ ██╔════╝
+#  ██║   ██║███████╗███████║██║  ███╗█████╗  
+#  ██║   ██║╚════██║██╔══██║██║   ██║██╔══╝  
+#  ╚██████╔╝███████║██║  ██║╚██████╔╝███████╗
+#  ╚═════╝ ╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝
+
+USAGE_HELP='Display this message'
+USAGE_RUN_DOCTOR='Process to run the setup of the project'
+USAGE_RUN_TESTS='Process to run tests'
+USAGE_RUN_COVERAGE='Process to run the code coverage in dev environment'
+
+usage() {
+
+	log::application
+	cat <<EOF
+
+	Usage: Script used to perform dev, ci/cd operations
+
+	OPTIONS:
+	========
+	doctor		$USAGE_RUN_DOCTOR
+	tests		$USAGE_RUN_TESTS
+	coverage 	$USAGE_RUN_COVERAGE
+	-h 		$USAGE_HELP
+
+EOF
+}
+
+###########
+### PRIVATE 
+###########
+
+tezart::_check_localhost_chain() {
+	retry=1
+	isSanboxRunning=1
+	while [[ retry -le 5 ]]
+	do  
+		curl -s localhost:20000/chains/main/mempool/pending_operations  > /dev/null && isSanboxRunning=0 && break
+		log::warn "retry $retry : Unable to curl localhost:20000/chains/main/mempool/pending_operations"
+		((retry=retry+1))
+		sleep 1
+	done
+	
+	if [[ isSanboxRunning -eq 0 ]]
+	then
+		log::title_success "a tezos sandbox is running locally"
+	else
+		log::error_and_exit "Please read the README.md to run a tezos sandbox locally."
+	fi
+
+	
+}
+
+tezart::_check_requirements() {
+	## check for docker
+	if docker --version &>/dev/null
+	then
+		log::title_success "docker is present on your system"
+	else
+		log::error_and_exit 'The docker is missing on your system. Please read the README.md to install it'
+	fi
+
+	## check for dart
+	if dart --version &>/dev/null
+	then
+		log::title_success "dart sdk is present on your system"
+	else
+		log::error_and_exit 'The dart sdk is missing on your system. Please read the README.md to install it'
+	fi
+
+	## check for lefthook
+	if lefthook &>/dev/null
+	then
+		log::title_success "lefthook is present on your system"
+	else
+		log::error_and_exit 'The Lefthook plugin is missing on your system. Please read the README.md to install it'
+	fi
+
+}
+
+tezart::_init_env_var() {
+
+	if [[ -f .env.test ]]
+	then
+		log::title_warning ".env.test file is already found. The script won't generate a new one"
+	else
+		log::title_success "a new .env.test file is generated for your tests"
+		cp .env.dist .env.test
+	fi
+}
+
+###########
+### PUBLIC 
+###########
+
+tezart::run_coverage() {
+	log::info "$USAGE_RUN_COVERAGE :"
+
+	pub get
+
+	# Effective test coverage
+	pub run test_coverage
+
+	# Generate coverage info
+	genhtml -o coverage coverage/lcov.info 
+
+	# Open to see coverage info
+	open coverage/index.html
+}
+
+tezart::run_doctor() {
+	log::info "$USAGE_RUN_DOCTOR :"
+
+	tezart::_check_requirements
+	tezart::_check_localhost_chain
+	tezart::_init_env_var
+}
+
+tezart::run_tests() {
+	log::info "$USAGE_RUN_TESTS :"
+
+	tezart::_check_localhost_chain
+	tezart::_init_env_var
+
+	echo -e '\n'
+
+	pub get
+	pub run build_runner build
+	pub run test
+}
+
+# ███╗   ███╗ █████╗ ██╗███╗   ██╗    
+# ████╗ ████║██╔══██╗██║████╗  ██║    
+# ██╔████╔██║███████║██║██╔██╗ ██║    
+# ██║╚██╔╝██║██╔══██║██║██║╚██╗██║    
+# ██║ ╚═╝ ██║██║  ██║██║██║ ╚████║    
+# ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝    
+
+#
+## Optional parameters
+RUN_DOCTOR=
+RUN_TESTS=
+RUN_COVERAGE=
+
+main() {
+	[[ -n $RUN_DOCTOR ]] && tezart::run_doctor
+	[[ -n $RUN_TESTS ]] && tezart::run_tests
+	[[ -n $RUN_COVERAGE ]] && tezart::run_coverage
+	
+	exit 0
+}
+
+#  ██████╗ ███████╗████████╗ ██████╗ ██████╗ ███████╗
+# ██╔════╝ ██╔════╝╚══██╔══╝██╔═══██╗██╔══██╗██╔════╝
+# ██║  ███╗█████╗     ██║   ██║   ██║██████╔╝███████╗
+# ██║   ██║██╔══╝     ██║   ██║   ██║██╔═══╝ ╚════██║
+# ╚██████╔╝███████╗   ██║   ╚██████╔╝██║     ███████║
+#  ╚═════╝ ╚══════╝   ╚═╝    ╚═════╝ ╚═╝     ╚══════╝
+                                                   
+# Parse options to the `tezart` command
+while getopts ":h" opt; do
+	case ${opt} in
+		h )
+			usage
+			exit 0
+		;;
+		\? )
+			log::error "Invalid Option: -$OPTARG "
+			usage
+			exit 1
+		;;
+	esac
+done
+shift $((OPTIND -1))
+
+subcommand=$1; shift  # Remove 'tezart' from the argument list
+case "$subcommand" in
+	doctor)
+		RUN_DOCTOR=1
+		;;
+	tests)
+		RUN_TESTS=1
+		;;
+	coverage)
+		RUN_COVERAGE=1
+		;;
+	*)
+		log::error "Unknow parameter '$subcommand' !"
+		usage
+		exit 2
+	;;
+esac
+main
