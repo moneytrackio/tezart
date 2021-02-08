@@ -32,7 +32,7 @@ jobs:
 
     - name: Dart tests
       run: |
-        cp .github/workflows/.env.ci .env.tests
+        cp .github/workflows/.env.ci .env.test
         pub run build_runner build
         dart test
 

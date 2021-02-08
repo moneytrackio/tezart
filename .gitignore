@@ -82,5 +82,5 @@ coverage/
 test/.test_coverage.dart
 
 # .env
-.env.tests
+.env.test
 lib/env/env.g.dart

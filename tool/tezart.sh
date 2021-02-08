@@ -96,12 +96,12 @@ tezart::_check_requirements() {
 
 tezart::_init_env_var() {
 
-	if [[ -f .env.tests ]]
+	if [[ -f .env.test ]]
 	then
-		log::warn "A .env.tests file is already found. the script won't generate a new one"
+		log::warn "A .env.test file is already found. the script won't generate a new one"
 	else
-		log::title_success " - a new .env.tests file is generated for your tests"
-		cp .env.dist .env.tests
+		log::title_success " - a new .env.test file is generated for your tests"
+		cp .env.dist .env.test
 	fi
 }
 
