@@ -81,9 +81,11 @@ lefthook install
 To ensure that your environment is ready for contribution, please run the following command at the root of the project: 
 
 ```sh
-./tezart.sh --run-setup
+./tezart.sh doctor
 ```
 
+You can add an alias like this `alias tezart='./tezart'` to avoid  calling the command line with `./`
+ 
 Following is a sample of a correct setup :
 
 ![a-sample-setup](./doc/setup/a-sample-correct-setup.png)

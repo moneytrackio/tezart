@@ -6,6 +6,8 @@
 #
 ###################################################################
 
+readonly BOLD=$(tput bold)
+export NORMAL=$(tput sgr0)
 readonly BLUE="\\033[1;34m"
 readonly RED="\\033[1;31m"
 readonly GREEN="\\033[1;32m"
@@ -69,10 +71,12 @@ log::title() {
 }  
 
 log::title_success() {
-	echo -e "\n $* $GREEN $CHECK_MARK $END"
+	echo -e "\n $GREEN [✓] $END $* "
 }
 
-
+log::title_warning() {
+	echo -e "\n $YELLOW [!] $END $* "
+}
 
 log::message() {
 	echo -e " $* "
