@@ -1,7 +1,7 @@
 name: Run tests
 
-# Trigger on push
-on: push
+# Trigger on pull_request
+on: pull_request
 
 jobs:
   unit_tests:
