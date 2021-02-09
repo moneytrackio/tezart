@@ -34,8 +34,7 @@ jobs:
     - name: Dart tests
       run: |
         cp .github/workflows/.env.ci .env.test
-        pub run build_runner build --delete-conflicting-outputs
-        dart test
+        ./tezart tests
 
     - name: Run Coverage
       run: |
