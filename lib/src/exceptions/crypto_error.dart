@@ -2,7 +2,7 @@ import 'package:meta/meta.dart';
 import 'package:tezart/src/exceptions/tezart_exception.dart';
 import 'package:tezart/src/utils/enum_util.dart';
 
-enum ErrorTypes {
+enum CryptoErrorTypes {
   prefixNotFound,
   unknownPrefix,
   unhandled,
@@ -10,17 +10,17 @@ enum ErrorTypes {
 
 /// Exception thrown when an error occurs during crypto operation.
 class CryptoError implements TezartException {
-  final ErrorTypes _inputType;
+  final CryptoErrorTypes _inputType;
   final String _inputMessage;
   final dynamic error;
 
   final staticErrorsMessages = {
-    ErrorTypes.prefixNotFound: 'Prefix not found',
-    ErrorTypes.unknownPrefix: 'Unknown prefix',
-    ErrorTypes.unhandled: 'Unhandled error',
+    CryptoErrorTypes.prefixNotFound: 'Prefix not found',
+    CryptoErrorTypes.unknownPrefix: 'Unknown prefix',
+    CryptoErrorTypes.unhandled: 'Unhandled error',
   };
 
-  CryptoError({@required ErrorTypes type, String message, this.error})
+  CryptoError({@required CryptoErrorTypes type, String message, this.error})
       : _inputType = type,
         _inputMessage = message;
 
@@ -29,7 +29,7 @@ class CryptoError implements TezartException {
     return '$runtimeType: got code $key with msg $message.';
   }
 
-  ErrorTypes get type => _inputType;
+  CryptoErrorTypes get type => _inputType;
 
   @override
   String get message => _inputMessage ?? _computedMessage;

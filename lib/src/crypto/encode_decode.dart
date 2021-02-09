@@ -43,7 +43,7 @@ String hexEncode(Uint8List input) => hex.encode(input.toList());
 Uint8List hexPrefix(String prefix) {
   final value = _prefixes[prefix];
   if (value == null) {
-    throw CryptoError(type: ErrorTypes.prefixNotFound);
+    throw CryptoError(type: CryptoErrorTypes.prefixNotFound);
   }
 
   return _prefixes[prefix];
@@ -58,7 +58,7 @@ Uint8List ignorePrefix(Uint8List bytes) {
       return bytes.sublist(value.length);
     }
   }
-  throw CryptoError(type: ErrorTypes.unknownPrefix);
+  throw CryptoError(type: CryptoErrorTypes.unknownPrefix);
 }
 
 String encodeTz({@required String prefix, @required Uint8List bytes}) {

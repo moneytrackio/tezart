@@ -18,7 +18,7 @@ void main() {
 
     test('encodes throw error', () {
       expect(() => crypto.encodeTz(prefix: null, bytes: expected_results.decodedAddress),
-          throwsA(predicate((e) => e is CryptoError && e.type == ErrorTypes.prefixNotFound)));
+          throwsA(predicate((e) => e is CryptoError && e.type == CryptoErrorTypes.prefixNotFound)));
     });
   });
 
@@ -31,12 +31,12 @@ void main() {
 
   test('.ignorePrefix throw error', () {
     expect(() => crypto.ignorePrefix(crypto_common.fakeUint8List()),
-        throwsA(predicate((e) => e is CryptoError && e.type == ErrorTypes.unknownPrefix)));
+        throwsA(predicate((e) => e is CryptoError && e.type == CryptoErrorTypes.unknownPrefix)));
   });
 
   test('.hexPrefix throw error', () {
-    expect(
-        () => crypto.hexPrefix(''), throwsA(predicate((e) => e is CryptoError && e.type == ErrorTypes.prefixNotFound)));
+    expect(() => crypto.hexPrefix(''),
+        throwsA(predicate((e) => e is CryptoError && e.type == CryptoErrorTypes.prefixNotFound)));
   });
 
   test('.hexDecode', () {

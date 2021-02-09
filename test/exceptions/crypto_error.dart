@@ -3,7 +3,7 @@ import 'package:test/test.dart';
 import 'package:tezart/src/exceptions/crypto_error.dart';
 
 void main() {
-  final type = ErrorTypes.prefixNotFound;
+  final type = CryptoErrorTypes.prefixNotFound;
 
   group('when message is set', () {
     final message = 'parameter message';
