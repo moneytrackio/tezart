@@ -4,6 +4,9 @@ import 'package:tezart/signature.dart';
 import 'package:tezart/src/core/rpc_interface/operation/operation.dart';
 
 import 'package:tezart/src/core/rpc_interface/rpc_interface.dart';
+import 'package:tezart/src/exceptions/tezart_http_error.dart';
+import 'package:tezart/src/exceptions/tezart_node_error.dart';
+import 'package:tezart/exceptions.dart';
 
 class Tezart {
   final RpcInterface rpcInterface;
@@ -37,16 +40,20 @@ class Tezart {
   }
 
   Future<String> revealKey(Keystore source) async {
-    final counter = await rpcInterface.counter(source.address) + 1;
-    final operation =
-        Operation(kind: Kinds.reveal, source: source.address, counter: counter, publicKey: source.publicKey);
+    try {
+      final counter = await rpcInterface.counter(source.address) + 1;
+      final operation =
+          Operation(kind: Kinds.reveal, source: source.address, counter: counter, publicKey: source.publicKey);
 
-    await rpcInterface.runOperations([operation]);
+      await rpcInterface.runOperations([operation]);
 
-    final forgedOperation = await rpcInterface.forgeOperations([operation]);
-    final signedOperationHex = Signature.fromHex(data: forgedOperation, keystore: source, watermark: 'generic').hex;
+      final forgedOperation = await rpcInterface.forgeOperations([operation]);
+      final signedOperationHex = Signature.fromHex(data: forgedOperation, keystore: source, watermark: 'generic').hex;
 
-    return rpcInterface.injectOperation(signedOperationHex);
+      return rpcInterface.injectOperation(signedOperationHex);
+    } on TezartHttpError catch (e) {
+      throw TezartNodeError(e);
+    }
   }
 
   Future<bool> isKeyRevealed(String address) async {

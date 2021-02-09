@@ -1,5 +1,6 @@
 import 'package:test/test.dart';
 import 'package:tezart/keystore.dart';
+import 'package:tezart/exceptions.dart';
 import 'package:tezart/src/tezart/tezart.dart';
 
 import '../env/env.dart';
@@ -80,14 +81,11 @@ void main() {
       setUp(() => transferToDest(keystore));
 
       test('throws an error', () async {
-        await subject(keystore);
-
-        // TODO: replace this line with operation monitoring
-        await Future.delayed(const Duration(seconds: 5));
-        final isKeyRevealed = await tezart.isKeyRevealed(keystore.address);
-
-        expect(isKeyRevealed, isTrue);
-      }, skip: 'Currently failing, waiting for exceptions handling');
+        expect(
+            subject(keystore),
+            throwsA(predicate(
+                (e) => e is TezartNodeError && e.message == 'You\'re trying to reveal an already revealed key.')));
+      });
     });
   });
 }
