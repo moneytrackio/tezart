@@ -105,6 +105,13 @@ tezart::_init_env_var() {
 	fi
 }
 
+tezart::_run_build_runner() {
+	base_command="pub run build_runner build"
+	options=$([ "$CI" == true ] && echo "--delete-conflicting-outputs" || echo "")
+	command="$base_command $options"
+	eval $command
+}
+
 ###########
 ### PUBLIC 
 ###########
@@ -141,7 +148,8 @@ tezart::run_tests() {
 	echo -e '\n'
 
 	pub get
-	pub run build_runner build
+	tezart::_run_build_runner
+
 	pub run test
 }
 
