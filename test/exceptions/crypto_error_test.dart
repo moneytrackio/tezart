@@ -30,7 +30,15 @@ void main() {
     });
 
     test('it sets key correctly', () {
-      expect(subject().key, equals('prefix_not_found'));
+      expect(subject().key, equals('prefixNotFound'));
+    });
+
+    test('it converts to string correctly', () {
+      expect(subject().toString(), equals('CryptoError: got code prefixNotFound with msg Prefix not found.'));
+    });
+
+    test('it sets originalException to null', () {
+      expect(subject().originalException, equals(null));
     });
   });
 }

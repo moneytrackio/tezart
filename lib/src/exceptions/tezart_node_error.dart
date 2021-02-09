@@ -9,7 +9,7 @@ enum TezartNodeErrorTypes {
   unhandled,
 }
 
-class TezartNodeError implements TezartException {
+class TezartNodeError extends TezartException {
   final TezartHttpError error;
   final TezartNodeErrorTypes _inputType;
   final String _inputMessage;
@@ -48,7 +48,4 @@ class TezartNodeError implements TezartException {
 
   @override
   TezartHttpError get originalException => error;
-
-  @override
-  String toString() => '$runtimeType: got key $key with message $message';
 }

@@ -9,7 +9,7 @@ enum CryptoErrorTypes {
 }
 
 /// Exception thrown when an error occurs during crypto operation.
-class CryptoError implements TezartException {
+class CryptoError extends TezartException {
   final CryptoErrorTypes _inputType;
   final String _inputMessage;
   final dynamic error;
@@ -23,11 +23,6 @@ class CryptoError implements TezartException {
   CryptoError({@required CryptoErrorTypes type, String message, this.error})
       : _inputType = type,
         _inputMessage = message;
-
-  @override
-  String toString() {
-    return '$runtimeType: got code $key with msg $message.';
-  }
 
   CryptoErrorTypes get type => _inputType;
 

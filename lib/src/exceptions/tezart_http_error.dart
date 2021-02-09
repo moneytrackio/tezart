@@ -12,7 +12,7 @@ enum TezartHttpErrorTypes {
 
 // Wrapper around DioError
 // complete missing methods if needed
-class TezartHttpError implements TezartException {
+class TezartHttpError extends TezartException {
   final http_client.DioError clientError;
   final staticErrorsMessages = {
     TezartHttpErrorTypes.connectTimeout: 'Opening connection timed out',
@@ -40,7 +40,4 @@ class TezartHttpError implements TezartException {
   String get message => _response?.statusMessage ?? staticErrorsMessages[type];
   @override
   http_client.DioError get originalException => clientError;
-
-  @override
-  String toString() => '$runtimeType: got key $key with message $message';
 }
