@@ -52,7 +52,7 @@ class Tezart {
 
       return rpcInterface.injectOperation(signedOperationHex);
     } on TezartHttpError catch (e) {
-      throw TezartNodeError(e);
+      throw TezartNodeError.fromHttpError(e);
     }
   }
 
