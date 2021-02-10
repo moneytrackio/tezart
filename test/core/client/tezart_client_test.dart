@@ -15,13 +15,12 @@ void main() {
 
     test('it transfers the amount from source to destination', () async {
       var beforeTransferBalance = await tezart.getBalance(address: destination.address);
-      final result = await subject();
-      // TODO: replace this line with operation monitoring
-      await Future.delayed(const Duration(seconds: 10));
+      final operationId = await subject();
+      await tezart.monitorOperation(operationId: operationId);
       final afterTransferBalance = await tezart.getBalance(address: destination.address);
 
       expect(afterTransferBalance - beforeTransferBalance, equals(amount));
-      expect(RegExp(r'^o\w+$').hasMatch(result), true);
+      expect(RegExp(r'^o\w+$').hasMatch(operationId), true);
     });
   });
 
@@ -52,9 +51,12 @@ void main() {
   group('#revealKey', () {
     final subject = (Keystore keystore) => tezart.revealKey(keystore);
     final transferToDest = (Keystore destinationKeystore) async {
-      await tezart.transfer(source: originatorKeystore, destination: destinationKeystore.address, amount: 10000);
-      // TODO: replace this line with operation monitoring
-      await Future.delayed(const Duration(seconds: 10));
+      final operationId = await tezart.transfer(
+        source: originatorKeystore,
+        destination: destinationKeystore.address,
+        amount: 10000,
+      );
+      await tezart.monitorOperation(operationId: operationId);
     };
 
     group('when the key is not revealed', () {
@@ -63,10 +65,9 @@ void main() {
       setUp(() => transferToDest(keystore));
 
       test('it reveals the key', () async {
-        await subject(keystore);
+        final operationId = await subject(keystore);
 
-        // TODO: replace this line with operation monitoring
-        await Future.delayed(const Duration(seconds: 10));
+        await tezart.monitorOperation(operationId: operationId);
         final isKeyRevealed = await tezart.isKeyRevealed(keystore.address);
 
         expect(isKeyRevealed, isTrue);
@@ -83,6 +84,43 @@ void main() {
             subject(keystore),
             throwsA(predicate(
                 (e) => e is TezartNodeError && e.message == 'You\'re trying to reveal an already revealed key.')));
+      });
+    });
+  });
+
+  group('#monitorOperation', () {
+    final subject = (String operationId) => tezart.monitorOperation(
+          operationId: operationId,
+          timeBetweenBlocks: Duration(seconds: 2),
+        );
+
+    group('when the operationId exists', () {
+      test('it monitors the operation', () async {
+        final getBalance = () => tezart.getBalance(address: originatorKeystore.address);
+        final destination = Keystore.random();
+        final amount = 1;
+        final balanceBeforeTransfer = await getBalance();
+        final operationId = await tezart.transfer(
+          source: originatorKeystore,
+          destination: destination.address,
+          amount: amount,
+        );
+        final balanceAfterTransfer = await getBalance();
+        await subject(operationId);
+        final balanceAfterMonitoring = await getBalance();
+
+        expect(balanceBeforeTransfer, equals(balanceAfterTransfer));
+        expect(balanceAfterMonitoring, lessThan(balanceAfterTransfer));
+      });
+    });
+
+    group('when the operationId doesnt exist', () {
+      test('it throws an error', () async {
+        final operationId = 'toto';
+        expect(
+            () => subject(operationId),
+            throwsA(predicate(
+                (e) => e is TezartNodeError && e.message == 'Monitoring the operation $operationId timedout')));
       });
     });
   });

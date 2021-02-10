@@ -61,4 +61,12 @@ class TezartClient {
   }
 
   Future<int> getBalance({@required String address}) => rpcInterface.balance(address);
+  Future<void> monitorOperation({
+    @required String operationId,
+    Duration timeBetweenBlocks,
+  }) =>
+      rpcInterface.monitorOperation(
+        operationId: operationId,
+        timeBetweenBlocks: timeBetweenBlocks ?? Duration(seconds: 60),
+      );
 }

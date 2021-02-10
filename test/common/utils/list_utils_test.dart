@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:tezart/src/utils/list_utils.dart';
+import 'package:tezart/src/common/utils/list_utils.dart';
 
 void main() {
   group('.flatten', () {

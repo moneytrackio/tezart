@@ -24,5 +24,9 @@ final balance = ({@required String chain, @required String level, @required Stri
 final managerKey = ({@required String chain, @required String level, @required String address}) =>
     '${_levelPath(chain: chain, level: level)}/context/contracts/$address/manager_key';
 
+final monitor = (String chain) => 'monitor/heads/$chain';
+final operationHashes =
+    ({@required String chain, @required String level}) => '${_levelPath(chain: chain, level: level)}/operation_hashes';
+
 final _chainPath = (String chain) => 'chains/$chain';
 final _levelPath = ({@required String level, @required String chain}) => '${_chainPath(chain)}/blocks/$level';

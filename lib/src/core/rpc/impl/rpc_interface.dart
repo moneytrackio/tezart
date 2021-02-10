@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:meta/meta.dart';
+import 'package:tezart/src/core/client/tezart_client.dart';
 import 'package:tezart/src/models/operation/operation.dart';
+import 'package:tezart/src/common/utils/list_utils.dart';
 
 import 'tezart_http_client.dart';
 import 'rpc_interface_paths.dart' as paths;
@@ -84,5 +86,39 @@ class RpcInterface {
     var response = await httpClient.get(paths.balance(chain: chain, level: level, address: address));
 
     return int.parse(response.data['balance']);
+  }
+
+  Future<List<String>> operationHashes(String level, [chain = 'main']) async {
+    final response = await httpClient.get(paths.operationHashes(chain: chain, level: level));
+    final unflattenedData = response.data as List;
+    final operationHashes = ListUtils.flatten<String>(unflattenedData);
+
+    return operationHashes;
+  }
+
+  // TODO: handle timeout
+  // TODO: wait for multiple blocks
+  Future<void> monitorOperation({
+    @required String operationId,
+    @required Duration timeBetweenBlocks,
+    chain = 'main',
+  }) async {
+    final startTime = DateTime.now();
+    final timeout = timeBetweenBlocks * 2;
+    final rs = await httpClient.getStream(paths.monitor(chain));
+
+    await for (var value in rs.data.stream) {
+      final blockHash = json.decode(String.fromCharCodes(value))['hash'];
+      final operationHashesList = await operationHashes(blockHash);
+      final currentTime = DateTime.now();
+
+      if (operationHashesList.contains(operationId)) return;
+      if (currentTime.difference(startTime) > timeout) {
+        throw TezartNodeError(
+          type: TezartNodeErrorTypes.monitoring_timed_out,
+          metadata: {'operationId': operationId},
+        );
+      }
+    }
   }
 }

@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:tezart/src/utils/map_utils.dart';
+import 'package:tezart/src/common/utils/map_utils.dart';
 
 void main() {
   group('.fetch', () {

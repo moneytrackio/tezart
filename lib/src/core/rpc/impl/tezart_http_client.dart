@@ -22,6 +22,19 @@ class TezartHttpClient {
     return _handleClientError(() => client.get(path, queryParameters: params));
   }
 
+  Future<http_client.Response<http_client.ResponseBody>> getStream(
+    String path, {
+    Map<String, dynamic> params,
+  }) {
+    return _handleClientError(() => client.get<http_client.ResponseBody>(
+          path,
+          queryParameters: params,
+          options: http_client.Options(
+            responseType: http_client.ResponseType.stream,
+          ), // set responseType to `stream`
+        ));
+  }
+
   Future<T> _handleClientError<T>(Function func) async {
     try {
       return await func();
