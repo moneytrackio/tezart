@@ -19,7 +19,7 @@ void main() {
       var beforeTransferBalance = await tezart.getBalance(address: destination.address);
       final result = await subject();
       // TODO: replace this line with operation monitoring
-      await Future.delayed(const Duration(seconds: 5));
+      await Future.delayed(const Duration(seconds: 10));
       final afterTransferBalance = await tezart.getBalance(address: destination.address);
 
       expect(afterTransferBalance - beforeTransferBalance, equals(amount));
@@ -56,7 +56,7 @@ void main() {
     final transferToDest = (Keystore destinationKeystore) async {
       await tezart.transfer(source: originatorKeystore, destination: destinationKeystore.address, amount: 10000);
       // TODO: replace this line with operation monitoring
-      await Future.delayed(const Duration(seconds: 5));
+      await Future.delayed(const Duration(seconds: 10));
     };
 
     group('when the key is not revealed', () {
@@ -68,7 +68,7 @@ void main() {
         await subject(keystore);
 
         // TODO: replace this line with operation monitoring
-        await Future.delayed(const Duration(seconds: 5));
+        await Future.delayed(const Duration(seconds: 10));
         final isKeyRevealed = await tezart.isKeyRevealed(keystore.address);
 
         expect(isKeyRevealed, isTrue);
