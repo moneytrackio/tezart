@@ -16,7 +16,7 @@ void main() {
     test('it transfers the amount from source to destination', () async {
       var beforeTransferBalance = await tezart.getBalance(address: destination.address);
       final operationId = await subject();
-      await tezart.monitorOperation(operationId: operationId);
+      await tezart.monitorOperation(operationId);
       final afterTransferBalance = await tezart.getBalance(address: destination.address);
 
       expect(afterTransferBalance - beforeTransferBalance, equals(amount));
@@ -56,7 +56,7 @@ void main() {
         destination: destinationKeystore.address,
         amount: 10000,
       );
-      await tezart.monitorOperation(operationId: operationId);
+      await tezart.monitorOperation(operationId);
     };
 
     group('when the key is not revealed', () {
@@ -67,7 +67,7 @@ void main() {
       test('it reveals the key', () async {
         final operationId = await subject(keystore);
 
-        await tezart.monitorOperation(operationId: operationId);
+        await tezart.monitorOperation(operationId);
         final isKeyRevealed = await tezart.isKeyRevealed(keystore.address);
 
         expect(isKeyRevealed, isTrue);
@@ -89,10 +89,7 @@ void main() {
   });
 
   group('#monitorOperation', () {
-    final subject = (String operationId) => tezart.monitorOperation(
-          operationId: operationId,
-          timeBetweenBlocks: Duration(seconds: 2),
-        );
+    final subject = (String operationId) => tezart.monitorOperation(operationId);
 
     group('when the operationId exists', () {
       test('it monitors the operation', () async {

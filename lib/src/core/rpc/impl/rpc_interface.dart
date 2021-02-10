@@ -11,6 +11,7 @@ class RpcInterface {
   static const randomSignature =
       'edsigu165B7VFf3Dpw2QABVzEtCxJY2gsNBNcE3Ti7rRxtDUjqTFRpg67EdAQmY6YWPE5tKJDMnSTJDFu65gic8uLjbW2YwGvAZ';
   final TezartHttpClient httpClient;
+  final Map<String, dynamic> _memo = {};
 
   RpcInterface({@required String host, String port = '80', String scheme = 'http'})
       : httpClient = TezartHttpClient(host: host, port: port, scheme: scheme);
@@ -96,15 +97,14 @@ class RpcInterface {
     return operationHashes;
   }
 
-  // TODO: handle timeout
   // TODO: wait for multiple blocks
   Future<void> monitorOperation({
     @required String operationId,
-    @required Duration timeBetweenBlocks,
     chain = 'main',
+    level = 'head',
   }) async {
     final startTime = DateTime.now();
-    final timeout = timeBetweenBlocks * 2;
+    final timeout = (await timeBetweenBlocks(chain, level)) * 2;
     final rs = await httpClient.getStream(paths.monitor(chain));
 
     await for (var value in rs.data.stream) {
@@ -120,5 +120,19 @@ class RpcInterface {
         );
       }
     }
+  }
+
+  Future<Map<String, dynamic>> constants([chain = 'main', level = 'head']) async {
+    final response = await httpClient.get(paths.constants(chain: chain, level: level));
+
+    return response.data as Map<String, dynamic>;
+  }
+
+  Future<Duration> timeBetweenBlocks([chain = 'main', level = 'head']) async {
+    return _memo['timeBetweenBlocks'] ??= () async {
+      final response = await constants(chain, level);
+
+      return Duration(seconds: int.parse(response['time_between_blocks'].first));
+    }();
   }
 }
