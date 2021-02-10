@@ -1,12 +1,11 @@
 import 'package:meta/meta.dart';
 import 'package:tezart/keystore.dart';
-import 'package:tezart/signature.dart';
-import 'package:tezart/src/core/rpc_interface/operation/operation.dart';
+import 'package:tezart/src/keystore/signature.dart';
 
-import 'package:tezart/src/core/rpc_interface/rpc_interface.dart';
-import 'package:tezart/src/exceptions/tezart_http_error.dart';
-import 'package:tezart/src/exceptions/tezart_node_error.dart';
-import 'package:tezart/exceptions.dart';
+import 'rpc_interface/operation/operation.dart';
+import 'rpc_interface/rpc_interface.dart';
+import 'rpc_interface/tezart_http_error.dart';
+import 'tezart_node_error.dart';
 
 class Tezart {
   final RpcInterface rpcInterface;

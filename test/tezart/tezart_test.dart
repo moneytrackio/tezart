@@ -1,7 +1,7 @@
 import 'package:test/test.dart';
 import 'package:tezart/keystore.dart';
-import 'package:tezart/exceptions.dart';
 import 'package:tezart/src/tezart/tezart.dart';
+import 'package:tezart/src/tezart/tezart_node_error.dart';
 
 import '../env/env.dart';
 

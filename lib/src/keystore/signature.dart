@@ -3,8 +3,8 @@ import 'dart:typed_data';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
-import 'package:tezart/keystore.dart';
-import 'package:tezart/crypto.dart' as crypto;
+import 'keystore.dart';
+import 'crypto.dart' as crypto;
 
 @immutable
 class Signature extends Equatable {

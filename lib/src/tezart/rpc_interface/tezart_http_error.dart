@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart' as http_client;
-import 'package:tezart/src/exceptions/tezart_exception.dart';
+import 'package:tezart/src/common/tezart_exception.dart';
 import 'package:tezart/src/utils/enum_util.dart';
 
 enum TezartHttpErrorTypes {

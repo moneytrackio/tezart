@@ -3,8 +3,8 @@ import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 
 // internal Library
-import 'package:tezart/crypto.dart' as crypto;
-import 'package:tezart/signature.dart';
+import 'signature.dart';
+import 'crypto.dart' as crypto;
 
 @immutable
 class Keystore extends Equatable {

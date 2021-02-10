@@ -1,8 +1,7 @@
-import 'package:meta/meta.dart';
-
-import 'tezart_http_error.dart';
-import 'tezart_exception.dart';
+import 'package:tezart/src/common/tezart_exception.dart';
 import 'package:tezart/src/utils/enum_util.dart';
+
+import 'rpc_interface/tezart_http_error.dart';
 
 enum TezartNodeErrorTypes {
   already_revealed_key,
@@ -10,20 +9,16 @@ enum TezartNodeErrorTypes {
 }
 
 class TezartNodeError extends TezartException {
-  final TezartHttpError error;
+  final TezartHttpError cause;
   final TezartNodeErrorTypes _inputType;
   final String _inputMessage;
 
   final staticErrorsMessages = {
-    TezartNodeErrorTypes.already_revealed_key: 'You\'re trying to reveal an already revealed key.',
+    TezartNodeErrorTypes.already_revealed_key: "You're trying to reveal an already revealed key.",
     TezartNodeErrorTypes.unhandled: 'Unhandled error',
   };
 
-  TezartNodeError({@required TezartNodeErrorTypes type, String message})
-      : _inputType = type,
-        _inputMessage = message,
-        error = null;
-  TezartNodeError.fromHttpError(this.error)
+  TezartNodeError.fromHttpError(this.cause)
       : _inputType = null,
         _inputMessage = null;
 
@@ -39,7 +34,7 @@ class TezartNodeError extends TezartException {
   }
 
   // TODO: what to do when there is multiple errors ?
-  String get errorId => error?.responseBody?.first['id'];
+  String get errorId => cause?.responseBody?.first['id'];
 
   @override
   String get key => EnumUtil.enumToString(type);
@@ -47,5 +42,5 @@ class TezartNodeError extends TezartException {
   String get _computedMessage => staticErrorsMessages[type];
 
   @override
-  TezartHttpError get originalException => error;
+  TezartHttpError get originalException => cause;
 }

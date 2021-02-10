@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart' as http_client;
 import 'package:meta/meta.dart';
-import 'package:tezart/src/exceptions/tezart_http_error.dart';
+
+import 'tezart_http_error.dart';
 
 class TezartHttpClient {
   http_client.Dio client;

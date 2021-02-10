@@ -1,6 +1,5 @@
 import 'package:test/test.dart';
-
-import 'package:tezart/src/exceptions/crypto_error.dart';
+import 'package:tezart/src/keystore/crypto/crypto_error.dart';
 
 void main() {
   final type = CryptoErrorTypes.prefixNotFound;

@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
-import 'package:tezart/crypto.dart';
-import '../utils/common.dart' as common;
+import 'package:tezart/src/keystore/crypto.dart';
+import '../../utils/common.dart' as common;
 import './utils/common.dart' as crypto_common;
 import 'expected_results/external_crypto_wrapper.dart' as expected_results;
 

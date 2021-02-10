@@ -4,7 +4,7 @@ import 'package:meta/meta.dart';
 import 'package:collection/collection.dart';
 import 'package:bs58check/bs58check.dart' as bs58check;
 
-import '../exceptions/crypto_error.dart';
+import 'crypto_error.dart';
 
 final _prefixes = {
   'tz1': Uint8List.fromList([6, 161, 159]),

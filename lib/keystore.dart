@@ -2,3 +2,4 @@
 library keystore;
 
 export 'src/keystore/keystore.dart';
+export 'src/keystore/crypto/crypto_error.dart';

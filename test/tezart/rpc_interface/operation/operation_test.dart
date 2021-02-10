@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
 import 'package:tezart/keystore.dart';
-import 'package:tezart/src/core/rpc_interface/operation/operation.dart';
+import 'package:tezart/src/tezart/rpc_interface/operation/operation.dart';
 import 'package:tezart/src/utils/enum_util.dart';
 
 void main() {
@@ -103,7 +103,7 @@ void main() {
           'gas_limit': gasLimit.toString(),
           'storage_limit': storageLimit.toString(),
           'parameters': parameters
-    });
+        });
 
     test('it sets all the fields correctly', () {
       final result = subject();

@@ -1,5 +1,5 @@
 import 'package:meta/meta.dart';
-import 'package:tezart/src/exceptions/tezart_exception.dart';
+import 'package:tezart/src/common/tezart_exception.dart';
 import 'package:tezart/src/utils/enum_util.dart';
 
 enum CryptoErrorTypes {
@@ -12,7 +12,7 @@ enum CryptoErrorTypes {
 class CryptoError extends TezartException {
   final CryptoErrorTypes _inputType;
   final String _inputMessage;
-  final dynamic error;
+  final dynamic cause;
 
   final staticErrorsMessages = {
     CryptoErrorTypes.prefixNotFound: 'Prefix not found',
@@ -20,7 +20,7 @@ class CryptoError extends TezartException {
     CryptoErrorTypes.unhandled: 'Unhandled error',
   };
 
-  CryptoError({@required CryptoErrorTypes type, String message, this.error})
+  CryptoError({@required CryptoErrorTypes type, String message, this.cause})
       : _inputType = type,
         _inputMessage = message;
 
@@ -35,5 +35,5 @@ class CryptoError extends TezartException {
   String get key => EnumUtil.enumToString(type);
 
   @override
-  dynamic get originalException => error;
+  dynamic get originalException => cause;
 }

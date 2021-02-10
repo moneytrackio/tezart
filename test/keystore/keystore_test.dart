@@ -2,7 +2,7 @@ import 'dart:typed_data';
 
 import 'package:test/test.dart';
 import 'package:tezart/keystore.dart';
-import 'package:tezart/signature.dart';
+import 'package:tezart/src/keystore/signature.dart';
 
 void main() {
   const mnemonic =
