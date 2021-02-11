@@ -81,7 +81,7 @@ lefthook install
 To ensure that your environment is ready for contribution, please run the following command at the root of the project: 
 
 ```sh
-./tezart.sh doctor
+./tezart doctor
 ```
 
 You can add an alias like this `alias tezart='./tezart'` to avoid  calling the command line with `./`
@@ -92,7 +92,7 @@ Following is a sample of a correct setup :
 
 ### Utility functions
 
-We provide some utility functions through `tezart.sh` to help you in your development process. 
+We provide some utility functions through `tezart` to help you in your development process. 
 
 Following is the output usage : 
 
