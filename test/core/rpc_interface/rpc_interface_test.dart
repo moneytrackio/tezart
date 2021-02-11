@@ -1,8 +1,8 @@
 import 'package:test/test.dart';
-
-import 'package:tezart/env/env.dart';
 import 'package:tezart/keystore.dart';
 import 'package:tezart/src/core/rpc_interface/rpc_interface.dart';
+
+import '../../env/env.dart';
 
 void main() {
   final rpcInterface = RpcInterface(host: Env.tezosNodeHost, port: Env.tezosNodePort, scheme: Env.tezosNodeScheme);
