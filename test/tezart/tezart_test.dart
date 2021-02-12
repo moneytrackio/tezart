@@ -1,7 +1,8 @@
 import 'package:test/test.dart';
-import 'package:tezart/env/env.dart';
 import 'package:tezart/keystore.dart';
 import 'package:tezart/src/tezart/tezart.dart';
+
+import '../env/env.dart';
 
 void main() {
   final tezart = Tezart(host: Env.tezosNodeHost, port: Env.tezosNodePort, scheme: Env.tezosNodeScheme);
