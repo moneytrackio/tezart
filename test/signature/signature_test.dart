@@ -1,10 +1,10 @@
 import 'dart:typed_data';
 
 import 'package:test/test.dart';
-import 'package:tezart/keystore.dart';
-import 'package:tezart/signature.dart';
+import 'package:tezart/src/signature/signature.dart';
+import 'package:tezart/tezart.dart';
 
-import 'expected_results/signature.dart' as expected_results;
+import './expected_results/signature.dart' as expected_results;
 
 void main() {
   final keystore = Keystore.fromSecretKey('edsk3RR5U7JsUJ8ctjsuymUPayxMm4LHXaB7VJSfeyMb8fAvbJUnsa');

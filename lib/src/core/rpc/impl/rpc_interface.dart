@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:meta/meta.dart';
+import 'package:tezart/src/models/operation/operation.dart';
 
-import 'operation/operation.dart';
 import 'tezart_http_client.dart';
 import 'rpc_interface_paths.dart' as paths;
 
@@ -72,6 +72,12 @@ class RpcInterface {
     var response = await httpClient.post(paths.runOperations(chain: chain, level: level), data: content);
 
     return response.data['contents'];
+  }
+
+  Future<String> managerKey(String address, [chain = 'main', level = 'head']) async {
+    var response = await httpClient.get(paths.managerKey(address: address, chain: chain, level: level));
+
+    return response.data;
   }
 
   Future<int> balance(String address, [chain = 'main', level = 'head']) async {

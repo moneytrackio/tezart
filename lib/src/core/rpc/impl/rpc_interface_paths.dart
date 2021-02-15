@@ -21,5 +21,8 @@ final injectOperation = (String chain) => 'injection/operation?chain=$chain';
 final balance = ({@required String chain, @required String level, @required String address}) =>
     '${_levelPath(chain: chain, level: level)}/context/contracts/$address';
 
+final managerKey = ({@required String chain, @required String level, @required String address}) =>
+    '${_levelPath(chain: chain, level: level)}/context/contracts/$address/manager_key';
+
 final _chainPath = (String chain) => 'chains/$chain';
 final _levelPath = ({@required String level, @required String chain}) => '${_chainPath(chain)}/blocks/$level';

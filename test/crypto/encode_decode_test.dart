@@ -1,10 +1,8 @@
 import 'dart:typed_data';
 
 import 'package:test/test.dart';
-import 'package:tezart/crypto.dart' as crypto;
-import 'package:tezart/src/crypto/exception.dart';
-import '../utils/common.dart';
-import './utils/common.dart' as crypto_common;
+import 'package:tezart/src/crypto/crypto.dart' as crypto;
+import 'utils/common.dart' as crypto_common;
 import 'expected_results/encode_decode.dart' as expected_results;
 
 void main() {
@@ -18,7 +16,7 @@ void main() {
 
     test('encodes throw error', () {
       expect(() => crypto.encodeTz(prefix: null, bytes: expected_results.decodedAddress),
-          throwsA(predicate((e) => e is CryptoError)));
+          throwsA(predicate((e) => e is crypto.CryptoError && e.type == crypto.CryptoErrorTypes.prefixNotFound)));
     });
   });
 
@@ -30,11 +28,13 @@ void main() {
   });
 
   test('.ignorePrefix throw error', () {
-    expect(() => crypto.ignorePrefix(crypto_common.fakeUint8List()), throwsA(predicate((e) => e is CryptoError)));
+    expect(() => crypto.ignorePrefix(crypto_common.fakeUint8List()),
+        throwsA(predicate((e) => e is crypto.CryptoError && e.type == crypto.CryptoErrorTypes.unknownPrefix)));
   });
 
   test('.hexPrefix throw error', () {
-    expect(() => crypto.hexPrefix(''), throwsA(predicate((e) => e is CryptoError)));
+    expect(() => crypto.hexPrefix(''),
+        throwsA(predicate((e) => e is crypto.CryptoError && e.type == crypto.CryptoErrorTypes.prefixNotFound)));
   });
 
   test('.hexDecode', () {
@@ -42,7 +42,7 @@ void main() {
     final expectedResult = [18, 52, 103, 137, 171, 205, 239];
     final result = crypto.hexDecode(encodedString);
 
-    expect(listEquals(result, expectedResult), true);
+    expect(result, equals(expectedResult));
   });
 
   test('.hexEncode', () {

@@ -4,7 +4,7 @@ import 'package:meta/meta.dart';
 import 'package:collection/collection.dart';
 import 'package:bs58check/bs58check.dart' as bs58check;
 
-import 'exception.dart';
+import 'crypto_error.dart';
 
 final _prefixes = {
   'tz1': Uint8List.fromList([6, 161, 159]),
@@ -43,7 +43,7 @@ String hexEncode(Uint8List input) => hex.encode(input.toList());
 Uint8List hexPrefix(String prefix) {
   final value = _prefixes[prefix];
   if (value == null) {
-    throw CryptoError(errorCode: 1, message: 'prefix not found');
+    throw CryptoError(type: CryptoErrorTypes.prefixNotFound);
   }
 
   return _prefixes[prefix];
@@ -58,7 +58,7 @@ Uint8List ignorePrefix(Uint8List bytes) {
       return bytes.sublist(value.length);
     }
   }
-  throw CryptoError(errorCode: 2, message: "Can\'t ignore an unknown prefix");
+  throw CryptoError(type: CryptoErrorTypes.unknownPrefix);
 }
 
 String encodeTz({@required String prefix, @required Uint8List bytes}) {

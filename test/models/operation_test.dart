@@ -1,7 +1,7 @@
 import 'package:test/test.dart';
-import 'package:tezart/keystore.dart';
-import 'package:tezart/src/core/rpc_interface/operation/operation.dart';
-import 'package:tezart/src/utils/enum_util.dart';
+import 'package:tezart/src/common/utils/enum_util.dart';
+import 'package:tezart/src/models/operation/operation.dart';
+import 'package:tezart/tezart.dart';
 
 void main() {
   const kind = Kinds.generic;
@@ -103,7 +103,7 @@ void main() {
           'gas_limit': gasLimit.toString(),
           'storage_limit': storageLimit.toString(),
           'parameters': parameters
-    });
+        });
 
     test('it sets all the fields correctly', () {
       final result = subject();
