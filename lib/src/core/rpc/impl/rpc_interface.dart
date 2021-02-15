@@ -104,7 +104,7 @@ class RpcInterface {
     level = 'head',
   }) async {
     final startTime = DateTime.now();
-    final timeout = (await timeBetweenBlocks(chain, level)) * 2;
+    final timeout = (await timeBetweenBlocks(chain, level)) * 3;
     final rs = await httpClient.getStream(paths.monitor(chain));
 
     await for (var value in rs.data.stream) {
