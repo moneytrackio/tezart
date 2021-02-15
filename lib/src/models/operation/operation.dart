@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:tezart/src/utils/enum_util.dart';
+import 'package:tezart/src/common/utils/enum_util.dart';
 
 import 'constants.dart';
 

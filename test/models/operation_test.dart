@@ -1,7 +1,7 @@
 import 'package:test/test.dart';
-import 'package:tezart/keystore.dart';
-import 'package:tezart/src/tezart/rpc_interface/operation/operation.dart';
-import 'package:tezart/src/utils/enum_util.dart';
+import 'package:tezart/src/common/utils/enum_util.dart';
+import 'package:tezart/src/models/operation/operation.dart';
+import 'package:tezart/tezart.dart';
 
 void main() {
   const kind = Kinds.generic;

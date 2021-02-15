@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:meta/meta.dart';
+import 'package:tezart/src/models/operation/operation.dart';
 
-import 'operation/operation.dart';
 import 'tezart_http_client.dart';
 import 'rpc_interface_paths.dart' as paths;
 

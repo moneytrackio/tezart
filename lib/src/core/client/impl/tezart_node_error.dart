@@ -1,14 +1,13 @@
-import 'package:tezart/src/common/tezart_exception.dart';
-import 'package:tezart/src/utils/enum_util.dart';
-
-import 'rpc_interface/tezart_http_error.dart';
+import 'package:tezart/src/common/exceptions/common_exception.dart';
+import 'package:tezart/src/common/utils/enum_util.dart';
+import 'package:tezart/src/core/rpc/rpc_interface.dart';
 
 enum TezartNodeErrorTypes {
   already_revealed_key,
   unhandled,
 }
 
-class TezartNodeError extends TezartException {
+class TezartNodeError extends CommonException {
   final TezartHttpError cause;
   final TezartNodeErrorTypes _inputType;
   final String _inputMessage;

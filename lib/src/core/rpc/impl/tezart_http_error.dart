@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart' as http_client;
-import 'package:tezart/src/common/tezart_exception.dart';
-import 'package:tezart/src/utils/enum_util.dart';
+import 'package:tezart/src/common/exceptions/common_exception.dart';
+import 'package:tezart/src/common/utils/enum_util.dart';
 
 enum TezartHttpErrorTypes {
   connectTimeout,
@@ -12,7 +12,7 @@ enum TezartHttpErrorTypes {
 
 // Wrapper around DioError
 // complete missing methods if needed
-class TezartHttpError extends TezartException {
+class TezartHttpError extends CommonException {
   final http_client.DioError clientError;
   final staticErrorsMessages = {
     TezartHttpErrorTypes.connectTimeout: 'Opening connection timed out',

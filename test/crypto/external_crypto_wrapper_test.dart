@@ -1,7 +1,6 @@
 import 'package:test/test.dart';
-import 'package:tezart/src/keystore/crypto.dart';
-import '../../utils/common.dart' as common;
-import './utils/common.dart' as crypto_common;
+import 'package:tezart/src/crypto/crypto.dart';
+import 'utils/common.dart' as crypto_common;
 import 'expected_results/external_crypto_wrapper.dart' as expected_results;
 
 void main() {
@@ -11,7 +10,7 @@ void main() {
   group('.secretKeyBytesFromMnemonic', () {
     test('returns valid SigningKey', () {
       final secretKeyBytes = secretKeyBytesFromMnemonic(mnemonic);
-      expect(common.listEquals(secretKeyBytes, expected_results.secretKeyFromMnemonic), true);
+      expect(secretKeyBytes, equals(expected_results.secretKeyFromMnemonic));
     });
   });
 
@@ -19,7 +18,7 @@ void main() {
     test('returns valid secret key', () {
       final secretKeyBytes = secretKeyBytesFromSeed(crypto_common.fakeUint8List());
 
-      expect(common.listEquals(secretKeyBytes, expected_results.secretKeyBytesFromSeed), true);
+      expect(secretKeyBytes, equals(expected_results.secretKeyBytesFromSeed));
     });
   });
 
@@ -30,7 +29,7 @@ void main() {
       final bytes = crypto_common.fakeUint8List();
       final sig = signDetached(bytes: bytes, secretKey: secretKey);
 
-      expect(common.listEquals(sig, expected_results.signatureBytes), true);
+      expect(sig, equals(expected_results.signatureBytes));
     });
   });
 }

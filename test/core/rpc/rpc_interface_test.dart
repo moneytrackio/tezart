@@ -1,6 +1,7 @@
 import 'package:test/test.dart';
-import 'package:tezart/keystore.dart';
-import 'package:tezart/src/tezart/rpc_interface/rpc_interface.dart';
+
+import 'package:tezart/src/core/rpc/rpc_interface.dart';
+import 'package:tezart/src/keystore/keystore.dart';
 
 import '../../env/env.dart';
 

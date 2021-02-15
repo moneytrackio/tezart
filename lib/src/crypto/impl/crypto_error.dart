@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
-import 'package:tezart/src/common/tezart_exception.dart';
-import 'package:tezart/src/utils/enum_util.dart';
+import 'package:tezart/src/common/exceptions/common_exception.dart';
+import 'package:tezart/src/common/utils/enum_util.dart';
 
 enum CryptoErrorTypes {
   prefixNotFound,
@@ -9,7 +9,7 @@ enum CryptoErrorTypes {
 }
 
 /// Exception thrown when an error occurs during crypto operation.
-class CryptoError extends TezartException {
+class CryptoError extends CommonException {
   final CryptoErrorTypes _inputType;
   final String _inputMessage;
   final dynamic cause;

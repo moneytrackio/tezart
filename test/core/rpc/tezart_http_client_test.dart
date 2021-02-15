@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:tezart/src/tezart/rpc_interface/tezart_http_client.dart';
+import 'package:tezart/src/core/rpc/impl/tezart_http_client.dart';
 
 void main() {
   group('#baseUrl()', () {

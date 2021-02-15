@@ -1,4 +1,4 @@
 library tezart;
 
-export 'src/tezart/tezart.dart';
-export 'src/tezart/tezart_node_error.dart';
+export 'src/keystore/keystore.dart';
+export 'src/core/client/tezart_client.dart';

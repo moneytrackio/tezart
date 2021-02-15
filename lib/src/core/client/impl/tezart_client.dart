@@ -1,16 +1,15 @@
 import 'package:meta/meta.dart';
-import 'package:tezart/keystore.dart';
-import 'package:tezart/src/keystore/signature.dart';
+import 'package:tezart/src/core/rpc/rpc_interface.dart';
+import 'package:tezart/src/keystore/keystore.dart';
+import 'package:tezart/src/models/operation/operation.dart';
+import 'package:tezart/src/signature/signature.dart';
 
-import 'rpc_interface/operation/operation.dart';
-import 'rpc_interface/rpc_interface.dart';
-import 'rpc_interface/tezart_http_error.dart';
 import 'tezart_node_error.dart';
 
-class Tezart {
+class TezartClient {
   final RpcInterface rpcInterface;
 
-  Tezart({@required String host, String port = '80', String scheme = 'http'})
+  TezartClient({@required String host, String port = '80', String scheme = 'http'})
       : rpcInterface = RpcInterface(host: host, port: port, scheme: scheme);
 
   Future<String> transfer({

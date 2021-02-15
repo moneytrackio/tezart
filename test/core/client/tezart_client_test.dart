@@ -1,12 +1,10 @@
 import 'package:test/test.dart';
-import 'package:tezart/keystore.dart';
-import 'package:tezart/src/tezart/tezart.dart';
-import 'package:tezart/src/tezart/tezart_node_error.dart';
+import 'package:tezart/tezart.dart';
 
-import '../env/env.dart';
+import '../../env/env.dart';
 
 void main() {
-  final tezart = Tezart(host: Env.tezosNodeHost, port: Env.tezosNodePort, scheme: Env.tezosNodeScheme);
+  final tezart = TezartClient(host: Env.tezosNodeHost, port: Env.tezosNodePort, scheme: Env.tezosNodeScheme);
   final originatorKeystore = Keystore.fromSecretKey(Env.originatorSk);
 
   group('#transfer', () {
