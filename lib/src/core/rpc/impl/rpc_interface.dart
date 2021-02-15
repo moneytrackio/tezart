@@ -112,13 +112,13 @@ class RpcInterface {
       final operationHashesList = await operationHashes(blockHash);
       final currentTime = DateTime.now();
 
-      if (operationHashesList.contains(operationId)) return;
       if (currentTime.difference(startTime) > timeout) {
         throw TezartNodeError(
           type: TezartNodeErrorTypes.monitoring_timed_out,
           metadata: {'operationId': operationId},
         );
       }
+      if (operationHashesList.contains(operationId)) return;
     }
   }
 
