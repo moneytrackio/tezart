@@ -123,9 +123,11 @@ class RpcInterface {
   }
 
   Future<Map<String, dynamic>> constants([chain = 'main', level = 'head']) async {
-    final response = await httpClient.get(paths.constants(chain: chain, level: level));
+    return _memo['constants'] ??= () async {
+      final response = await httpClient.get(paths.constants(chain: chain, level: level));
 
-    return response.data as Map<String, dynamic>;
+      return response.data as Map<String, dynamic>;
+    }();
   }
 
   Future<Duration> timeBetweenBlocks([chain = 'main', level = 'head']) async {
