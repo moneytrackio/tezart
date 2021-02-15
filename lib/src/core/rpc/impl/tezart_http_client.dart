@@ -12,7 +12,7 @@ class TezartHttpClient {
     client = http_client.Dio(options);
   }
 
-  String get baseUrl => '$scheme://$host${(port != null && port.isEmpty) ? '' : ':' + port}/';
+  String get baseUrl => '$scheme://$host${(port != null && port.isEmpty) ? '' : ':$port'}/';
 
   Future<http_client.Response> post(String path, {dynamic data}) {
     return _handleClientError(() => client.post(path, data: data));
