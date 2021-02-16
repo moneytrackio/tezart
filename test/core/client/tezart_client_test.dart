@@ -1,3 +1,5 @@
+@Timeout(Duration(seconds: 60))
+
 import 'package:test/test.dart';
 import 'package:tezart/tezart.dart';
 
@@ -8,16 +10,18 @@ void main() {
   final originatorKeystore = Keystore.fromSecretKey(Env.originatorSk);
 
   group('#transfer', () {
+    final subject = (Keystore source, String destination, int amount) =>
+        tezart.transfer(source: source, destination: destination, amount: amount);
+
     final source = originatorKeystore;
-    final destination = Keystore.random();
+    final destination = Keystore.random().address;
     final amount = 1;
-    final subject = () => tezart.transfer(source: source, destination: destination.address, amount: amount);
 
     test('it transfers the amount from source to destination', () async {
-      var beforeTransferBalance = await tezart.getBalance(address: destination.address);
-      final operationId = await subject();
+      var beforeTransferBalance = await tezart.getBalance(address: destination);
+      final operationId = await subject(source, destination, amount);
       await tezart.monitorOperation(operationId);
-      final afterTransferBalance = await tezart.getBalance(address: destination.address);
+      final afterTransferBalance = await tezart.getBalance(address: destination);
 
       expect(afterTransferBalance - beforeTransferBalance, equals(amount));
       expect(RegExp(r'^o\w+$').hasMatch(operationId), true);
@@ -62,7 +66,9 @@ void main() {
     group('when the key is not revealed', () {
       final keystore = Keystore.random();
 
-      setUp(() => transferToDest(keystore));
+      setUp(() async {
+        await transferToDest(keystore);
+      });
 
       test('it reveals the key', () async {
         final operationId = await subject(keystore);
@@ -77,13 +83,11 @@ void main() {
     group('when the key is already revealed', () {
       final keystore = originatorKeystore;
 
-      setUp(() => transferToDest(keystore));
-
       test('throws an error', () async {
         expect(
             subject(keystore),
             throwsA(predicate(
-                (e) => e is TezartNodeError && e.message == 'You\'re trying to reveal an already revealed key.')));
+                (e) => e is TezartNodeError && e.message == "You're trying to reveal an already revealed key.")));
       });
     });
   });
@@ -102,12 +106,10 @@ void main() {
           destination: destination.address,
           amount: amount,
         );
-        final balanceAfterTransfer = await getBalance();
         await subject(operationId);
         final balanceAfterMonitoring = await getBalance();
 
-        expect(balanceBeforeTransfer, equals(balanceAfterTransfer));
-        expect(balanceAfterMonitoring, lessThan(balanceAfterTransfer));
+        expect(balanceAfterMonitoring, lessThan(balanceBeforeTransfer));
       });
     });
 
@@ -117,7 +119,7 @@ void main() {
         expect(
             () => subject(operationId),
             throwsA(predicate(
-                (e) => e is TezartNodeError && e.message == 'Monitoring the operation $operationId timedout')));
+                (e) => e is TezartNodeError && e.message == 'Monitoring the operation $operationId timed out')));
       });
     });
   });

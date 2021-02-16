@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:meta/meta.dart';
 import 'package:tezart/src/core/client/tezart_client.dart';
@@ -11,7 +12,6 @@ class RpcInterface {
   static const randomSignature =
       'edsigu165B7VFf3Dpw2QABVzEtCxJY2gsNBNcE3Ti7rRxtDUjqTFRpg67EdAQmY6YWPE5tKJDMnSTJDFu65gic8uLjbW2YwGvAZ';
   final TezartHttpClient httpClient;
-  final Map<String, dynamic> _memo = {};
 
   RpcInterface({@required String host, String port = '80', String scheme = 'http'})
       : httpClient = TezartHttpClient(host: host, port: port, scheme: scheme);
@@ -89,8 +89,16 @@ class RpcInterface {
     return int.parse(response.data['balance']);
   }
 
-  Future<List<String>> operationHashes(String level, [chain = 'main']) async {
-    final response = await httpClient.get(paths.operationHashes(chain: chain, level: level));
+// TODO: only third element
+  Future<List<String>> operationHashes({
+    @required String level,
+    int offset = 0,
+    chain = 'main',
+  }) async {
+    final response = await httpClient.get(paths.operationHashes(
+      chain: chain,
+      level: level,
+    ));
     final unflattenedData = response.data as List;
     final operationHashes = ListUtils.flatten<String>(unflattenedData);
 
@@ -98,43 +106,72 @@ class RpcInterface {
   }
 
   // TODO: wait for multiple blocks
-  Future<void> monitorOperation({
+  Future<String> monitorOperation({
     @required String operationId,
     chain = 'main',
     level = 'head',
   }) async {
-    final startTime = DateTime.now();
-    final timeout = (await timeBetweenBlocks(chain, level)) * 3;
+    // TODO: compute timeout based on time between blocks (problem in the CI when the blockchain just started)
+    const timeoutBetweenChunks = Duration(minutes: 3);
+    const nbOfBlocksToWait = 2;
+
+    final predHash = await _predecessorHash(chain: chain, level: level);
+    final isOpIdIncludedInPredBlock = await _isOperationIdIncludedInBlock(
+      blockHash: predHash,
+      operationId: operationId,
+    );
+    if (isOpIdIncludedInPredBlock) return predHash;
+
     final rs = await httpClient.getStream(paths.monitor(chain));
+    await for (var value in rs.data.stream.timeout(timeoutBetweenChunks).take(nbOfBlocksToWait)) {
+      final decodedValue = json.decode(String.fromCharCodes(value));
+      final headBlockHash = decodedValue['hash'];
+      final isOpIdIncludedInBlock = await _isOperationIdIncludedInBlock(
+        blockHash: headBlockHash,
+        operationId: operationId,
+      );
 
-    await for (var value in rs.data.stream) {
-      final blockHash = json.decode(String.fromCharCodes(value))['hash'];
-      final operationHashesList = await operationHashes(blockHash);
-      final currentTime = DateTime.now();
-
-      if (currentTime.difference(startTime) > timeout) {
-        throw TezartNodeError(
-          type: TezartNodeErrorTypes.monitoring_timed_out,
-          metadata: {'operationId': operationId},
-        );
-      }
-      if (operationHashesList.contains(operationId)) return;
+      if (isOpIdIncludedInBlock) return headBlockHash;
     }
+
+    throw TezartNodeError(
+      type: TezartNodeErrorTypes.monitoring_timed_out,
+      metadata: {'operationId': operationId},
+    );
   }
 
-  Future<Map<String, dynamic>> constants([chain = 'main', level = 'head']) async {
-    return _memo['constants'] ??= () async {
-      final response = await httpClient.get(paths.constants(chain: chain, level: level));
+  Future<bool> _isOperationIdIncludedInBlock({@required String blockHash, @required String operationId}) async {
+    final operationHashesList = await operationHashes(level: blockHash);
 
-      return response.data as Map<String, dynamic>;
-    }();
+    return operationHashesList.contains(operationId);
   }
 
-  Future<Duration> timeBetweenBlocks([chain = 'main', level = 'head']) async {
-    return _memo['timeBetweenBlocks'] ??= () async {
-      final response = await constants(chain, level);
+  Future<String> _predecessorHash({@required String chain, @required String level}) async {
+    final block = await _block(chain: chain, level: level);
 
-      return Duration(seconds: int.parse(response['time_between_blocks'].first));
-    }();
+    return block['header']['predecessor'] as String;
   }
+
+  Future<Map<String, dynamic>> _block({@required String chain, @required String level}) async {
+    final response = await httpClient.get(paths.block(chain: chain, level: level));
+
+    return response.data;
+  }
+
+  // Don't delete this, might be useful to compute monitoring timeout
+  // Future<Map<String, dynamic>> _constants([chain = 'main', level = 'head']) async {
+  //   return _memo['constants'] ??= () async {
+  //     final response = await httpClient.get(paths.constants(chain: chain, level: level));
+
+  //     return response.data as Map<String, dynamic>;
+  //   }();
+  // }
+
+  // Future<Duration> _timeBetweenBlocks([chain = 'main', level = 'head']) async {
+  //   return _memo['_timeBetweenBlocks'] ??= () async {
+  //     final response = await constants(chain, level);
+
+  //     return Duration(seconds: int.parse(response['time_between_blocks'].first));
+  //   }();
+  // }
 }
