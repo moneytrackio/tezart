@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:meta/meta.dart';
-import 'package:tezart/src/core/client/tezart_client.dart';
+import 'package:tezart/src/core/rpc/impl/operations_monitor.dart';
 import 'package:tezart/src/models/operation/operation.dart';
 import 'package:tezart/src/common/utils/list_utils.dart';
 
@@ -12,6 +12,7 @@ class RpcInterface {
   static const randomSignature =
       'edsigu165B7VFf3Dpw2QABVzEtCxJY2gsNBNcE3Ti7rRxtDUjqTFRpg67EdAQmY6YWPE5tKJDMnSTJDFu65gic8uLjbW2YwGvAZ';
   final TezartHttpClient httpClient;
+  final Map<String, dynamic> memo = {};
 
   RpcInterface({@required String host, String port = '80', String scheme = 'http'})
       : httpClient = TezartHttpClient(host: host, port: port, scheme: scheme);
@@ -111,67 +112,14 @@ class RpcInterface {
     chain = 'main',
     level = 'head',
   }) async {
-    // TODO: compute timeout based on time between blocks (problem in the CI when the blockchain just started)
-    const timeoutBetweenChunks = Duration(minutes: 3);
-    const nbOfBlocksToWait = 2;
-
-    final predHash = await _predecessorHash(chain: chain, level: level);
-    final isOpIdIncludedInPredBlock = await _isOperationIdIncludedInBlock(
-      blockHash: predHash,
-      operationId: operationId,
-    );
-    if (isOpIdIncludedInPredBlock) return predHash;
-
-    final rs = await httpClient.getStream(paths.monitor(chain));
-    await for (var value in rs.data.stream.timeout(timeoutBetweenChunks).take(nbOfBlocksToWait)) {
-      final decodedValue = json.decode(String.fromCharCodes(value));
-      final headBlockHash = decodedValue['hash'];
-      final isOpIdIncludedInBlock = await _isOperationIdIncludedInBlock(
-        blockHash: headBlockHash,
-        operationId: operationId,
-      );
-
-      if (isOpIdIncludedInBlock) return headBlockHash;
-    }
-
-    throw TezartNodeError(
-      type: TezartNodeErrorTypes.monitoring_timed_out,
-      metadata: {'operationId': operationId},
-    );
+    return operationsMonitor.monitor(chain: chain, level: level, operationId: operationId);
   }
 
-  Future<bool> _isOperationIdIncludedInBlock({@required String blockHash, @required String operationId}) async {
-    final operationHashesList = await operationHashes(level: blockHash);
+  OperationsMonitor get operationsMonitor => memo['operationsMonitor'] ??= OperationsMonitor(this);
 
-    return operationHashesList.contains(operationId);
-  }
-
-  Future<String> _predecessorHash({@required String chain, @required String level}) async {
-    final block = await _block(chain: chain, level: level);
-
-    return block['header']['predecessor'] as String;
-  }
-
-  Future<Map<String, dynamic>> _block({@required String chain, @required String level}) async {
+  Future<Map<String, dynamic>> block({@required String chain, @required String level}) async {
     final response = await httpClient.get(paths.block(chain: chain, level: level));
 
     return response.data;
   }
-
-  // Don't delete this, might be useful to compute monitoring timeout
-  // Future<Map<String, dynamic>> _constants([chain = 'main', level = 'head']) async {
-  //   return _memo['constants'] ??= () async {
-  //     final response = await httpClient.get(paths.constants(chain: chain, level: level));
-
-  //     return response.data as Map<String, dynamic>;
-  //   }();
-  // }
-
-  // Future<Duration> _timeBetweenBlocks([chain = 'main', level = 'head']) async {
-  //   return _memo['_timeBetweenBlocks'] ??= () async {
-  //     final response = await constants(chain, level);
-
-  //     return Duration(seconds: int.parse(response['time_between_blocks'].first));
-  //   }();
-  // }
 }
