@@ -52,7 +52,7 @@ class OperationsMonitor {
   }
 
   Future<bool> _isOperationIdIncludedInBlock({@required String blockHash, @required String operationId}) async {
-    final operationHashesList = await rpcInterface.operationHashes(level: blockHash);
+    final operationHashesList = await rpcInterface.transactionsOperationHashes(level: blockHash);
 
     return operationHashesList.contains(operationId);
   }

@@ -29,8 +29,9 @@ final monitor = (String chain) => 'monitor/heads/$chain';
 final operationHashes = ({
   @required String chain,
   @required String level,
+  int offset,
 }) =>
-    '${_levelPath(chain: chain, level: level)}/operation_hashes/';
+    '${_levelPath(chain: chain, level: level)}/operation_hashes/${offset ?? ''}';
 
 final constants =
     ({@required String chain, @required String level}) => '${_levelPath(chain: chain, level: level)}/context/constants';

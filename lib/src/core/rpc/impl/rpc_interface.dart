@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:meta/meta.dart';
 import 'package:tezart/src/core/rpc/impl/operations_monitor.dart';
 import 'package:tezart/src/models/operation/operation.dart';
-import 'package:tezart/src/common/utils/list_utils.dart';
 
 import 'tezart_http_client.dart';
 import 'rpc_interface_paths.dart' as paths;
@@ -90,20 +89,16 @@ class RpcInterface {
     return int.parse(response.data['balance']);
   }
 
-// TODO: only third element
-  Future<List<String>> operationHashes({
+  Future<List<String>> transactionsOperationHashes({
     @required String level,
-    int offset = 0,
     chain = 'main',
   }) async {
     final response = await httpClient.get(paths.operationHashes(
       chain: chain,
       level: level,
+      offset: 3,
     ));
-    final unflattenedData = response.data as List;
-    final operationHashes = ListUtils.flatten<String>(unflattenedData);
-
-    return operationHashes;
+    return response.data.cast<String>().toList();
   }
 
   // TODO: wait for multiple blocks
