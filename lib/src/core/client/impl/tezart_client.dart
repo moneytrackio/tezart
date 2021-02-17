@@ -19,7 +19,7 @@ class TezartClient {
     @required int amount,
   }) async {
     return _retryOnCounterError(() async {
-      try {
+      return _catchHttpError<String>(() async {
         final counter = await rpcInterface.counter(source.address) + 1;
         final operation = TransactionOperation(
           amount: amount,
@@ -37,16 +37,14 @@ class TezartClient {
           watermark: 'generic',
         ).hex;
 
-        return await rpcInterface.injectOperation(signedOperationHex);
-      } on TezartHttpError catch (e) {
-        throw TezartNodeError.fromHttpError(e);
-      }
+        return rpcInterface.injectOperation(signedOperationHex);
+      });
     });
   }
 
   Future<String> revealKey(Keystore source) async {
     return _retryOnCounterError(() async {
-      try {
+      return _catchHttpError<String>(() async {
         final counter = await rpcInterface.counter(source.address) + 1;
         final operation =
             Operation(kind: Kinds.reveal, source: source.address, counter: counter, publicKey: source.publicKey);
@@ -57,9 +55,7 @@ class TezartClient {
         final signedOperationHex = Signature.fromHex(data: forgedOperation, keystore: source, watermark: 'generic').hex;
 
         return rpcInterface.injectOperation(signedOperationHex);
-      } on TezartHttpError catch (e) {
-        throw TezartNodeError.fromHttpError(e);
-      }
+      });
     });
   }
 
@@ -77,5 +73,13 @@ class TezartClient {
       func,
       retryIf: (e) => e is TezartNodeError && e.type == TezartNodeErrorTypes.counter_error,
     );
+  }
+
+  Future<T> _catchHttpError<T>(Function func) async {
+    try {
+      return await func();
+    } on TezartHttpError catch (e) {
+      throw TezartNodeError.fromHttpError(e);
+    }
   }
 }
