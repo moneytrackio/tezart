@@ -69,7 +69,8 @@ class TezartClient {
   Future<void> monitorOperation(String operationId) => rpcInterface.monitorOperation(operationId: operationId);
 
   Future<T> _retryOnCounterError<T>(func) {
-    return retry(
+    final r = RetryOptions(maxAttempts: 3);
+    return r.retry(
       func,
       retryIf: (e) => e is TezartNodeError && e.type == TezartNodeErrorTypes.counter_error,
     );
