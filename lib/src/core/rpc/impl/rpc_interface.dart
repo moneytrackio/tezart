@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:memoize/memoize.dart';
 import 'package:meta/meta.dart';
 import 'package:tezart/src/core/rpc/impl/operations_monitor.dart';
 import 'package:tezart/src/models/operation/operation.dart';
@@ -11,7 +12,6 @@ class RpcInterface {
   static const randomSignature =
       'edsigu165B7VFf3Dpw2QABVzEtCxJY2gsNBNcE3Ti7rRxtDUjqTFRpg67EdAQmY6YWPE5tKJDMnSTJDFu65gic8uLjbW2YwGvAZ';
   final TezartHttpClient httpClient;
-  final Map<String, dynamic> memo = {};
 
   RpcInterface({@required String host, String port = '80', String scheme = 'http'})
       : httpClient = TezartHttpClient(host: host, port: port, scheme: scheme);
@@ -110,7 +110,7 @@ class RpcInterface {
     return operationsMonitor.monitor(chain: chain, level: level, operationId: operationId);
   }
 
-  OperationsMonitor get operationsMonitor => memo['operationsMonitor'] ??= OperationsMonitor(this);
+  OperationsMonitor get operationsMonitor => memo0(() => OperationsMonitor(this))();
 
   Future<Map<String, dynamic>> block({@required String chain, @required String level}) async {
     final response = await httpClient.get(paths.block(chain: chain, level: level));
