@@ -90,7 +90,7 @@ You can add an alias like this `alias tezart='./tezart'` to avoid  calling the c
  
 Following is a sample of a correct setup :
 
-![a-sample-setup](./doc/img/a-sample-correct-setup.png)
+<img src="https://github.com/moneytrackio/tezart/blob/main/docs/img/a-sample-correct-setup.png?raw=true"></img>
 
 ### Utility functions
 
@@ -98,7 +98,7 @@ We provide some utility functions through `tezart` to help you in your developme
 
 Following is the output usage : 
 
-![a-current-usage](./doc/img/a-current-usage.png)
+<img src="https://github.com/moneytrackio/tezart/blob/main/docs/img/a-current-usage.png?raw=true"></img>
 
 ## Feature requests and bugs 
 
