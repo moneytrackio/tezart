@@ -22,6 +22,7 @@ dependencies:
   equatable: ^1.2.5
   pinenacl: 0.1.5 # Dart implementation of TweetNacl
   json_serializable: ^3.5.1 # code generation for toJson and fromJson methods
+  logging: ^0.11.4 # official dart team : Provides APIs for debugging and error logging. 
 
 dev_dependencies:
   pedantic: ^1.9.0 # linter
