@@ -1,9 +1,9 @@
 import 'package:test/test.dart';
-import 'package:tezart/src/common/utils/list_utils.dart';
+import 'package:tezart/src/common/utils/list_extension.dart';
 
 void main() {
   group('.flatten', () {
-    final subject = (List arr) => ListUtils.flatten<int>(arr);
+    final subject = (List arr) => arr.flatten<int>();
 
     group('when the array is already flattened', () {
       final arr = [1, 2, 3];
