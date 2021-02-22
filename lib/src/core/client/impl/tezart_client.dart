@@ -46,13 +46,21 @@ class TezartClient {
     return _retryOnCounterError(() async {
       return _catchHttpError<String>(() async {
         final counter = await rpcInterface.counter(source.address) + 1;
-        final operation =
-            Operation(kind: Kinds.reveal, source: source.address, counter: counter, publicKey: source.publicKey);
+        final operation = Operation(
+          kind: Kinds.reveal,
+          source: source.address,
+          counter: counter,
+          publicKey: source.publicKey,
+        );
 
         await rpcInterface.runOperations([operation]);
 
         final forgedOperation = await rpcInterface.forgeOperations([operation]);
-        final signedOperationHex = Signature.fromHex(data: forgedOperation, keystore: source, watermark: 'generic').hex;
+        final signedOperationHex = Signature.fromHex(
+          data: forgedOperation,
+          keystore: source,
+          watermark: 'generic',
+        ).hex;
 
         return rpcInterface.injectOperation(signedOperationHex);
       });
