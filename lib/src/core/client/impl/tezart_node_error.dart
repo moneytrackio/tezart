@@ -2,7 +2,7 @@ import 'package:meta/meta.dart';
 
 import 'package:tezart/src/common/exceptions/common_exception.dart';
 import 'package:tezart/src/common/utils/enum_util.dart';
-import 'package:tezart/src/common/utils/map_utils.dart';
+import 'package:tezart/src/common/utils/map_extension.dart';
 import 'package:tezart/src/core/rpc/rpc_interface.dart';
 
 enum TezartNodeErrorTypes {
@@ -63,10 +63,7 @@ class TezartNodeError extends CommonException {
     switch (type) {
       case TezartNodeErrorTypes.monitoring_timed_out:
         {
-          return dynamicErrorMessages[type](MapUtils.fetch(
-            map: metadata,
-            key: 'operationId',
-          ));
+          return dynamicErrorMessages[type](metadata.fetch<String>('operationId'));
         }
         break;
       default:

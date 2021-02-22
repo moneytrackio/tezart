@@ -1,9 +1,9 @@
 import 'package:test/test.dart';
-import 'package:tezart/src/common/utils/map_utils.dart';
+import 'package:tezart/src/common/utils/map_extension.dart';
 
 void main() {
   group('.fetch', () {
-    final subject = (Map map, String key) => MapUtils.fetch(map: map, key: key);
+    final subject = (Map map, String key) => map.fetch<String>(key);
 
     group('when the key exists', () {
       final map = {'toto': 'tata'};
