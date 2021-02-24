@@ -22,7 +22,7 @@ void main() {
   });
 
   // Decode
-  group('.deocdeWithoutPrefix', () {
+  group('.decodeWithoutPrefix', () {
     test('decodes an address correctly', () {
       expect(crypto.decodeWithoutPrefix(encodedAddress), expected_results.decodedAddress);
     });
