@@ -1,5 +1,8 @@
+import 'dart:async';
 import 'dart:convert';
+import 'package:memoize/memoize.dart';
 import 'package:meta/meta.dart';
+import 'package:tezart/src/core/rpc/impl/operations_monitor.dart';
 import 'package:tezart/src/models/operation/operation.dart';
 
 import 'tezart_http_client.dart';
@@ -84,5 +87,34 @@ class RpcInterface {
     var response = await httpClient.get(paths.balance(chain: chain, level: level, address: address));
 
     return int.parse(response.data['balance']);
+  }
+
+  Future<List<String>> transactionsOperationHashes({
+    @required String level,
+    chain = 'main',
+  }) async {
+    final response = await httpClient.get(paths.operationHashes(
+      chain: chain,
+      level: level,
+      offset: 3,
+    ));
+    return response.data.cast<String>().toList();
+  }
+
+  // TODO: wait for multiple blocks
+  Future<String> monitorOperation({
+    @required String operationId,
+    chain = 'main',
+    level = 'head',
+  }) async {
+    return operationsMonitor.monitor(chain: chain, level: level, operationId: operationId);
+  }
+
+  OperationsMonitor get operationsMonitor => memo0(() => OperationsMonitor(this))();
+
+  Future<Map<String, dynamic>> block({@required String chain, @required String level}) async {
+    final response = await httpClient.get(paths.block(chain: chain, level: level));
+
+    return response.data;
   }
 }

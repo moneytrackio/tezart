@@ -3,10 +3,30 @@ import 'package:tezart/src/core/rpc/impl/tezart_http_client.dart';
 
 void main() {
   group('#baseUrl()', () {
-    test('it returns a valid url', () async {
-      final result = TezartHttpClient(host: 'example.com', port: '8080', scheme: 'https').baseUrl;
+    final host = 'example.com';
+    final scheme = 'https';
+    final subject = (String port) => TezartHttpClient(
+          host: host,
+          port: port,
+          scheme: scheme,
+        ).baseUrl;
 
-      expect(result, equals('https://example.com:8080/'));
+    group('when the port is not empty', () {
+      final port = '8080';
+
+      test('it returns a valid url', () {
+        final result = subject(port);
+
+        expect(result, equals('https://example.com:8080/'));
+      });
+    });
+
+    group('when the port is empty', () {
+      final port = '';
+
+      test('it returns a valid url', () {
+        expect(subject(port), equals('https://example.com/'));
+      });
     });
   });
 }

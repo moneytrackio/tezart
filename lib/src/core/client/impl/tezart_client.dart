@@ -1,4 +1,5 @@
 import 'package:meta/meta.dart';
+import 'package:retry/retry.dart';
 import 'package:tezart/src/core/rpc/rpc_interface.dart';
 import 'package:tezart/src/keystore/keystore.dart';
 import 'package:tezart/src/models/operation/operation.dart';
@@ -17,41 +18,53 @@ class TezartClient {
     @required String destination,
     @required int amount,
   }) async {
-    final counter = await rpcInterface.counter(source.address) + 1;
-    final operation = TransactionOperation(
-      amount: amount,
-      source: source.address,
-      destination: destination,
-      counter: counter,
-    );
+    return _retryOnCounterError(() async {
+      return _catchHttpError<String>(() async {
+        final counter = await rpcInterface.counter(source.address) + 1;
+        final operation = TransactionOperation(
+          amount: amount,
+          source: source.address,
+          destination: destination,
+          counter: counter,
+        );
 
-    await rpcInterface.runOperations([operation]);
+        await rpcInterface.runOperations([operation]);
 
-    final forgedOperation = await rpcInterface.forgeOperations([operation]);
-    final signedOperationHex = Signature.fromHex(
-      data: forgedOperation,
-      keystore: source,
-      watermark: 'generic',
-    ).hex;
+        final forgedOperation = await rpcInterface.forgeOperations([operation]);
+        final signedOperationHex = Signature.fromHex(
+          data: forgedOperation,
+          keystore: source,
+          watermark: 'generic',
+        ).hex;
 
-    return rpcInterface.injectOperation(signedOperationHex);
+        return rpcInterface.injectOperation(signedOperationHex);
+      });
+    });
   }
 
   Future<String> revealKey(Keystore source) async {
-    try {
-      final counter = await rpcInterface.counter(source.address) + 1;
-      final operation =
-          Operation(kind: Kinds.reveal, source: source.address, counter: counter, publicKey: source.publicKey);
+    return _retryOnCounterError(() async {
+      return _catchHttpError<String>(() async {
+        final counter = await rpcInterface.counter(source.address) + 1;
+        final operation = Operation(
+          kind: Kinds.reveal,
+          source: source.address,
+          counter: counter,
+          publicKey: source.publicKey,
+        );
 
-      await rpcInterface.runOperations([operation]);
+        await rpcInterface.runOperations([operation]);
 
-      final forgedOperation = await rpcInterface.forgeOperations([operation]);
-      final signedOperationHex = Signature.fromHex(data: forgedOperation, keystore: source, watermark: 'generic').hex;
+        final forgedOperation = await rpcInterface.forgeOperations([operation]);
+        final signedOperationHex = Signature.fromHex(
+          data: forgedOperation,
+          keystore: source,
+          watermark: 'generic',
+        ).hex;
 
-      return rpcInterface.injectOperation(signedOperationHex);
-    } on TezartHttpError catch (e) {
-      throw TezartNodeError.fromHttpError(e);
-    }
+        return rpcInterface.injectOperation(signedOperationHex);
+      });
+    });
   }
 
   Future<bool> isKeyRevealed(String address) async {
@@ -61,4 +74,21 @@ class TezartClient {
   }
 
   Future<int> getBalance({@required String address}) => rpcInterface.balance(address);
+  Future<void> monitorOperation(String operationId) => rpcInterface.monitorOperation(operationId: operationId);
+
+  Future<T> _retryOnCounterError<T>(func) {
+    final r = RetryOptions(maxAttempts: 3);
+    return r.retry(
+      func,
+      retryIf: (e) => e is TezartNodeError && e.type == TezartNodeErrorTypes.counter_error,
+    );
+  }
+
+  Future<T> _catchHttpError<T>(Function func) async {
+    try {
+      return await func();
+    } on TezartHttpError catch (e) {
+      throw TezartNodeError.fromHttpError(e);
+    }
+  }
 }

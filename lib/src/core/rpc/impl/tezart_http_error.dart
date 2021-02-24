@@ -31,7 +31,10 @@ class TezartHttpError extends CommonException {
 
   dynamic get responseBody => _response?.data;
   int get statusCode => _response?.statusCode;
-  TezartHttpErrorTypes get type => errorTypesMapping[clientError.type] ?? TezartHttpErrorTypes.unhandled;
+  TezartHttpErrorTypes get type {
+    return errorTypesMapping[clientError.type] ?? TezartHttpErrorTypes.unhandled;
+  }
+
   http_client.Response get _response => clientError.response;
 
   @override
