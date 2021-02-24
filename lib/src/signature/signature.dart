@@ -44,7 +44,7 @@ class Signature extends Equatable {
     return crypto.encodeWithPrefix(prefix: crypto.Prefixes.edsig, bytes: signedBytes);
   }
 
-  String get hex {
+  String get hexIncludingPayload {
     return crypto.hexEncode(Uint8List.fromList(bytes + signedBytes));
   }
 
