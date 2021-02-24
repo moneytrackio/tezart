@@ -42,7 +42,7 @@ packages:
       name: bip39
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.3"
+    version: "1.0.4"
   blake2b:
     dependency: "direct main"
     description:
@@ -408,7 +408,7 @@ packages:
       name: pointycastle
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.2"
+    version: "2.0.1"
   pool:
     dependency: transitive
     description:
