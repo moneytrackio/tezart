@@ -1,3 +1,5 @@
+@Timeout(Duration(seconds: 60))
+
 import 'package:test/test.dart';
 import 'package:tezart/tezart.dart';
 
@@ -8,20 +10,21 @@ void main() {
   final originatorKeystore = Keystore.fromSecretKey(Env.originatorSk);
 
   group('#transfer', () {
+    final subject = (Keystore source, String destination, int amount) =>
+        tezart.transfer(source: source, destination: destination, amount: amount);
+
     final source = originatorKeystore;
-    final destination = Keystore.random();
+    final destination = Keystore.random().address;
     final amount = 1;
-    final subject = () => tezart.transfer(source: source, destination: destination.address, amount: amount);
 
     test('it transfers the amount from source to destination', () async {
-      var beforeTransferBalance = await tezart.getBalance(address: destination.address);
-      final result = await subject();
-      // TODO: replace this line with operation monitoring
-      await Future.delayed(const Duration(seconds: 10));
-      final afterTransferBalance = await tezart.getBalance(address: destination.address);
+      var beforeTransferBalance = await tezart.getBalance(address: destination);
+      final operationId = await subject(source, destination, amount);
+      await tezart.monitorOperation(operationId);
+      final afterTransferBalance = await tezart.getBalance(address: destination);
 
       expect(afterTransferBalance - beforeTransferBalance, equals(amount));
-      expect(RegExp(r'^o\w+$').hasMatch(result), true);
+      expect(RegExp(r'^o\w+$').hasMatch(operationId), true);
     });
   });
 
@@ -52,21 +55,25 @@ void main() {
   group('#revealKey', () {
     final subject = (Keystore keystore) => tezart.revealKey(keystore);
     final transferToDest = (Keystore destinationKeystore) async {
-      await tezart.transfer(source: originatorKeystore, destination: destinationKeystore.address, amount: 10000);
-      // TODO: replace this line with operation monitoring
-      await Future.delayed(const Duration(seconds: 10));
+      final operationId = await tezart.transfer(
+        source: originatorKeystore,
+        destination: destinationKeystore.address,
+        amount: 10000,
+      );
+      await tezart.monitorOperation(operationId);
     };
 
     group('when the key is not revealed', () {
       final keystore = Keystore.random();
 
-      setUp(() => transferToDest(keystore));
+      setUp(() async {
+        await transferToDest(keystore);
+      });
 
       test('it reveals the key', () async {
-        await subject(keystore);
+        final operationId = await subject(keystore);
 
-        // TODO: replace this line with operation monitoring
-        await Future.delayed(const Duration(seconds: 10));
+        await tezart.monitorOperation(operationId);
         final isKeyRevealed = await tezart.isKeyRevealed(keystore.address);
 
         expect(isKeyRevealed, isTrue);
@@ -76,13 +83,43 @@ void main() {
     group('when the key is already revealed', () {
       final keystore = originatorKeystore;
 
-      setUp(() => transferToDest(keystore));
-
       test('throws an error', () async {
         expect(
             subject(keystore),
             throwsA(predicate(
-                (e) => e is TezartNodeError && e.message == 'You\'re trying to reveal an already revealed key.')));
+                (e) => e is TezartNodeError && e.message == "You're trying to reveal an already revealed key.")));
+      });
+    });
+  });
+
+  group('#monitorOperation', () {
+    final subject = (String operationId) => tezart.monitorOperation(operationId);
+
+    group('when the operationId exists', () {
+      test('it monitors the operation', () async {
+        final getBalance = () => tezart.getBalance(address: originatorKeystore.address);
+        final destination = Keystore.random();
+        final amount = 1;
+        final balanceBeforeTransfer = await getBalance();
+        final operationId = await tezart.transfer(
+          source: originatorKeystore,
+          destination: destination.address,
+          amount: amount,
+        );
+        await subject(operationId);
+        final balanceAfterMonitoring = await getBalance();
+
+        expect(balanceAfterMonitoring, lessThan(balanceBeforeTransfer));
+      });
+    });
+
+    group('when the operationId doesnt exist', () {
+      test('it throws an error', () async {
+        final operationId = 'toto';
+        expect(
+            () => subject(operationId),
+            throwsA(predicate(
+                (e) => e is TezartNodeError && e.message == 'Monitoring the operation $operationId timed out')));
       });
     });
   });
