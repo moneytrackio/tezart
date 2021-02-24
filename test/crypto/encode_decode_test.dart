@@ -11,7 +11,7 @@ void main() {
   // Encode
   group('.encodeTz', () {
     test('encodes addresses correctly', () {
-      expect(crypto.encodeTz(prefix: 'tz1', bytes: expected_results.decodedAddress), encodedAddress);
+      expect(crypto.encodeTz(prefix: crypto.Prefixes.tz1, bytes: expected_results.decodedAddress), encodedAddress);
     });
 
     test('encodes throw error', () {
@@ -30,11 +30,6 @@ void main() {
   test('.ignorePrefix throw error', () {
     expect(() => crypto.ignorePrefix(crypto_common.fakeUint8List()),
         throwsA(predicate((e) => e is crypto.CryptoError && e.type == crypto.CryptoErrorTypes.unknownPrefix)));
-  });
-
-  test('.hexPrefix throw error', () {
-    expect(() => crypto.hexPrefix(''),
-        throwsA(predicate((e) => e is crypto.CryptoError && e.type == crypto.CryptoErrorTypes.prefixNotFound)));
   });
 
   test('.hexDecode', () {

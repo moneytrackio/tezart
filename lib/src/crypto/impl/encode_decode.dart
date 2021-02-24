@@ -5,33 +5,34 @@ import 'package:collection/collection.dart';
 import 'package:bs58check/bs58check.dart' as bs58check;
 
 import 'crypto_error.dart';
+import 'prefixes.dart';
 
-final _prefixes = {
-  'tz1': Uint8List.fromList([6, 161, 159]),
-  'tz2': Uint8List.fromList([6, 161, 161]),
-  'tz3': Uint8List.fromList([6, 161, 164]),
-  'KT': Uint8List.fromList([2, 90, 121]),
-  'expr': Uint8List.fromList([13, 44, 64, 27]),
-  'edpk': Uint8List.fromList([13, 15, 37, 217]),
-  'edsk2': Uint8List.fromList([13, 15, 58, 7]),
-  'spsk': Uint8List.fromList([17, 162, 224, 201]),
-  'p2sk': Uint8List.fromList([16, 81, 238, 189]),
-  'sppk': Uint8List.fromList([3, 254, 226, 86]),
-  'p2pk': Uint8List.fromList([3, 178, 139, 127]),
-  'edsk': Uint8List.fromList([43, 246, 78, 7]),
-  'edsig': Uint8List.fromList([9, 245, 205, 134, 18]),
-  'spsig1': Uint8List.fromList([13, 115, 101, 19, 63]),
-  'p2sig': Uint8List.fromList([54, 240, 44, 52]),
-  'sig': Uint8List.fromList([4, 130, 43]),
-  'Net': Uint8List.fromList([87, 82, 0]),
-  'nce': Uint8List.fromList([69, 220, 169]),
-  'b': Uint8List.fromList([1, 52]),
-  'o': Uint8List.fromList([5, 116]),
-  'Lo': Uint8List.fromList([133, 233]),
-  'LLo': Uint8List.fromList([29, 159, 109]),
-  'P': Uint8List.fromList([2, 170]),
-  'Co': Uint8List.fromList([79, 179]),
-  'id': Uint8List.fromList([153, 103])
+final _prefixesToBytes = {
+  Prefixes.tz1: Uint8List.fromList([6, 161, 159]),
+  Prefixes.tz2: Uint8List.fromList([6, 161, 161]),
+  Prefixes.tz3: Uint8List.fromList([6, 161, 164]),
+  Prefixes.KT: Uint8List.fromList([2, 90, 121]),
+  Prefixes.expr: Uint8List.fromList([13, 44, 64, 27]),
+  Prefixes.edpk: Uint8List.fromList([13, 15, 37, 217]),
+  Prefixes.edsk2: Uint8List.fromList([13, 15, 58, 7]),
+  Prefixes.spsk: Uint8List.fromList([17, 162, 224, 201]),
+  Prefixes.p2sk: Uint8List.fromList([16, 81, 238, 189]),
+  Prefixes.sppk: Uint8List.fromList([3, 254, 226, 86]),
+  Prefixes.p2pk: Uint8List.fromList([3, 178, 139, 127]),
+  Prefixes.edsk: Uint8List.fromList([43, 246, 78, 7]),
+  Prefixes.edsig: Uint8List.fromList([9, 245, 205, 134, 18]),
+  Prefixes.spsig1: Uint8List.fromList([13, 115, 101, 19, 63]),
+  Prefixes.p2sig: Uint8List.fromList([54, 240, 44, 52]),
+  Prefixes.sig: Uint8List.fromList([4, 130, 43]),
+  Prefixes.Net: Uint8List.fromList([87, 82, 0]),
+  Prefixes.nce: Uint8List.fromList([69, 220, 169]),
+  Prefixes.b: Uint8List.fromList([1, 52]),
+  Prefixes.o: Uint8List.fromList([5, 116]),
+  Prefixes.Lo: Uint8List.fromList([133, 233]),
+  Prefixes.LLo: Uint8List.fromList([29, 159, 109]),
+  Prefixes.P: Uint8List.fromList([2, 170]),
+  Prefixes.Co: Uint8List.fromList([79, 179]),
+  Prefixes.id: Uint8List.fromList([153, 103])
 };
 
 String _encodeBase58(Uint8List payload) => bs58check.encode(payload);
@@ -40,29 +41,29 @@ Uint8List hexDecode(String encoded) => Uint8List.fromList(hex.decode(encoded));
 String hexEncode(Uint8List input) => hex.encode(input.toList());
 
 @visibleForTesting
-Uint8List hexPrefix(String prefix) {
-  final value = _prefixes[prefix];
-  if (value == null) {
+Uint8List prefixBytes(Prefixes prefix) {
+  final prefixBytes = _prefixesToBytes[prefix];
+  if (prefixBytes == null) {
     throw CryptoError(type: CryptoErrorTypes.prefixNotFound);
   }
 
-  return _prefixes[prefix];
+  return _prefixesToBytes[prefix];
 }
 
 @visibleForTesting
 Uint8List ignorePrefix(Uint8List bytes) {
-  for (final prefix in _prefixes.keys) {
-    final value = hexPrefix(prefix);
+  for (final currentPrefix in _prefixesToBytes.keys) {
+    final currentPrefixBytes = prefixBytes(currentPrefix);
 
-    if (ListEquality().equals(bytes.sublist(0, value.length), value)) {
-      return bytes.sublist(value.length);
+    if (ListEquality().equals(bytes.sublist(0, currentPrefixBytes.length), currentPrefixBytes)) {
+      return bytes.sublist(currentPrefixBytes.length);
     }
   }
   throw CryptoError(type: CryptoErrorTypes.unknownPrefix);
 }
 
-String encodeTz({@required String prefix, @required Uint8List bytes}) {
-  final prefixed = Uint8List.fromList(hexPrefix(prefix) + bytes);
+String encodeTz({@required Prefixes prefix, @required Uint8List bytes}) {
+  final prefixed = Uint8List.fromList(prefixBytes(prefix) + bytes);
 
   return _encodeBase58(prefixed);
 }

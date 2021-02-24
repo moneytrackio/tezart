@@ -34,14 +34,14 @@ class Signature extends Equatable {
     final watermarkedBytes =
         watermark == null ? bytes : Uint8List.fromList(crypto.hexDecode(_watermarkValue[watermark]) + bytes);
     var hashedBytes = crypto.hashWithDigestSize(size: 256, bytes: watermarkedBytes);
-    var edskSecretKey = keystore.edsk;
-    var sk = crypto.decodeTz(edskSecretKey);
+    var secretKey = keystore.secretKey;
+    var secretKeyBytes = crypto.decodeTz(secretKey);
 
-    return crypto.signDetached(bytes: hashedBytes, secretKey: sk);
+    return crypto.signDetached(bytes: hashedBytes, secretKey: secretKeyBytes);
   }
 
   String get edsig {
-    return crypto.encodeTz(prefix: 'edsig', bytes: signedBytes);
+    return crypto.encodeTz(prefix: crypto.Prefixes.edsig, bytes: signedBytes);
   }
 
   String get hex {
