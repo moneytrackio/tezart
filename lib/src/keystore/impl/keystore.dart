@@ -30,13 +30,16 @@ class Keystore extends Equatable {
     if (secretKey.length != secretKeyLength) {
       throw crypto.CryptoError(type: crypto.CryptoErrorTypes.secretKeyLengthError);
     }
+    validateChecksum(secretKey);
 
     return Keystore._(secretKey: secretKey);
   }
+
   factory Keystore.fromSeed(String seed) {
     if (seed.length != seedLength) {
       throw crypto.CryptoError(type: crypto.CryptoErrorTypes.seedLengthError);
     }
+    validateChecksum(seed);
 
     return Keystore._(secretKey: crypto.seedToSecretKey(seed));
   }
@@ -89,4 +92,10 @@ class Keystore extends Equatable {
 
   @override
   List<Object> get props => [secretKey];
+
+  static void validateChecksum(String string) {
+    if (!crypto.isChecksumValid(string)) {
+      throw crypto.CryptoError(type: crypto.CryptoErrorTypes.invalidChecksum);
+    }
+  }
 }

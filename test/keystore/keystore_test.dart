@@ -87,6 +87,16 @@ void main() {
       });
     });
 
+    group('when the secret key has invalid checksum', () {
+      final secretKey =
+          'edskRpwW3bAgx7GsbyTrbb5NUP7b1tz34AvfV2Vm4En5LgEzeUmg3Ys815UDYNNFG6JvrrGqA9CNU2h8hsLVVLfuEQPkZNtkaa';
+
+      test('it throws an error', () {
+        expect(() => subject(secretKey),
+            throwsA(predicate((e) => e is CryptoError && e.type == CryptoErrorTypes.invalidChecksum)));
+      });
+    });
+
     group('when the input is a seed', () {
       final secretKey = 'edsk3RR5U7JsUJ8ctjsuymUPayxMm4LHXaB7VJSfeyMb8fAvbJUnsa';
 
@@ -124,6 +134,15 @@ void main() {
       test('throws an error', () {
         expect(() => subject(seed),
             throwsA(predicate((e) => e is CryptoError && e.type == CryptoErrorTypes.seedLengthError)));
+      });
+    });
+
+    group('when the seed has invalid checksum', () {
+      final seed = 'edsk3RR5U7JsUJ8ctjsuymUPayxMm4LHXaB7VJSfeyMb8fAvbJUnsb';
+
+      test('it throws an error', () {
+        expect(() => subject(seed),
+            throwsA(predicate((e) => e is CryptoError && e.type == CryptoErrorTypes.invalidChecksum)));
       });
     });
   });
