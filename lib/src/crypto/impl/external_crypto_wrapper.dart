@@ -5,8 +5,8 @@ import 'package:meta/meta.dart';
 import 'package:pinenacl/api.dart';
 
 // These methods are a wrapper of (Nacl|PineNacl|Bouncy Castle) lib methods
-Uint8List secretKeyBytesFromMnemonic(String mnemonic) {
-  final seedBytes = bip39.mnemonicToSeed(mnemonic);
+Uint8List seedBytesFromMnemonic(String mnemonic, {String passphrase = ''}) {
+  final seedBytes = bip39.mnemonicToSeed(mnemonic, passphrase: passphrase);
   final seedLength32 = seedBytes.sublist(0, 32);
 
   return secretKeyBytesFromSeedBytes(seedLength32).sublist(0, 32);
