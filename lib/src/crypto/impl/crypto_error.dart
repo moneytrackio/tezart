@@ -8,6 +8,7 @@ enum CryptoErrorTypes {
   seedBytesLengthError,
   seedLengthError,
   secretKeyLengthError,
+  invalidMnemonic,
   unhandled,
 }
 
@@ -23,6 +24,7 @@ class CryptoError extends CommonException {
     CryptoErrorTypes.seedBytesLengthError: 'The seed must be 32 bytes long',
     CryptoErrorTypes.seedLengthError: 'The seed must be 54 characters long',
     CryptoErrorTypes.secretKeyLengthError: 'The secret key must 98 characters long',
+    CryptoErrorTypes.invalidMnemonic: 'The mnemonic is invalid',
     CryptoErrorTypes.unhandled: 'Unhandled error',
   };
 
