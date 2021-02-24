@@ -14,9 +14,9 @@ import 'external_crypto_wrapper.dart';
 // returns the seed of the secret key
 String secretKeyToSeed(String secretKey) {
   const seedPrefix = Prefixes.edsk2;
-  final bytes = Uint8List.fromList(decodeTz(secretKey).take(32).toList());
+  final bytes = Uint8List.fromList(decodeWithoutPrefix(secretKey).take(32).toList());
 
-  return encodeTz(
+  return encodeWithPrefix(
     prefix: seedPrefix,
     bytes: bytes,
   );
@@ -25,12 +25,12 @@ String secretKeyToSeed(String secretKey) {
 String seedToSecretKey(String seed) {
   const secretKeyPrefix = Prefixes.edsk;
 
-  final seedBytes = decodeTz(seed);
+  final seedBytes = decodeWithoutPrefix(seed);
   if (seedBytes.length != 32) throw CryptoError(type: CryptoErrorTypes.seedLengthError);
 
   final secretKey = secretKeyBytesFromSeedBytes(seedBytes);
 
-  return encodeTz(
+  return encodeWithPrefix(
     prefix: secretKeyPrefix,
     bytes: secretKey,
   );

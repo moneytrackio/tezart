@@ -9,21 +9,22 @@ void main() {
   final encodedAddress = 'tz1XpNacx7vQ9y8ugdAc8p99LVfjudKjagVq';
 
   // Encode
-  group('.encodeTz', () {
+  group('.encodeWithPrefix', () {
     test('encodes addresses correctly', () {
-      expect(crypto.encodeTz(prefix: crypto.Prefixes.tz1, bytes: expected_results.decodedAddress), encodedAddress);
+      expect(
+          crypto.encodeWithPrefix(prefix: crypto.Prefixes.tz1, bytes: expected_results.decodedAddress), encodedAddress);
     });
 
     test('encodes throw error', () {
-      expect(() => crypto.encodeTz(prefix: null, bytes: expected_results.decodedAddress),
+      expect(() => crypto.encodeWithPrefix(prefix: null, bytes: expected_results.decodedAddress),
           throwsA(predicate((e) => e is crypto.CryptoError && e.type == crypto.CryptoErrorTypes.prefixNotFound)));
     });
   });
 
   // Decode
-  group('.decodeTz', () {
+  group('.deocdeWithoutPrefix', () {
     test('decodes an address correctly', () {
-      expect(crypto.decodeTz(encodedAddress), expected_results.decodedAddress);
+      expect(crypto.decodeWithoutPrefix(encodedAddress), expected_results.decodedAddress);
     });
   });
 

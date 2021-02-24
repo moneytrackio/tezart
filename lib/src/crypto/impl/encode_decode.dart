@@ -62,13 +62,13 @@ Uint8List ignorePrefix(Uint8List bytes) {
   throw CryptoError(type: CryptoErrorTypes.unknownPrefix);
 }
 
-String encodeTz({@required Prefixes prefix, @required Uint8List bytes}) {
+String encodeWithPrefix({@required Prefixes prefix, @required Uint8List bytes}) {
   final prefixed = Uint8List.fromList(prefixBytes(prefix) + bytes);
 
   return _encodeBase58(prefixed);
 }
 
-Uint8List decodeTz(String str) {
+Uint8List decodeWithoutPrefix(String str) {
   final decoded = _decodeBase58(str);
 
   return ignorePrefix(decoded);

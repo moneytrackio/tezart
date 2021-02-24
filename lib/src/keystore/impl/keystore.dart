@@ -38,7 +38,7 @@ class Keystore extends Equatable {
 
   factory Keystore.fromMnemonic(String mnemonic) {
     var bytesSecretKey = crypto.secretKeyBytesFromMnemonic(mnemonic);
-    var secretKey = crypto.encodeTz(prefix: seedPrefix, bytes: bytesSecretKey);
+    var secretKey = crypto.encodeWithPrefix(prefix: seedPrefix, bytes: bytesSecretKey);
 
     return Keystore._(
       secretKey: secretKey,
@@ -52,23 +52,23 @@ class Keystore extends Equatable {
   }
 
   String get publicKey {
-    final seedBytes = crypto.decodeTz(seed);
+    final seedBytes = crypto.decodeWithoutPrefix(seed);
     var pk = crypto.publicKeyBytesFromSeedBytes(seedBytes);
 
-    return crypto.encodeTz(
+    return crypto.encodeWithPrefix(
       prefix: publicKeyPrefix,
       bytes: pk,
     );
   }
 
   String get address {
-    final publicKeyBytes = crypto.decodeTz(publicKey);
+    final publicKeyBytes = crypto.decodeWithoutPrefix(publicKey);
     final hash = crypto.hashWithDigestSize(
       size: 160,
       bytes: publicKeyBytes,
     );
 
-    return crypto.encodeTz(
+    return crypto.encodeWithPrefix(
       prefix: addressPrefix,
       bytes: hash,
     );
