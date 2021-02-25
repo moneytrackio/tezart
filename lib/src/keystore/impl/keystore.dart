@@ -3,15 +3,22 @@ import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 
 // internal Library
-import 'package:tezart/src/crypto/crypto.dart' as crypto;
+//
+// we hide Prefixes from the crypto name and then show it without a name to avoid this:
+// `static const crypto.Prefixes seedPrefix = crypto.Prefixes.edsk2;`
+// and have this instead :
+// `static const Prefixes = Prefixes.edsk2;
+import 'package:tezart/src/crypto/crypto.dart' as crypto hide Prefixes;
+import 'package:tezart/src/crypto/crypto.dart' show Prefixes;
 import 'package:tezart/src/signature/signature.dart';
 
 @immutable
 class Keystore extends Equatable {
-  static const String prefixSecretKey = 'edsk2';
-  static const String prefixSecretKeyAlternative = 'edsk';
-  static const String prefixPublicKey = 'edpk';
-  static const String prefixAdress = 'tz1';
+  static const Prefixes seedPrefix = Prefixes.edsk2;
+  static const Prefixes publicKeyPrefix = Prefixes.edpk;
+  static const Prefixes addressPrefix = Prefixes.tz1;
+  static const secretKeyLength = 98;
+  static const seedLength = 54;
 
   final String secretKey;
 
@@ -20,12 +27,23 @@ class Keystore extends Equatable {
   const Keystore._({@required this.secretKey, this.mnemonic});
 
   factory Keystore.fromSecretKey(String secretKey) {
+    if (secretKey.length != secretKeyLength) {
+      throw crypto.CryptoError(type: crypto.CryptoErrorTypes.secretKeyLengthError);
+    }
+
     return Keystore._(secretKey: secretKey);
+  }
+  factory Keystore.fromSeed(String seed) {
+    if (seed.length != seedLength) {
+      throw crypto.CryptoError(type: crypto.CryptoErrorTypes.seedLengthError);
+    }
+
+    return Keystore._(secretKey: crypto.seedToSecretKey(seed));
   }
 
   factory Keystore.fromMnemonic(String mnemonic) {
     var bytesSecretKey = crypto.secretKeyBytesFromMnemonic(mnemonic);
-    var secretKey = crypto.encodeTz(prefix: prefixSecretKey, bytes: bytesSecretKey);
+    var secretKey = crypto.encodeWithPrefix(prefix: seedPrefix, bytes: bytesSecretKey);
 
     return Keystore._(
       secretKey: secretKey,
@@ -39,46 +57,29 @@ class Keystore extends Equatable {
   }
 
   String get publicKey {
-    final secretKeyBytes = crypto.decodeTz(secretKey);
-    var pk = crypto.publicKeyBytesFromSeed(secretKeyBytes);
+    final seedBytes = crypto.decodeWithoutPrefix(seed);
+    var pk = crypto.publicKeyBytesFromSeedBytes(seedBytes);
 
-    return crypto.encodeTz(
-      prefix: prefixPublicKey,
+    return crypto.encodeWithPrefix(
+      prefix: publicKeyPrefix,
       bytes: pk,
     );
   }
 
   String get address {
-    final publicKeyBytes = crypto.decodeTz(publicKey);
+    final publicKeyBytes = crypto.decodeWithoutPrefix(publicKey);
     final hash = crypto.hashWithDigestSize(
       size: 160,
       bytes: publicKeyBytes,
     );
 
-    return crypto.encodeTz(
-      prefix: prefixAdress,
+    return crypto.encodeWithPrefix(
+      prefix: addressPrefix,
       bytes: hash,
     );
   }
 
-  // returns the edsk format of the secret key
-  String get edsk {
-    Uint8List sk;
-
-    try {
-      sk = crypto.secretKeyBytesFromSeed(crypto.decodeTz(secretKey));
-    } catch (e) {
-      if (RegExp(r'SigningKey must be created from a 32 byte seed').hasMatch(e.message)) {
-        return secretKey;
-      }
-      rethrow;
-    }
-
-    return crypto.encodeTz(
-      prefix: prefixSecretKeyAlternative,
-      bytes: sk,
-    );
-  }
+  String get seed => crypto.secretKeyToSeed(secretKey);
 
   // signature methods
   Signature signBytes(Uint8List bytes) => Signature.fromBytes(bytes: bytes, keystore: this);

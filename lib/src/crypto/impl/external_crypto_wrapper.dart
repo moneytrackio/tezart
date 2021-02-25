@@ -6,18 +6,18 @@ import 'package:pinenacl/api.dart';
 
 // These methods are a wrapper of (Nacl|PineNacl|Bouncy Castle) lib methods
 Uint8List secretKeyBytesFromMnemonic(String mnemonic) {
-  final seed = bip39.mnemonicToSeed(mnemonic);
-  final seedLength32 = seed.sublist(0, 32);
+  final seedBytes = bip39.mnemonicToSeed(mnemonic);
+  final seedLength32 = seedBytes.sublist(0, 32);
 
-  return secretKeyBytesFromSeed(seedLength32).sublist(0, 32);
+  return secretKeyBytesFromSeedBytes(seedLength32).sublist(0, 32);
 }
 
-Uint8List secretKeyBytesFromSeed(Uint8List seed) => signingKeyFromSeed(seed);
+Uint8List secretKeyBytesFromSeedBytes(Uint8List seed) => signingKeyFromSeedBytes(seed);
 
-Uint8List publicKeyBytesFromSeed(Uint8List seed) => signingKeyFromSeed(seed).verifyKey;
+Uint8List publicKeyBytesFromSeedBytes(Uint8List seed) => signingKeyFromSeedBytes(seed).verifyKey;
 
 @visibleForTesting
-SigningKey signingKeyFromSeed(Uint8List seed) => SigningKey.fromSeed(seed);
+SigningKey signingKeyFromSeedBytes(Uint8List seed) => SigningKey.fromSeed(seed);
 
 Uint8List signDetached({@required Uint8List bytes, @required Uint8List secretKey}) {
   final seed = secretKey.sublist(0, 32); // the seed is the first 32 bytes of the secret key

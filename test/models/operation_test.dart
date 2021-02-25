@@ -5,7 +5,7 @@ import 'package:tezart/tezart.dart';
 
 void main() {
   const kind = Kinds.generic;
-  final sourceKeystore = Keystore.fromSecretKey('edsk4CCa2afKwHWGxB5oZd4jvhq6tgd5EzFaryyR4vLdC3nvpjKUG6');
+  final sourceKeystore = Keystore.fromSeed('edsk4CCa2afKwHWGxB5oZd4jvhq6tgd5EzFaryyR4vLdC3nvpjKUG6');
   final source = sourceKeystore.address;
   final publicKey = sourceKeystore.publicKey;
   const destination = 'tz1Q9L8us1DWMNDCyPcaScghH9fcgUSD1zFy';

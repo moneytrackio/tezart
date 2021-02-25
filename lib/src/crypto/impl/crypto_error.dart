@@ -5,6 +5,9 @@ import 'package:tezart/src/common/utils/enum_util.dart';
 enum CryptoErrorTypes {
   prefixNotFound,
   unknownPrefix,
+  seedBytesLengthError,
+  seedLengthError,
+  secretKeyLengthError,
   unhandled,
 }
 
@@ -17,6 +20,9 @@ class CryptoError extends CommonException {
   final staticErrorsMessages = {
     CryptoErrorTypes.prefixNotFound: 'Prefix not found',
     CryptoErrorTypes.unknownPrefix: 'Unknown prefix',
+    CryptoErrorTypes.seedBytesLengthError: 'The seed must be 32 bytes long',
+    CryptoErrorTypes.seedLengthError: 'The seed must be 54 characters long',
+    CryptoErrorTypes.secretKeyLengthError: 'The secret key must 98 characters long',
     CryptoErrorTypes.unhandled: 'Unhandled error',
   };
 

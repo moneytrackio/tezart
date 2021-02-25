@@ -16,7 +16,7 @@ void main() {
 
   group('.secretKeyBytesFromSeed', () {
     test('returns valid secret key', () {
-      final secretKeyBytes = secretKeyBytesFromSeed(crypto_common.fakeUint8List());
+      final secretKeyBytes = secretKeyBytesFromSeedBytes(crypto_common.fakeUint8List());
 
       expect(secretKeyBytes, equals(expected_results.secretKeyBytesFromSeed));
     });

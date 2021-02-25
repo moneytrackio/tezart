@@ -7,7 +7,7 @@ import 'package:tezart/tezart.dart';
 import 'expected_results/signature.dart' as expected_results;
 
 void main() {
-  final keystore = Keystore.fromSecretKey('edsk3RR5U7JsUJ8ctjsuymUPayxMm4LHXaB7VJSfeyMb8fAvbJUnsa');
+  final keystore = Keystore.fromSeed('edsk3RR5U7JsUJ8ctjsuymUPayxMm4LHXaB7VJSfeyMb8fAvbJUnsa');
 
   group('.fromBytes', () {
     final bytes = Uint8List.fromList([432, 59, 54, 09]);
@@ -89,7 +89,7 @@ void main() {
 
     test('two signatures are not equal if their keystores are different and their data are equal', () {
       final data = '1234';
-      final keystore2 = Keystore.fromSecretKey('edsk4CCa2afKwHWGxB5oZd4jvhq6tgd5EzFaryyR4vLdC3nvpjKUG6');
+      final keystore2 = Keystore.fromSeed('edsk4CCa2afKwHWGxB5oZd4jvhq6tgd5EzFaryyR4vLdC3nvpjKUG6');
       final sig1 = Signature.fromHex(data: data, keystore: keystore);
       final sig2 = Signature.fromHex(data: data, keystore: keystore2);
 

@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:test/test.dart';
+import 'package:tezart/src/crypto/impl/crypto_error.dart';
 import 'package:tezart/src/keystore/keystore.dart';
 import 'package:tezart/src/signature/signature.dart';
 
@@ -29,32 +30,80 @@ void main() {
   });
 
   group('.fromSecretKey', () {
-    Keystore keystore;
-    String secretKey;
+    final subject = (String secretKey) => Keystore.fromSecretKey(secretKey);
 
-    setUp(() {
-      secretKey = 'edsk3RR5U7JsUJ8ctjsuymUPayxMm4LHXaB7VJSfeyMb8fAvbJUnsa';
-      keystore = Keystore.fromSecretKey(secretKey);
+    group('when the secret key is valid', () {
+      final secretKey =
+          'edskRpwW3bAgx7GsbyTrbb5NUP7b1tz34AvfV2Vm4En5LgEzeUmg3Ys815UDYNNFG6JvrrGqA9CNU2h8hsLVVLfuEQPkZNtkap';
+
+      test('sets secretKey correctly', () {
+        expect(subject(secretKey).secretKey, secretKey);
+      });
+
+      test('sets mnemonic to null', () {
+        expect(subject(secretKey).mnemonic, null);
+      });
+
+      test('it computes the seed correctly', () {
+        expect(subject(secretKey).seed, 'edsk3RR5U7JsUJ8ctjsuymUPayxMm4LHXaB7VJSfeyMb8fAvbJUnsa');
+      });
     });
 
-    test('sets secretKey correctly', () {
-      expect(keystore.secretKey, secretKey);
+    group('when the input is a seed', () {
+      final secretKey = 'edsk3RR5U7JsUJ8ctjsuymUPayxMm4LHXaB7VJSfeyMb8fAvbJUnsa';
+
+      test('throws an error', () {
+        expect(() => subject(secretKey),
+            throwsA(predicate((e) => e is CryptoError && e.type == CryptoErrorTypes.secretKeyLengthError)));
+      });
+    });
+  });
+
+  group('.fromSeed', () {
+    final subject = (String seed) => Keystore.fromSeed(seed);
+
+    group('when the seed is valid', () {
+      final secretKey =
+          'edskRpwW3bAgx7GsbyTrbb5NUP7b1tz34AvfV2Vm4En5LgEzeUmg3Ys815UDYNNFG6JvrrGqA9CNU2h8hsLVVLfuEQPkZNtkap';
+      final seed = 'edsk3RR5U7JsUJ8ctjsuymUPayxMm4LHXaB7VJSfeyMb8fAvbJUnsa';
+
+      test('sets secretKey correctly', () {
+        expect(subject(seed).secretKey, secretKey);
+      });
+
+      test('sets mnemonic to null', () {
+        expect(subject(seed).mnemonic, null);
+      });
+
+      test('it computes the seed correctly', () {
+        expect(subject(seed).seed, seed);
+      });
     });
 
-    test('sets mnemonic to null', () {
-      expect(keystore.mnemonic, null);
+    group('when the input is a secret key', () {
+      final seed = 'edskRpwW3bAgx7GsbyTrbb5NUP7b1tz34AvfV2Vm4En5LgEzeUmg3Ys815UDYNNFG6JvrrGqA9CNU2h8hsLVVLfuEQPkZNtkap';
+
+      test('throws an error', () {
+        expect(() => subject(seed),
+            throwsA(predicate((e) => e is CryptoError && e.type == CryptoErrorTypes.seedLengthError)));
+      });
     });
   });
 
   group('compare keystore', () {
     test('is equals', () {
-      final k1 = Keystore.fromSecretKey('pouet');
-      final k2 = Keystore.fromSecretKey('pouet');
+      final secretKey =
+          'edskRpwW3bAgx7GsbyTrbb5NUP7b1tz34AvfV2Vm4En5LgEzeUmg3Ys815UDYNNFG6JvrrGqA9CNU2h8hsLVVLfuEQPkZNtkap';
+      final k1 = Keystore.fromSecretKey(secretKey);
+      final k2 = Keystore.fromSecretKey(secretKey);
       expect(k1, k2);
     });
+
     test('is not equals', () {
-      final k1 = Keystore.fromSecretKey('pouet');
-      final k2 = Keystore.fromSecretKey('yeaahh');
+      final sk1 = 'edskRpwW3bAgx7GsbyTrbb5NUP7b1tz34AvfV2Vm4En5LgEzeUmg3Ys815UDYNNFG6JvrrGqA9CNU2h8hsLVVLfuEQPkZNtkap';
+      final sk2 = 'edskRudFGJdUnDQUMycDYch2ve7tDbEmQbjc9o8bfg5EJWQkWjPrbeQLSTXhimdVDU4cCSgwuZmmBzVgvuZLoywxx7wmHt8BWQ';
+      final k1 = Keystore.fromSecretKey(sk1);
+      final k2 = Keystore.fromSecretKey(sk2);
       expect(k1, isNot(k2));
     });
   });
@@ -62,44 +111,18 @@ void main() {
   group('getters', () {
     Keystore keystore;
     setUp(() {
-      const secretKey = 'edsk3RR5U7JsUJ8ctjsuymUPayxMm4LHXaB7VJSfeyMb8fAvbJUnsa';
+      const secretKey =
+          'edskRpwW3bAgx7GsbyTrbb5NUP7b1tz34AvfV2Vm4En5LgEzeUmg3Ys815UDYNNFG6JvrrGqA9CNU2h8hsLVVLfuEQPkZNtkap';
 
       keystore = Keystore.fromSecretKey(secretKey);
     });
+
     test('#publicKey computes the publicKey correctly', () {
       expect(keystore.publicKey, 'edpkvGRiJj7mCSZtcTabQkfgKky8AEDGPTCmmWyT1Vg17Lqt3cD5TU');
     });
 
     test('#address computes correctly', () {
       expect(keystore.address, 'tz1LmRFP1yFg4oTwfThfbrJx2BfZVAK2h7eW');
-    });
-
-    group('#edsk', () {
-      String secretKey;
-
-      group('when the secretKey is edsk2 format', () {
-        setUp(() {
-          secretKey = 'edsk3RR5U7JsUJ8ctjsuymUPayxMm4LHXaB7VJSfeyMb8fAvbJUnsa';
-          keystore = Keystore.fromSecretKey(secretKey);
-        });
-
-        test('returns valid edsk format', () {
-          expect(keystore.edsk,
-              'edskRpwW3bAgx7GsbyTrbb5NUP7b1tz34AvfV2Vm4En5LgEzeUmg3Ys815UDYNNFG6JvrrGqA9CNU2h8hsLVVLfuEQPkZNtkap');
-        });
-      });
-
-      group('when the secretKey is edsk format', () {
-        setUp(() {
-          secretKey =
-              'edskRpwW3bAgx7GsbyTrbb5NUP7b1tz34AvfV2Vm4En5LgEzeUmg3Ys815UDYNNFG6JvrrGqA9CNU2h8hsLVVLfuEQPkZNtkap';
-          keystore = Keystore.fromSecretKey(secretKey);
-        });
-
-        test('returns secretKey', () {
-          expect(keystore.edsk, secretKey);
-        });
-      });
     });
   });
 
