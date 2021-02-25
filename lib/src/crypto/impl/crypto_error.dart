@@ -10,6 +10,8 @@ enum CryptoErrorTypes {
   secretKeyLengthError,
   invalidMnemonic,
   invalidChecksum,
+  invalidHexDataLength,
+  invalidHex,
   unhandled,
 }
 
@@ -27,6 +29,8 @@ class CryptoError extends CommonException {
     CryptoErrorTypes.secretKeyLengthError: 'The secret key must 98 characters long',
     CryptoErrorTypes.invalidMnemonic: 'The mnemonic is invalid',
     CryptoErrorTypes.invalidChecksum: 'Invalid checksum',
+    CryptoErrorTypes.invalidHexDataLength: "Hexadecimal data's length must be even",
+    CryptoErrorTypes.invalidHex: 'Invalid hexadecimal',
     CryptoErrorTypes.unhandled: 'Unhandled error',
   };
 

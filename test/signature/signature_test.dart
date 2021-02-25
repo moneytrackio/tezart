@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:test/test.dart';
+import 'package:tezart/src/crypto/crypto.dart';
 import 'package:tezart/src/signature/signature.dart';
 import 'package:tezart/tezart.dart';
 
@@ -10,7 +11,7 @@ void main() {
   final keystore = Keystore.fromSeed('edsk3RR5U7JsUJ8ctjsuymUPayxMm4LHXaB7VJSfeyMb8fAvbJUnsa');
 
   group('.fromBytes', () {
-    final bytes = Uint8List.fromList([432, 59, 54, 09]);
+    final bytes = Uint8List.fromList([43, 59, 54, 09]);
     final subject = Signature.fromBytes(bytes: bytes, keystore: keystore);
 
     test('it sets bytes correctly', () {
@@ -23,17 +24,39 @@ void main() {
   });
 
   group('.fromHex', () {
-    final hex = '12345adf';
-    final subject = Signature.fromHex(data: hex, keystore: keystore);
+    final subject = (String data) => Signature.fromHex(data: data, keystore: keystore);
+    group('when the data is valid', () {
+      final data = '12345adf';
 
-    test('it sets bytes correctly', () {
-      final bytes = [18, 52, 90, 223];
+      test('it sets bytes correctly', () {
+        final bytes = [18, 52, 90, 223];
 
-      expect(subject.bytes, equals(bytes));
+        expect(subject(data).bytes, equals(bytes));
+      });
+
+      test('it sets keystore correctly', () {
+        expect(subject(data).keystore, equals(keystore));
+      });
     });
 
-    test('it sets keystore correctly', () {
-      expect(subject.keystore, equals(keystore));
+    group("when the data's length is odd", () {
+      final data = '12345adff';
+
+      test('it throws an error', () {
+        expect(() => subject(data),
+            throwsA(predicate((e) => e is CryptoError && e.type == CryptoErrorTypes.invalidHexDataLength)));
+      });
+    });
+
+    group('when the data contains non hexadecimal characters', () {
+      final data = '123t';
+
+      test('it throws an error', () {
+        expect(
+          () => subject(data),
+          throwsA(predicate((e) => e is CryptoError && e.type == CryptoErrorTypes.invalidHex)),
+        );
+      });
     });
   });
 

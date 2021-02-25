@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
+import 'package:tezart/src/common/validators/hex_validator.dart';
 import 'package:tezart/src/keystore/keystore.dart';
 
 import 'package:tezart/src/crypto/crypto.dart' as crypto;
@@ -25,6 +26,9 @@ class Signature extends Equatable {
   }
 
   factory Signature.fromHex({@required String data, @required Keystore keystore, String watermark}) {
+    HexValidator(data).validate();
+    // Because two hexadecimal digits correspond to a single byte, this will throw an error if the length of the data is odd
+    if (data.length.isOdd) throw crypto.CryptoError(type: crypto.CryptoErrorTypes.invalidHexDataLength);
     var bytes = crypto.hexDecode(data);
 
     return Signature.fromBytes(bytes: bytes, keystore: keystore, watermark: watermark);
