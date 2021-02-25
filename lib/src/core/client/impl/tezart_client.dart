@@ -84,7 +84,7 @@ class TezartClient {
     );
   }
 
-  Future<T> _catchHttpError<T>(Function func) async {
+  Future<T> _catchHttpError<T>(Future<T> Function() func) async {
     try {
       return await func();
     } on TezartHttpError catch (e) {
