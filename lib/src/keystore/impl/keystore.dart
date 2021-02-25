@@ -3,6 +3,11 @@ import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 
 // internal Library
+//
+// we hide Prefixes from the crypto name and then show it without a name to avoid this:
+// `static const crypto.Prefixes seedPrefix = crypto.Prefixes.edsk2;`
+// and have this instead :
+// `static const Prefixes = Prefixes.edsk2;
 import 'package:tezart/src/crypto/crypto.dart' as crypto hide Prefixes;
 import 'package:tezart/src/crypto/crypto.dart' show Prefixes;
 import 'package:tezart/src/signature/signature.dart';
