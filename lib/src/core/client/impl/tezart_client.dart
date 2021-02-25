@@ -35,7 +35,7 @@ class TezartClient {
           data: forgedOperation,
           keystore: source,
           watermark: 'generic',
-        ).hex;
+        ).hexIncludingPayload;
 
         return rpcInterface.injectOperation(signedOperationHex);
       });
@@ -60,7 +60,7 @@ class TezartClient {
           data: forgedOperation,
           keystore: source,
           watermark: 'generic',
-        ).hex;
+        ).hexIncludingPayload;
 
         return rpcInterface.injectOperation(signedOperationHex);
       });

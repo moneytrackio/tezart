@@ -69,7 +69,8 @@ void main() {
   });
 
   group('.hex', () {
-    final subject = () => Signature.fromHex(data: '123abd43', keystore: keystore, watermark: 'generic').hex;
+    final subject =
+        () => Signature.fromHex(data: '123abd43', keystore: keystore, watermark: 'generic').hexIncludingPayload;
 
     test('it returns a valid hex signature', () {
       final expectedResult =
