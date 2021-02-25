@@ -32,30 +32,38 @@ class Signature extends Equatable {
   }
 
   factory Signature.fromHex({@required String data, @required Keystore keystore, Watermarks watermark}) {
-    HexValidator(data).validate();
-    // Because two hexadecimal digits correspond to a single byte, this will throw an error if the length of the data is odd
-    if (data.length.isOdd) throw crypto.CryptoError(type: crypto.CryptoErrorTypes.invalidHexDataLength);
-    var bytes = crypto.hexDecode(data);
+    return crypto.catchUnhandledErrors(() {
+      HexValidator(data).validate();
+      // Because two hexadecimal digits correspond to a single byte, this will throw an error if the length of the data is odd
+      if (data.length.isOdd) throw crypto.CryptoError(type: crypto.CryptoErrorTypes.invalidHexDataLength);
+      var bytes = crypto.hexDecode(data);
 
-    return Signature.fromBytes(bytes: bytes, keystore: keystore, watermark: watermark);
+      return Signature.fromBytes(bytes: bytes, keystore: keystore, watermark: watermark);
+    });
   }
 
   Uint8List get signedBytes {
-    final watermarkedBytes =
-        watermark == null ? bytes : Uint8List.fromList(crypto.hexDecode(_watermarkToHex[watermark]) + bytes);
-    var hashedBytes = crypto.hashWithDigestSize(size: 256, bytes: watermarkedBytes);
-    var secretKey = keystore.secretKey;
-    var secretKeyBytes = crypto.decodeWithoutPrefix(secretKey);
+    return crypto.catchUnhandledErrors(() {
+      final watermarkedBytes =
+          watermark == null ? bytes : Uint8List.fromList(crypto.hexDecode(_watermarkToHex[watermark]) + bytes);
+      var hashedBytes = crypto.hashWithDigestSize(size: 256, bytes: watermarkedBytes);
+      var secretKey = keystore.secretKey;
+      var secretKeyBytes = crypto.decodeWithoutPrefix(secretKey);
 
-    return crypto.signDetached(bytes: hashedBytes, secretKey: secretKeyBytes);
+      return crypto.signDetached(bytes: hashedBytes, secretKey: secretKeyBytes);
+    });
   }
 
   String get edsig {
-    return crypto.encodeWithPrefix(prefix: crypto.Prefixes.edsig, bytes: signedBytes);
+    return crypto.catchUnhandledErrors(() {
+      return crypto.encodeWithPrefix(prefix: crypto.Prefixes.edsig, bytes: signedBytes);
+    });
   }
 
   String get hexIncludingPayload {
-    return crypto.hexEncode(Uint8List.fromList(bytes + signedBytes));
+    return crypto.catchUnhandledErrors(() {
+      return crypto.hexEncode(Uint8List.fromList(bytes + signedBytes));
+    });
   }
 
   @override

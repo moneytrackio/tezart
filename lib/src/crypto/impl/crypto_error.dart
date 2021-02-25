@@ -31,7 +31,9 @@ class CryptoError extends CommonException {
     CryptoErrorTypes.invalidChecksum: 'Invalid checksum',
     CryptoErrorTypes.invalidHexDataLength: "Hexadecimal data's length must be even",
     CryptoErrorTypes.invalidHex: 'Invalid hexadecimal',
-    CryptoErrorTypes.unhandled: 'Unhandled error',
+  };
+  final dynamicErrorMessages = {
+    CryptoErrorTypes.unhandled: (dynamic e) => 'Unhandled error: $e',
   };
 
   CryptoError({@required CryptoErrorTypes type, String message, this.cause})
@@ -43,11 +45,35 @@ class CryptoError extends CommonException {
   @override
   String get message => _inputMessage ?? _computedMessage;
 
-  String get _computedMessage => staticErrorsMessages[type];
+  String get _computedMessage {
+    if (staticErrorsMessages.containsKey(type)) return staticErrorsMessages[type];
+
+    switch (type) {
+      case CryptoErrorTypes.unhandled:
+        {
+          return dynamicErrorMessages[type](cause);
+        }
+        break;
+      default:
+        {
+          throw UnimplementedError('Unimplemented error type $type');
+        }
+        break;
+    }
+  }
 
   @override
   String get key => EnumUtil.enumToString(type);
 
   @override
   dynamic get originalException => cause;
+}
+
+T catchUnhandledErrors<T>(T Function() func) {
+  try {
+    return func();
+  } catch (e) {
+    if (e is CryptoError) rethrow;
+    throw CryptoError(type: CryptoErrorTypes.unhandled, cause: e);
+  }
 }
