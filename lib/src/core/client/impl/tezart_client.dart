@@ -73,8 +73,10 @@ class TezartClient {
     return managerKey == null ? false : true;
   }
 
-  Future<int> getBalance({@required String address}) => rpcInterface.balance(address);
-  Future<void> monitorOperation(String operationId) => rpcInterface.monitorOperation(operationId: operationId);
+  Future<int> getBalance({@required String address}) => _catchHttpError(() => rpcInterface.balance(address));
+
+  Future<void> monitorOperation(String operationId) =>
+      _catchHttpError(() => rpcInterface.monitorOperation(operationId: operationId));
 
   Future<T> _retryOnCounterError<T>(func) {
     final r = RetryOptions(maxAttempts: 3);
