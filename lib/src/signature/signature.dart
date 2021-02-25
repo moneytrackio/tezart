@@ -7,25 +7,31 @@ import 'package:tezart/src/keystore/keystore.dart';
 
 import 'package:tezart/src/crypto/crypto.dart' as crypto;
 
+enum Watermarks {
+  block,
+  endorsement,
+  generic,
+}
+
 @immutable
 class Signature extends Equatable {
   final Uint8List bytes;
   final Keystore keystore;
-  final String watermark;
+  final Watermarks watermark;
 
-  static final _watermarkValue = {
-    'block': '01',
-    'endorsement': '02',
-    'generic': '03',
+  static final _watermarkToHex = {
+    Watermarks.block: '01',
+    Watermarks.endorsement: '02',
+    Watermarks.generic: '03',
   };
 
   Signature._({@required this.bytes, @required this.keystore, this.watermark});
 
-  factory Signature.fromBytes({@required Uint8List bytes, @required Keystore keystore, String watermark}) {
+  factory Signature.fromBytes({@required Uint8List bytes, @required Keystore keystore, Watermarks watermark}) {
     return Signature._(bytes: bytes, watermark: watermark, keystore: keystore);
   }
 
-  factory Signature.fromHex({@required String data, @required Keystore keystore, String watermark}) {
+  factory Signature.fromHex({@required String data, @required Keystore keystore, Watermarks watermark}) {
     HexValidator(data).validate();
     // Because two hexadecimal digits correspond to a single byte, this will throw an error if the length of the data is odd
     if (data.length.isOdd) throw crypto.CryptoError(type: crypto.CryptoErrorTypes.invalidHexDataLength);
@@ -36,7 +42,7 @@ class Signature extends Equatable {
 
   Uint8List get signedBytes {
     final watermarkedBytes =
-        watermark == null ? bytes : Uint8List.fromList(crypto.hexDecode(_watermarkValue[watermark]) + bytes);
+        watermark == null ? bytes : Uint8List.fromList(crypto.hexDecode(_watermarkToHex[watermark]) + bytes);
     var hashedBytes = crypto.hashWithDigestSize(size: 256, bytes: watermarkedBytes);
     var secretKey = keystore.secretKey;
     var secretKeyBytes = crypto.decodeWithoutPrefix(secretKey);

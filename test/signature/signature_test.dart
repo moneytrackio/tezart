@@ -61,11 +61,14 @@ void main() {
   });
 
   group('.signedBytes', () {
-    final subject =
-        (String watermark) => Signature.fromHex(data: '123abd43', keystore: keystore, watermark: watermark).signedBytes;
+    final subject = (Watermarks watermark) => Signature.fromHex(
+          data: '123abd43',
+          keystore: keystore,
+          watermark: watermark,
+        ).signedBytes;
 
     group('when watermak is not null', () {
-      final result = subject('generic');
+      final result = subject(Watermarks.generic);
 
       test('it returns a valid signed bytes list', () {
         expect(result, equals(expected_results.signedBytesWithGenericWatermark));
@@ -82,7 +85,11 @@ void main() {
   });
 
   group('.edsig', () {
-    final subject = () => Signature.fromHex(data: '123abd43', keystore: keystore, watermark: 'generic').edsig;
+    final subject = () => Signature.fromHex(
+          data: '123abd43',
+          keystore: keystore,
+          watermark: Watermarks.generic,
+        ).edsig;
 
     test('it returns a valid edsig signature', () {
       final expectedResult =
@@ -91,9 +98,12 @@ void main() {
     });
   });
 
-  group('.hex', () {
-    final subject =
-        () => Signature.fromHex(data: '123abd43', keystore: keystore, watermark: 'generic').hexIncludingPayload;
+  group('.hexIncludingPayload', () {
+    final subject = () => Signature.fromHex(
+          data: '123abd43',
+          keystore: keystore,
+          watermark: Watermarks.generic,
+        ).hexIncludingPayload;
 
     test('it returns a valid hex signature', () {
       final expectedResult =

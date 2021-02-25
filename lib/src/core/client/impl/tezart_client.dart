@@ -34,7 +34,7 @@ class TezartClient {
         final signedOperationHex = Signature.fromHex(
           data: forgedOperation,
           keystore: source,
-          watermark: 'generic',
+          watermark: Watermarks.generic,
         ).hexIncludingPayload;
 
         return rpcInterface.injectOperation(signedOperationHex);
@@ -59,7 +59,7 @@ class TezartClient {
         final signedOperationHex = Signature.fromHex(
           data: forgedOperation,
           keystore: source,
-          watermark: 'generic',
+          watermark: Watermarks.generic,
         ).hexIncludingPayload;
 
         return rpcInterface.injectOperation(signedOperationHex);

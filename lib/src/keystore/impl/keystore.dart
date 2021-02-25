@@ -93,6 +93,7 @@ class Keystore extends Equatable {
   @override
   List<Object> get props => [secretKey];
 
+  // TODO: refactor : ChecksumValidator
   static void validateChecksum(String string) {
     if (!crypto.isChecksumValid(string)) {
       throw crypto.CryptoError(type: crypto.CryptoErrorTypes.invalidChecksum);
