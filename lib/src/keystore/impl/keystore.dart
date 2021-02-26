@@ -27,66 +27,91 @@ class Keystore extends Equatable {
   const Keystore._({@required this.secretKey, this.mnemonic});
 
   factory Keystore.fromSecretKey(String secretKey) {
-    if (secretKey.length != secretKeyLength) {
-      throw crypto.CryptoError(type: crypto.CryptoErrorTypes.secretKeyLengthError);
-    }
+    return crypto.catchUnhandledErrors(() {
+      if (secretKey.length != secretKeyLength) {
+        throw crypto.CryptoError(type: crypto.CryptoErrorTypes.secretKeyLengthError);
+      }
+      _validateChecksum(secretKey);
 
-    return Keystore._(secretKey: secretKey);
+      return Keystore._(secretKey: secretKey);
+    });
   }
-  factory Keystore.fromSeed(String seed) {
-    if (seed.length != seedLength) {
-      throw crypto.CryptoError(type: crypto.CryptoErrorTypes.seedLengthError);
-    }
 
-    return Keystore._(secretKey: crypto.seedToSecretKey(seed));
+  factory Keystore.fromSeed(String seed) {
+    return crypto.catchUnhandledErrors(() {
+      if (seed.length != seedLength) {
+        throw crypto.CryptoError(type: crypto.CryptoErrorTypes.seedLengthError);
+      }
+      _validateChecksum(seed);
+
+      return Keystore._(secretKey: crypto.seedToSecretKey(seed));
+    });
   }
 
   factory Keystore.fromMnemonic(String mnemonic, {String email = '', String password = ''}) {
-    final passphrase = '$email$password';
-    final seedBytes = crypto.seedBytesFromMnemonic(mnemonic, passphrase: passphrase);
-    final seed = crypto.encodeWithPrefix(prefix: seedPrefix, bytes: seedBytes);
-    final secretKey = crypto.seedToSecretKey(seed);
+    return crypto.catchUnhandledErrors(() {
+      final passphrase = '$email$password';
+      final seedBytes = crypto.seedBytesFromMnemonic(mnemonic, passphrase: passphrase);
+      final seed = crypto.encodeWithPrefix(prefix: seedPrefix, bytes: seedBytes);
+      final secretKey = crypto.seedToSecretKey(seed);
 
-    return Keystore._(
-      secretKey: secretKey,
-      mnemonic: mnemonic,
-    );
+      return Keystore._(
+        secretKey: secretKey,
+        mnemonic: mnemonic,
+      );
+    });
   }
 
   factory Keystore.random() {
-    final generated = crypto.generateMnemonic();
-    return Keystore.fromMnemonic(generated);
+    return crypto.catchUnhandledErrors(() {
+      final generated = crypto.generateMnemonic();
+      return Keystore.fromMnemonic(generated);
+    });
   }
 
-  String get publicKey {
-    final seedBytes = crypto.decodeWithoutPrefix(seed);
-    var pk = crypto.publicKeyBytesFromSeedBytes(seedBytes);
+  String get publicKey => crypto.catchUnhandledErrors(() {
+        final seedBytes = crypto.decodeWithoutPrefix(seed);
+        var pk = crypto.publicKeyBytesFromSeedBytes(seedBytes);
 
-    return crypto.encodeWithPrefix(
-      prefix: publicKeyPrefix,
-      bytes: pk,
-    );
-  }
+        return crypto.encodeWithPrefix(
+          prefix: publicKeyPrefix,
+          bytes: pk,
+        );
+      });
 
-  String get address {
-    final publicKeyBytes = crypto.decodeWithoutPrefix(publicKey);
-    final hash = crypto.hashWithDigestSize(
-      size: 160,
-      bytes: publicKeyBytes,
-    );
+  String get address => crypto.catchUnhandledErrors(() {
+        final publicKeyBytes = crypto.decodeWithoutPrefix(publicKey);
+        final hash = crypto.hashWithDigestSize(
+          size: 160,
+          bytes: publicKeyBytes,
+        );
 
-    return crypto.encodeWithPrefix(
-      prefix: addressPrefix,
-      bytes: hash,
-    );
-  }
+        return crypto.encodeWithPrefix(
+          prefix: addressPrefix,
+          bytes: hash,
+        );
+      });
 
-  String get seed => crypto.secretKeyToSeed(secretKey);
+  String get seed => crypto.catchUnhandledErrors(() {
+        return crypto.secretKeyToSeed(secretKey);
+      });
 
   // signature methods
-  Signature signBytes(Uint8List bytes) => Signature.fromBytes(bytes: bytes, keystore: this);
-  Signature signHex(String data) => Signature.fromHex(data: data, keystore: this);
+  Signature signBytes(Uint8List bytes) => crypto.catchUnhandledErrors(() {
+        return Signature.fromBytes(bytes: bytes, keystore: this);
+      });
+
+  Signature signHex(String data) => crypto.catchUnhandledErrors(() {
+        return Signature.fromHex(data: data, keystore: this);
+      });
 
   @override
   List<Object> get props => [secretKey];
+
+  // TODO: refactor : ChecksumValidator
+  static void _validateChecksum(String string) {
+    if (!crypto.isChecksumValid(string)) {
+      throw crypto.CryptoError(type: crypto.CryptoErrorTypes.invalidChecksum);
+    }
+  }
 }

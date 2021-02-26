@@ -37,6 +37,17 @@ final _prefixesToBytes = {
 
 String _encodeBase58(Uint8List payload) => bs58check.encode(payload);
 Uint8List _decodeBase58(String string) => bs58check.decode(string);
+bool isChecksumValid(String string) {
+  try {
+    _decodeBase58(string);
+    return true;
+  } on ArgumentError catch (e) {
+    if (e.message == 'Invalid checksum') return false;
+
+    rethrow;
+  }
+}
+
 Uint8List hexDecode(String encoded) => Uint8List.fromList(hex.decode(encoded));
 String hexEncode(Uint8List input) => hex.encode(input.toList());
 

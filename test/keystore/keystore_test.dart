@@ -15,30 +15,54 @@ void main() {
   });
 
   group('.fromMnemonic', () {
-    group('when the mnemonic is not encrypted by email/password', () {
-      final subject = () => Keystore.fromMnemonic(mnemonic);
+    group('when the mnemonic is valid', () {
+      group('when the mnemonic is not encrypted by email/password', () {
+        final subject = () => Keystore.fromMnemonic(mnemonic);
 
-      test('sets mnemonic correctly', () {
-        expect(subject().mnemonic, mnemonic);
+        test('sets mnemonic correctly', () {
+          expect(subject().mnemonic, mnemonic);
+        });
+
+        test('computes secretKey correctly', () {
+          expect(subject().secretKey,
+              'edskRpwW3bAgx7GsbyTrbb5NUP7b1tz34AvfV2Vm4En5LgEzeUmg3Ys815UDYNNFG6JvrrGqA9CNU2h8hsLVVLfuEQPkZNtkap');
+        });
       });
 
-      test('computes secretKey correctly', () {
-        expect(subject().secretKey,
-            'edskRpwW3bAgx7GsbyTrbb5NUP7b1tz34AvfV2Vm4En5LgEzeUmg3Ys815UDYNNFG6JvrrGqA9CNU2h8hsLVVLfuEQPkZNtkap');
+      group('when the mnemonic is encrypted by email/password', () {
+        final subject = () => Keystore.fromMnemonic(mnemonic, password: 'password', email: 'email@example.com');
+
+        test('it sets mnemonic correctly', () {
+          expect(subject().mnemonic, mnemonic);
+        });
+
+        test('it sets secret key correctly', () {
+          const secretKey =
+              'edskS3jw3crpqkhuJZAuJMFLB4ZDvXGcm5nEWfgypk6gSyg17ZCnDbVLHupxNTUUrrQLiakgvcjsi4vNyduzyWaVUX5LHXE8Bf';
+          expect(subject().secretKey, secretKey);
+        });
       });
     });
 
-    group('when the mnemonic is encrypted by email/password', () {
-      final subject = () => Keystore.fromMnemonic(mnemonic, password: 'password', email: 'email@example.com');
+    group('when the mnemonic is invalid', () {
+      final subject = (String mnemonic) => Keystore.fromMnemonic(mnemonic);
+      group('when the mnemonic is short', () {
+        const mnemonic = 'brief hello';
 
-      test('it sets mnemonic correctly', () {
-        expect(subject().mnemonic, mnemonic);
+        test('it throws an error', () {
+          expect(() => subject(mnemonic),
+              throwsA(predicate((e) => e is CryptoError && e.type == CryptoErrorTypes.invalidMnemonic)));
+        });
       });
 
-      test('it sets secret key correctly', () {
-        const secretKey =
-            'edskS3jw3crpqkhuJZAuJMFLB4ZDvXGcm5nEWfgypk6gSyg17ZCnDbVLHupxNTUUrrQLiakgvcjsi4vNyduzyWaVUX5LHXE8Bf';
-        expect(subject().secretKey, secretKey);
+      group('when the mnemonic contains an unknown word', () {
+        const mnemonic =
+            'toto hello carry loop squeeze unknown click abstract lounge figure logic oblige child ripple about vacant scheme magnet open enroll stuff valve hobby what';
+
+        test('it throws an error', () {
+          expect(() => subject(mnemonic),
+              throwsA(predicate((e) => e is CryptoError && e.type == CryptoErrorTypes.invalidMnemonic)));
+        });
       });
     });
   });
@@ -60,6 +84,16 @@ void main() {
 
       test('it computes the seed correctly', () {
         expect(subject(secretKey).seed, 'edsk3RR5U7JsUJ8ctjsuymUPayxMm4LHXaB7VJSfeyMb8fAvbJUnsa');
+      });
+    });
+
+    group('when the secret key has invalid checksum', () {
+      final secretKey =
+          'edskRpwW3bAgx7GsbyTrbb5NUP7b1tz34AvfV2Vm4En5LgEzeUmg3Ys815UDYNNFG6JvrrGqA9CNU2h8hsLVVLfuEQPkZNtkaa';
+
+      test('it throws an error', () {
+        expect(() => subject(secretKey),
+            throwsA(predicate((e) => e is CryptoError && e.type == CryptoErrorTypes.invalidChecksum)));
       });
     });
 
@@ -100,6 +134,15 @@ void main() {
       test('throws an error', () {
         expect(() => subject(seed),
             throwsA(predicate((e) => e is CryptoError && e.type == CryptoErrorTypes.seedLengthError)));
+      });
+    });
+
+    group('when the seed has invalid checksum', () {
+      final seed = 'edsk3RR5U7JsUJ8ctjsuymUPayxMm4LHXaB7VJSfeyMb8fAvbJUnsb';
+
+      test('it throws an error', () {
+        expect(() => subject(seed),
+            throwsA(predicate((e) => e is CryptoError && e.type == CryptoErrorTypes.invalidChecksum)));
       });
     });
   });

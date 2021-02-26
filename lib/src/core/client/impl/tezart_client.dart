@@ -34,7 +34,7 @@ class TezartClient {
         final signedOperationHex = Signature.fromHex(
           data: forgedOperation,
           keystore: source,
-          watermark: 'generic',
+          watermark: Watermarks.generic,
         ).hexIncludingPayload;
 
         return rpcInterface.injectOperation(signedOperationHex);
@@ -59,7 +59,7 @@ class TezartClient {
         final signedOperationHex = Signature.fromHex(
           data: forgedOperation,
           keystore: source,
-          watermark: 'generic',
+          watermark: Watermarks.generic,
         ).hexIncludingPayload;
 
         return rpcInterface.injectOperation(signedOperationHex);
@@ -73,8 +73,10 @@ class TezartClient {
     return managerKey == null ? false : true;
   }
 
-  Future<int> getBalance({@required String address}) => rpcInterface.balance(address);
-  Future<void> monitorOperation(String operationId) => rpcInterface.monitorOperation(operationId: operationId);
+  Future<int> getBalance({@required String address}) => _catchHttpError(() => rpcInterface.balance(address));
+
+  Future<void> monitorOperation(String operationId) =>
+      _catchHttpError(() => rpcInterface.monitorOperation(operationId: operationId));
 
   Future<T> _retryOnCounterError<T>(func) {
     final r = RetryOptions(maxAttempts: 3);
@@ -84,7 +86,7 @@ class TezartClient {
     );
   }
 
-  Future<T> _catchHttpError<T>(Function func) async {
+  Future<T> _catchHttpError<T>(Future<T> Function() func) async {
     try {
       return await func();
     } on TezartHttpError catch (e) {
