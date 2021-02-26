@@ -30,11 +30,11 @@ It connects to a tezos node to send transactions, interact with smart contracts.
 
 ## Features 
 
-[wip - Classes à exporter](https://www.notion.so/Classes-exposer-fca03549f8ec4800a3ddf734ac0973d9)
+wip
 
 ## TODO 
 
-[wip - Classes à exporter](https://www.notion.so/Classes-exposer-fca03549f8ec4800a3ddf734ac0973d9)
+wip
 
 ## Usage
 
