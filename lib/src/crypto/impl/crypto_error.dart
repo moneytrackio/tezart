@@ -50,14 +50,12 @@ class CryptoError extends CommonException {
 
     switch (type) {
       case CryptoErrorTypes.unhandled:
-        {
-          return dynamicErrorMessages[type](cause);
-        }
+        return dynamicErrorMessages[type](cause);
+
         break;
       default:
-        {
-          throw UnimplementedError('Unimplemented error type $type');
-        }
+        throw UnimplementedError('Unimplemented error type $type');
+
         break;
     }
   }

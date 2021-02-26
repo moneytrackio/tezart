@@ -69,51 +69,41 @@ class Keystore extends Equatable {
     });
   }
 
-  String get publicKey {
-    return crypto.catchUnhandledErrors(() {
-      final seedBytes = crypto.decodeWithoutPrefix(seed);
-      var pk = crypto.publicKeyBytesFromSeedBytes(seedBytes);
+  String get publicKey => crypto.catchUnhandledErrors(() {
+        final seedBytes = crypto.decodeWithoutPrefix(seed);
+        var pk = crypto.publicKeyBytesFromSeedBytes(seedBytes);
 
-      return crypto.encodeWithPrefix(
-        prefix: publicKeyPrefix,
-        bytes: pk,
-      );
-    });
-  }
+        return crypto.encodeWithPrefix(
+          prefix: publicKeyPrefix,
+          bytes: pk,
+        );
+      });
 
-  String get address {
-    return crypto.catchUnhandledErrors(() {
-      final publicKeyBytes = crypto.decodeWithoutPrefix(publicKey);
-      final hash = crypto.hashWithDigestSize(
-        size: 160,
-        bytes: publicKeyBytes,
-      );
+  String get address => crypto.catchUnhandledErrors(() {
+        final publicKeyBytes = crypto.decodeWithoutPrefix(publicKey);
+        final hash = crypto.hashWithDigestSize(
+          size: 160,
+          bytes: publicKeyBytes,
+        );
 
-      return crypto.encodeWithPrefix(
-        prefix: addressPrefix,
-        bytes: hash,
-      );
-    });
-  }
+        return crypto.encodeWithPrefix(
+          prefix: addressPrefix,
+          bytes: hash,
+        );
+      });
 
-  String get seed {
-    return crypto.catchUnhandledErrors(() {
-      return crypto.secretKeyToSeed(secretKey);
-    });
-  }
+  String get seed => crypto.catchUnhandledErrors(() {
+        return crypto.secretKeyToSeed(secretKey);
+      });
 
   // signature methods
-  Signature signBytes(Uint8List bytes) {
-    return crypto.catchUnhandledErrors(() {
-      return Signature.fromBytes(bytes: bytes, keystore: this);
-    });
-  }
+  Signature signBytes(Uint8List bytes) => crypto.catchUnhandledErrors(() {
+        return Signature.fromBytes(bytes: bytes, keystore: this);
+      });
 
-  Signature signHex(String data) {
-    return crypto.catchUnhandledErrors(() {
-      return Signature.fromHex(data: data, keystore: this);
-    });
-  }
+  Signature signHex(String data) => crypto.catchUnhandledErrors(() {
+        return Signature.fromHex(data: data, keystore: this);
+      });
 
   @override
   List<Object> get props => [secretKey];
