@@ -9,7 +9,7 @@ void main() {
 
   group('.secretKeyBytesFromMnemonic', () {
     test('returns valid SigningKey', () {
-      final secretKeyBytes = secretKeyBytesFromMnemonic(mnemonic);
+      final secretKeyBytes = seedBytesFromMnemonic(mnemonic);
       expect(secretKeyBytes, equals(expected_results.secretKeyFromMnemonic));
     });
   });
@@ -23,7 +23,7 @@ void main() {
   });
 
   group('.signDetached', () {
-    final secretKey = secretKeyBytesFromMnemonic(mnemonic);
+    final secretKey = seedBytesFromMnemonic(mnemonic);
 
     test('returns valid signature bytes', () {
       final bytes = crypto_common.fakeUint8List();

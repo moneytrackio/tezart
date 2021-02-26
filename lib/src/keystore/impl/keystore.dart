@@ -41,9 +41,11 @@ class Keystore extends Equatable {
     return Keystore._(secretKey: crypto.seedToSecretKey(seed));
   }
 
-  factory Keystore.fromMnemonic(String mnemonic) {
-    var bytesSecretKey = crypto.secretKeyBytesFromMnemonic(mnemonic);
-    var secretKey = crypto.encodeWithPrefix(prefix: seedPrefix, bytes: bytesSecretKey);
+  factory Keystore.fromMnemonic(String mnemonic, {String email = '', String password = ''}) {
+    final passphrase = '$email$password';
+    final seedBytes = crypto.seedBytesFromMnemonic(mnemonic, passphrase: passphrase);
+    final seed = crypto.encodeWithPrefix(prefix: seedPrefix, bytes: seedBytes);
+    final secretKey = crypto.seedToSecretKey(seed);
 
     return Keystore._(
       secretKey: secretKey,

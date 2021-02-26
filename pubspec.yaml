@@ -11,7 +11,7 @@ environment:
 
 dependencies:
   bs58check: ^1.0.1 # implementation of base58check
-  bip39: ^1.0.3 # Mnemonic code for generating deterministic keys
+  bip39: ^1.0.4 # Mnemonic code for generating deterministic keys
   blake2b: # library used for hash computation
     git: # use pub get version when https://github.com/riclava/blake2b/pull/2 is merged
       url: git://github.com/moneytrackio/blake2b

@@ -15,17 +15,31 @@ void main() {
   });
 
   group('.fromMnemonic', () {
-    Keystore keystore;
-    setUp(() {
-      keystore = Keystore.fromMnemonic(mnemonic);
+    group('when the mnemonic is not encrypted by email/password', () {
+      final subject = () => Keystore.fromMnemonic(mnemonic);
+
+      test('sets mnemonic correctly', () {
+        expect(subject().mnemonic, mnemonic);
+      });
+
+      test('computes secretKey correctly', () {
+        expect(subject().secretKey,
+            'edskRpwW3bAgx7GsbyTrbb5NUP7b1tz34AvfV2Vm4En5LgEzeUmg3Ys815UDYNNFG6JvrrGqA9CNU2h8hsLVVLfuEQPkZNtkap');
+      });
     });
 
-    test('sets mnemonic correctly', () {
-      expect(keystore.mnemonic, mnemonic);
-    });
+    group('when the mnemonic is encrypted by email/password', () {
+      final subject = () => Keystore.fromMnemonic(mnemonic, password: 'password', email: 'email@example.com');
 
-    test('computes secretKey correctly', () {
-      expect(keystore.secretKey, 'edsk3RR5U7JsUJ8ctjsuymUPayxMm4LHXaB7VJSfeyMb8fAvbJUnsa');
+      test('it sets mnemonic correctly', () {
+        expect(subject().mnemonic, mnemonic);
+      });
+
+      test('it sets secret key correctly', () {
+        const secretKey =
+            'edskS3jw3crpqkhuJZAuJMFLB4ZDvXGcm5nEWfgypk6gSyg17ZCnDbVLHupxNTUUrrQLiakgvcjsi4vNyduzyWaVUX5LHXE8Bf';
+        expect(subject().secretKey, secretKey);
+      });
     });
   });
 
