@@ -14,7 +14,7 @@ jobs:
 
     services:
       flextesa:
-        image: othmanemtk/flextesa-delphibox:1.0.0
+        image: othmanemtk/flextesa-delphibox:1.0.1
         ports:
         - 20000:20000
         options: >-
