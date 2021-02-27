@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # tezart2222
+=======
+# tezart
+>>>>>>> 58876a9... fix(docs): infinite scrolling
 
 <table style="width:100%">
   <tr>
