@@ -182,6 +182,16 @@ You can :
 
 [Pull Requests are welcome as well !](#feature-requests-and-bugs)  
 
+### Project versionning
+
+We follow the semantic versioning from [semver](semver.org). Given a version number MAJOR.MINOR.PATCH, increment the:
+
+- **MAJOR** version when you make incompatible API changes,
+- **MINOR** version when you add functionality in a backwards compatible manner, and
+- **PATCH** version when you make backwards compatible bug fixes. 
+
+Read [dart package versioning](https://dart.dev/tools/pub/versioning) to learn more.
+
 ### Setup your development environment
 
 **The following setup only work for Mac and Linux**
@@ -231,6 +241,18 @@ You can add an alias like this `alias tezart='./tezart'` to avoid  calling the c
 Following is a sample of a correct setup :
 
 <img src="img/a-sample-correct-setup.png?raw=true"></img>
+
+
+### Edit this documentation
+
+The following documentation is provided in `tezart/docs/` directory and you call the following command to serve it 
+locally : 
+
+```bash
+./tezart docs
+```
+
+<img src="img/a-sample-tezart-docs.png?raw=true"></img>
 
 ### Utility functions
 
