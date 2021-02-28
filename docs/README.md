@@ -107,19 +107,7 @@ Future<void> main() async {
 
 > Output : 
 
-```bash
-➜ dart example/example.dart
-edskRpwW3bAgx7GsbyTrbb5NUP7b1tz34AvfV2Vm4En5LgEzeUmg3Ys815UDYNNFG6JvrrGqA9CNU2h8hsLVVLfuEQPkZNtkap
-edpkvGRiJj7mCSZtcTabQkfgKky8AEDGPTCmmWyT1Vg17Lqt3cD5TU
-tz1LmRFP1yFg4oTwfThfbrJx2BfZVAK2h7eW
-edskRpwW3bAgx7GsbyTrbb5NUP7b1tz34AvfV2Vm4En5LgEzeUmg3Ys815UDYNNFG6JvrrGqA9CNU2h8hsLVVLfuEQPkZNtkap
-edpkvGRiJj7mCSZtcTabQkfgKky8AEDGPTCmmWyT1Vg17Lqt3cD5TU
-tz1LmRFP1yFg4oTwfThfbrJx2BfZVAK2h7eW
-edskRpwW3bAgx7GsbyTrbb5NUP7b1tz34AvfV2Vm4En5LgEzeUmg3Ys815UDYNNFG6JvrrGqA9CNU2h8hsLVVLfuEQPkZNtkap
-edpkvGRiJj7mCSZtcTabQkfgKky8AEDGPTCmmWyT1Vg17Lqt3cD5TU
-tz1LmRFP1yFg4oTwfThfbrJx2BfZVAK2h7eW
-10000
-```
+<img src="img/a-output-example-dart.png?raw=true"></img>
 
 ### Special Thanks
 
@@ -163,6 +151,58 @@ Now in your Dart code, you can use:
 ```dart
 import 'package:tezart/tezart.dart';
 ```
+
+### Enable logging
+
+if you want this library to perform logging, you have to enable it :
+
+> tezart/example/example_with_log.dart
+
+```dart
+// Copyright (c), Moneytrack.io authors.
+// All rights reserved. Use of this source code is governed by a
+// MIT license that can be found in the LICENSE file.
+
+import 'package:tezart/src/common/logger/common_logger.dart' as tzlogger;
+import 'package:tezart/tezart.dart';
+
+///
+/// This is a simple example of using tezart
+/// In this example, we assume that you are running
+/// a tezos blockchain locally at http://localhost:2000
+///
+/// In the README.md of the project, we provided a command line
+/// to help you launch a local blockchain with docker.
+///
+Future<void> main() async {
+  /// Enable the log (Optional)
+  tzlogger.enableTezartLogger();
+
+  ///
+  /// Transfer
+  /// In this example, we are using a wallet that has enough tez to make the transfer
+  /// We make the transfer and monitor the operation
+  /// All amounts are in µtz
+  ///
+  final sourceKeystore = Keystore.fromSecretKey(
+      'edskRpm2mUhvoUjHjXgMoDRxMKhtKfww1ixmWiHCWhHuMEEbGzdnz8Ks4vgarKDtxok7HmrEo1JzkXkdkvyw7Rtw6BNtSd7MJ7');
+  final destinationKeystore = Keystore.random();
+  final client = TezartClient(host: 'localhost', port: '20000', scheme: 'http');
+  final amount = 10000;
+  final operationId = await client.transfer(
+    source: sourceKeystore,
+    destination: destinationKeystore.address,
+    amount: amount,
+  );
+  await client.monitorOperation(operationId);
+  print(await client.getBalance(address: destinationKeystore.address));
+  // => 10000
+}
+```
+
+> Output :
+
+<img src="img/a-output-example-log-dart.png?raw=true"></img>
 
 ## API Overview and Examples
 

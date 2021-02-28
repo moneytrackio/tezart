@@ -25,6 +25,8 @@ dependencies:
   json_serializable: ^3.5.1 # code generation for toJson and fromJson methods
   retry: ^3.0.1 # retry a function if an error happens
   memoize: ^2.0.0 # memoize method calls
+  logging: ^0.11.4 # official dart team : Provides APIs for debugging and error logging.
+  ansicolor: ^1.0.2 # Use AnsiPen to add ANSI color codes to your log messages.
 
 dev_dependencies:
   pedantic: ^1.9.0 # linter

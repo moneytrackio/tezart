@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:logging/logging.dart';
 import 'package:memoize/memoize.dart';
 import 'package:meta/meta.dart';
 import 'package:tezart/src/core/rpc/impl/operations_monitor.dart';
@@ -12,47 +13,55 @@ class RpcInterface {
   static const randomSignature =
       'edsigu165B7VFf3Dpw2QABVzEtCxJY2gsNBNcE3Ti7rRxtDUjqTFRpg67EdAQmY6YWPE5tKJDMnSTJDFu65gic8uLjbW2YwGvAZ';
   final TezartHttpClient httpClient;
+  final log = Logger('RpcInterface');
 
   RpcInterface({@required String host, String port = '80', String scheme = 'http'})
       : httpClient = TezartHttpClient(host: host, port: port, scheme: scheme);
 
   Future<String> branch([chain = 'main', level = 'head']) async {
+    log.info('request for branch [ chain:$chain, level:$level]');
     var response = await httpClient.get(paths.branch(chain: chain, level: level));
 
     return response.data;
   }
 
   Future<String> chainId([chain = 'main']) async {
+    log.info('request for chainId [ chain:$chain ]');
     var response = await httpClient.get(paths.chainId(chain));
 
     return response.data;
   }
 
   Future<String> protocol([chain = 'main', level = 'head']) async {
+    log.info('request for protocol [ chain:$chain, level:$level]');
     var response = await httpClient.get(paths.protocol(chain: chain, level: level));
 
     return response.data['protocol'];
   }
 
   Future<int> counter(String source, [chain = 'main', level = 'head']) async {
+    log.info('request for counter [ chain:$chain, level:$level]');
     final response = await httpClient.get(paths.counter(source: source, chain: chain, level: level));
 
     return int.parse(response.data);
   }
 
   Future<Map<String, dynamic>> pendingOperations([chain = 'main']) async {
+    log.info('request for pendingOperations [ chain:$chain]');
     final response = await httpClient.get(paths.pendingOperations(chain));
 
     return response.data;
   }
 
   Future<String> injectOperation(String data, [chain = 'main']) async {
+    log.info('request for injectOperation [ chain:$chain]');
     final response = await httpClient.post(paths.injectOperation(chain), data: jsonEncode(data));
 
     return response.data;
   }
 
   Future<String> forgeOperations(List<Operation> operations, [chain = 'main', level = 'head']) async {
+    log.info('request for forgeOperations [ chain:$chain, level:$level]');
     var content = {
       'branch': await branch(),
       'contents': operations.map((operation) => operation.toJson()).toList(),
@@ -63,6 +72,7 @@ class RpcInterface {
   }
 
   Future<List<dynamic>> runOperations(List<Operation> operations, [chain = 'main', level = 'head']) async {
+    log.info('request for runOperations [ chain:$chain, level:$level]');
     var content = {
       'operation': {
         'branch': await branch(),
@@ -78,12 +88,14 @@ class RpcInterface {
   }
 
   Future<String> managerKey(String address, [chain = 'main', level = 'head']) async {
+    log.info('request for managerKey [ chain:$chain, level:$level]');
     var response = await httpClient.get(paths.managerKey(address: address, chain: chain, level: level));
 
     return response.data;
   }
 
   Future<int> balance(String address, [chain = 'main', level = 'head']) async {
+    log.info('request for balance [ chain:$chain, level:$level]');
     var response = await httpClient.get(paths.balance(chain: chain, level: level, address: address));
 
     return int.parse(response.data['balance']);
