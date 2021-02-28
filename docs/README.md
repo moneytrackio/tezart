@@ -246,13 +246,3 @@ Following is the output usage :
 If you want to contribute to this project, please [fork](https://github.com/moneytrackio/tezart) the project and submit your pull request. 
 
 Submit your feature requests and bugs at the [issue tracker](https://github.com/moneytrackio/tezart/issues/new)
-
-## Work in Progress
-
-[wip - Classes à exporter](https://www.notion.so/Classes-exposer-fca03549f8ec4800a3ddf734ac0973d9)
-
-## Other references
-
-[API reference]()
-
-[Changelog]()
