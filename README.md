@@ -25,6 +25,8 @@ See the [Quick start](#quick-start) guide for more details.
 
 Look at this [example](https://moneytrackio.github.io/tezart/?id=examples)
 
+![Quick start - Example](docs/_media/quickstart-example-tezart.gif)
+
 ## Feature requests and bugs 
 
 If you want to contribute to this project, please fork the project and submit your pull request. 
