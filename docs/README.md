@@ -6,27 +6,6 @@
 
 
 
-> A library for building decentralized applications in [dart language](https://dart.dev/)  currently focused on the [Tezos](http://tezos.com/) platform.
-
-## What it is 
-
-[Tezart](https://github.com/moneytrackio/tezart) connects to interact with the Tezos blockchain. It connects to a tezos node to send transactions, interact with smart contracts and much more !
-
-See the [Quick start](quickstart.md) guide for more details.
-
-## Features 
-
-- [Tezos Chain Operations](tezos_chain_operations.md)
-- [Smart Contract Interactions](smart_contract_interactions.md)
-
-## Examples
-
-Check out the [Showcase]() to see Tezart in use.
-
-## Special Thanks
-
-[Tezos foundation](https://tezos.foundation/) and [Moneytrack.io](http://moneytrack.io/) for the effort.
-=======
 > A library for building decentralized applications in [dart language](https://dart.dev/), currently focused on the [Tezos](http://tezos.com/) platform.
 
 ### What it is 
@@ -40,9 +19,107 @@ See the [Quick start](#quick-start) guide for more details.
 - [Tezos Chain Operations](#tezos-chain-operations)
 - [Smart Contract Interactions](#smart-contract-interactions)
 
-### Examples
+### Example
 
-Check out the [Showcase]() to see Tezart in use.
+> tezart/example/example.dart
+
+```dart
+// Copyright (c), Moneytrack.io authors. 
+// All rights reserved. Use of this source code is governed by a 
+// MIT license that can be found in the LICENSE file.
+
+import 'package:tezart/tezart.dart';
+
+// Sample mnemonic
+const String mnemonic =
+    'brief hello carry loop squeeze unknown click abstract lounge figure logic oblige child ripple about vacant scheme magnet open enroll stuff valve hobby what';
+
+// Sample secret key
+const String secretKey =
+    'edskRpwW3bAgx7GsbyTrbb5NUP7b1tz34AvfV2Vm4En5LgEzeUmg3Ys815UDYNNFG6JvrrGqA9CNU2h8hsLVVLfuEQPkZNtkap';
+
+// Sample seed
+const String seed = 'edsk3RR5U7JsUJ8ctjsuymUPayxMm4LHXaB7VJSfeyMb8fAvbJUnsa';
+
+/// 
+/// This is a simple example of using tezart
+/// In this example, we assume that you are running 
+/// a tezos blockchain locally at http://localhost:2000
+/// 
+/// In the README.md of the project, we provided a command line 
+/// to help you launch a local blockchain with docker.
+/// 
+Future<void> main() async {
+  /// Generate keystore from mnemonic
+  var keystore = Keystore.fromMnemonic(mnemonic);
+
+  // Sample output of keystore created from mnemonic
+  print(keystore.secretKey);
+  // => edskRpwW3bAgx7GsbyTrbb5NUP7b1tz34AvfV2Vm4En5LgEzeUmg3Ys815UDYNNFG6JvrrGqA9CNU2h8hsLVVLfuEQPkZNtkap
+  print(keystore.publicKey);
+  // => edpkvGRiJj7mCSZtcTabQkfgKky8AEDGPTCmmWyT1Vg17Lqt3cD5TU
+  print(keystore.address);
+  // => tz1LmRFP1yFg4oTwfThfbrJx2BfZVAK2h7eW
+
+  /// Generate keystore from secret key
+  keystore = Keystore.fromSecretKey(secretKey);
+
+  // Sample output of keystore created from secretkey
+  print(keystore.secretKey);
+  // => edskRpwW3bAgx7GsbyTrbb5NUP7b1tz34AvfV2Vm4En5LgEzeUmg3Ys815UDYNNFG6JvrrGqA9CNU2h8hsLVVLfuEQPkZNtkap
+  print(keystore.publicKey);
+  // => edpkvGRiJj7mCSZtcTabQkfgKky8AEDGPTCmmWyT1Vg17Lqt3cD5TU
+  print(keystore.address);
+  // => tz1LmRFP1yFg4oTwfThfbrJx2BfZVAK2h7eW
+
+  /// Generate keystore from seed
+  keystore = Keystore.fromSeed(seed);
+
+  // Sample output of keystore created from seed
+  print(keystore.secretKey);
+  // => edskRpwW3bAgx7GsbyTrbb5NUP7b1tz34AvfV2Vm4En5LgEzeUmg3Ys815UDYNNFG6JvrrGqA9CNU2h8hsLVVLfuEQPkZNtkap
+  print(keystore.publicKey);
+  // => edpkvGRiJj7mCSZtcTabQkfgKky8AEDGPTCmmWyT1Vg17Lqt3cD5TU
+  print(keystore.address);
+  // => tz1LmRFP1yFg4oTwfThfbrJx2BfZVAK2h7eW
+
+  ///
+  /// Transfer
+  /// In this example, we are using a wallet that has enough tez to make the transfer
+  /// We make the transfer and monitor the operation
+  /// All amounts are in µtz
+  ///
+  final sourceKeystore = Keystore.fromSecretKey(
+      'edskRpm2mUhvoUjHjXgMoDRxMKhtKfww1ixmWiHCWhHuMEEbGzdnz8Ks4vgarKDtxok7HmrEo1JzkXkdkvyw7Rtw6BNtSd7MJ7');
+  final destinationKeystore = Keystore.random();
+  final client = TezartClient(host: 'localhost', port: '20000', scheme: 'http');
+  final amount = 10000;
+  final operationId = await client.transfer(
+    source: sourceKeystore,
+    destination: destinationKeystore.address,
+    amount: amount,
+  );
+  await client.monitorOperation(operationId);
+  print(await client.getBalance(address: destinationKeystore.address));
+  // => 10000
+}
+```
+
+> Output : 
+
+```bash
+➜ dart example/example.dart
+edskRpwW3bAgx7GsbyTrbb5NUP7b1tz34AvfV2Vm4En5LgEzeUmg3Ys815UDYNNFG6JvrrGqA9CNU2h8hsLVVLfuEQPkZNtkap
+edpkvGRiJj7mCSZtcTabQkfgKky8AEDGPTCmmWyT1Vg17Lqt3cD5TU
+tz1LmRFP1yFg4oTwfThfbrJx2BfZVAK2h7eW
+edskRpwW3bAgx7GsbyTrbb5NUP7b1tz34AvfV2Vm4En5LgEzeUmg3Ys815UDYNNFG6JvrrGqA9CNU2h8hsLVVLfuEQPkZNtkap
+edpkvGRiJj7mCSZtcTabQkfgKky8AEDGPTCmmWyT1Vg17Lqt3cD5TU
+tz1LmRFP1yFg4oTwfThfbrJx2BfZVAK2h7eW
+edskRpwW3bAgx7GsbyTrbb5NUP7b1tz34AvfV2Vm4En5LgEzeUmg3Ys815UDYNNFG6JvrrGqA9CNU2h8hsLVVLfuEQPkZNtkap
+edpkvGRiJj7mCSZtcTabQkfgKky8AEDGPTCmmWyT1Vg17Lqt3cD5TU
+tz1LmRFP1yFg4oTwfThfbrJx2BfZVAK2h7eW
+10000
+```
 
 ### Special Thanks
 
@@ -52,7 +129,7 @@ Check out the [Showcase]() to see Tezart in use.
 
 ### Use this package as a dart library 
 
-1. Depend on it 
+1. **Depend on it** 
 
 Add this to your package's pubspec.yaml file:
 
@@ -61,25 +138,25 @@ dependencies:
   tezart:
 ```
 
-2. Install it
+2. **Install it**
 
 You can install packages from the command line:
 
 with pub:
 
-```sh 
-$ dart pub get
+```bash 
+dart pub get
 ```  
 
 with Flutter: 
 
-```sh 
-$ flutter pub get
+```bash 
+flutter pub get
 ``` 
 
 Alternatively, your editor might support dart pub get or flutter pub get. Check the docs for your editor to learn more.
 
-3. Import it
+3. **Import it**
 
 Now in your Dart code, you can use:
 
@@ -126,7 +203,7 @@ You can install **Dart SDK**, by following the [official dart documentation](htt
 
 2- If you have **Docker**, You will need a running blockchain on your local environment to launch the tests. You can use [tqtezos's sandbox](https://assets.tqtezos.com/docs/setup/2-sandbox/) by running the following command : 
 
-```
+```bash
 docker run --rm \
     --name my-sandbox \
     --detach -p 20000:20000 \
@@ -137,7 +214,7 @@ docker run --rm \
 
 To install lefthook, just follow [this](https://github.com/Arkweid/lefthook/blob/master/docs/full_guide.md#installation) guide, then run :
 
-```sh
+```bash
 lefthook install
 ```
 
@@ -145,7 +222,7 @@ lefthook install
 
 To ensure that your environment is ready for contribution, please run the following command at the root of the project: 
 
-```sh
+```bash
 ./tezart doctor
 ```
 
