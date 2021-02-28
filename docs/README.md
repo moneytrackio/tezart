@@ -184,7 +184,7 @@ You can :
 
 ### Project versionning
 
-We follow the semantic versioning from [semver](semver.org). Given a version number MAJOR.MINOR.PATCH, increment the:
+The versioning scheme we use is [SemVer](http://semver.org/). Given a version number MAJOR.MINOR.PATCH, increment the:
 
 - **MAJOR** version when you make incompatible API changes,
 - **MINOR** version when you add functionality in a backwards compatible manner, and
@@ -262,9 +262,10 @@ Following is the output usage :
 
 <img src="img/a-current-usage.png?raw=true"></img>
 
+### Pull Request advice
 
-## Feature requests and bugs
-
-If you want to contribute to this project, please [fork](https://github.com/moneytrackio/tezart) the project and submit your pull request. 
-
-Submit your feature requests and bugs at the [issue tracker](https://github.com/moneytrackio/tezart/issues/new)
+- Ensure to have a correct output for `tezart doctor` in your development environment. 
+- Update the `docs/README.md` if necessary with details of changes that you've made. This includes new API,
+   useful command-line option, etc...
+- You may merge the Pull Request in once you have the sign-off of two other developers, or if you 
+   do not have permission to do that, you may request the second reviewer to merge it for you.
