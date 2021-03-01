@@ -24,6 +24,7 @@ USAGE_HELP='Display this message'
 USAGE_RUN_DOCTOR='Process to run the setup of the project'
 USAGE_RUN_TESTS='Process to run tests'
 USAGE_RUN_COVERAGE='Process to run the code coverage in dev environment'
+USAGE_RUN_DOCS='Process to launch the documentation in dev environment'
 
 usage() {
 
@@ -37,6 +38,7 @@ usage() {
 	doctor		$USAGE_RUN_DOCTOR
 	tests		$USAGE_RUN_TESTS
 	coverage 	$USAGE_RUN_COVERAGE
+	docs 		$USAGE_RUN_DOCS
 	-h 		$USAGE_HELP
 
 EOF
@@ -153,6 +155,13 @@ tezart::run_tests() {
 	pub run test
 }
 
+tezart::run_docs() {
+	log::info "$USAGE_RUN_DOCS :"
+
+	pub global activate dhttpd > /dev/null
+	dhttpd --path docs
+}
+
 # ███╗   ███╗ █████╗ ██╗███╗   ██╗    
 # ████╗ ████║██╔══██╗██║████╗  ██║    
 # ██╔████╔██║███████║██║██╔██╗ ██║    
@@ -165,12 +174,13 @@ tezart::run_tests() {
 RUN_DOCTOR=
 RUN_TESTS=
 RUN_COVERAGE=
+RUN_DOCS=
 
 main() {
 	[[ -n $RUN_DOCTOR ]] && tezart::run_doctor
 	[[ -n $RUN_TESTS ]] && tezart::run_tests
 	[[ -n $RUN_COVERAGE ]] && tezart::run_coverage
-	
+	[[ -n $RUN_DOCS ]] && tezart::run_docs
 	exit 0
 }
 
@@ -207,6 +217,9 @@ case "$subcommand" in
 		;;
 	coverage)
 		RUN_COVERAGE=1
+		;;
+	docs)
+		RUN_DOCS=1
 		;;
 	*)
 		log::error "Unknow parameter '$subcommand' !"
