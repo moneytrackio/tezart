@@ -43,7 +43,7 @@ class TezartHttpClient {
     try {
       return await func();
     } on http_client.DioError catch (e) {
-      log.severe('Error in revealKey', e);
+      log.severe('Error in http call', e);
       throw TezartHttpError(e);
     }
   }

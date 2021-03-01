@@ -2,20 +2,21 @@
 // All rights reserved. Use of this source code is governed by a
 // MIT license that can be found in the LICENSE file.
 
-import 'package:tezart/src/common/logger/common_logger.dart' as tzlogger;
 import 'package:tezart/tezart.dart';
 
 ///
 /// This is a simple example of using tezart
 /// In this example, we assume that you are running
-/// a tezos blockchain locally at http://localhost:2000
+/// a tezos blockchain locally at http://localhost:20000
 ///
 /// In the README.md of the project, we provided a command line
 /// to help you launch a local blockchain with docker.
 ///
 Future<void> main() async {
+  ///
   /// Enable the log (Optional)
-  tzlogger.enableTezartLogger();
+  ///
+  enableTezartLogger();
 
   ///
   /// Transfer
