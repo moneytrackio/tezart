@@ -19,7 +19,7 @@ See the [Quick start](#quick-start) guide for more details.
 
 - [Documentation](https://moneytrackio.github.io/tezart/)
 - [Contribution](https://moneytrackio.github.io/tezart/#/?id=contribute)
-- [API Reference]()
+- [API Reference](https://moneytrackio.github.io/tezart/_api/tezart/tezart-library.html)
 
 ## Quick Start
 
