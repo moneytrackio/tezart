@@ -29,7 +29,7 @@ Look at this [example](https://moneytrackio.github.io/tezart/?id=examples)
 
 ## Feature requests and bugs 
 
-If you want to contribute to this project, read the [code of conduct](CONTRIBUTING.md)
+If you want to contribute to this project, read the [code of conduct](CONTRIBUTING.md#code-of-conduct)
 
 Feature requests and bugs at the [issue tracker](https://github.com/moneytrackio/tezart/issues/new)
 
