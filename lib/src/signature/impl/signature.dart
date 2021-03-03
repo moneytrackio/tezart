@@ -13,6 +13,13 @@ enum Watermarks {
   generic,
 }
 
+/// A class that takes data of different types and signs it using a [Keystore] object.\
+///
+/// It can sign bytes and hexadecimal data.\
+/// The signature is computed in different formats:
+/// - [signedBytes]: signed bytes
+/// - [edsig]: base 58 encoded using 'edsig' prefix
+/// - [hexIncludingPayload]: hexadecimal signature prefixed by data to sign
 @immutable
 class Signature extends Equatable {
   final Uint8List bytes;
@@ -27,10 +34,19 @@ class Signature extends Equatable {
 
   Signature._({@required this.bytes, @required this.keystore, this.watermark});
 
+  /// A factory that computes the signature of [bytes] (prefixed by [watermark]) using [keystore].
+  ///
+  /// [watermark] is optional and will be ignored if missing.
   factory Signature.fromBytes({@required Uint8List bytes, @required Keystore keystore, Watermarks watermark}) {
     return Signature._(bytes: bytes, watermark: watermark, keystore: keystore);
   }
 
+  /// A factory that computes the signature of hexadecimal [data] (prefixed by [watermark]) using [keystore].\
+  ///
+  /// [watermark] is optional and will be ignored if missing.\
+  /// Throws a [CryptoError] if :
+  /// - [data] is not hexadecimal
+  /// - [data] length is odd (because it must be the hexadecimal of a list of bytes (a single byte represent two hexadecimal digits))
   factory Signature.fromHex({@required String data, @required Keystore keystore, Watermarks watermark}) {
     return crypto.catchUnhandledErrors(() {
       HexValidator(data).validate();
@@ -42,6 +58,7 @@ class Signature extends Equatable {
     });
   }
 
+  /// Signed bytes of this.
   Uint8List get signedBytes {
     return crypto.catchUnhandledErrors(() {
       final watermarkedBytes =
@@ -54,12 +71,14 @@ class Signature extends Equatable {
     });
   }
 
+  /// Base 58 encoding of this using 'edsig' prefix.
   String get edsig {
     return crypto.catchUnhandledErrors(() {
       return crypto.encodeWithPrefix(prefix: crypto.Prefixes.edsig, bytes: signedBytes);
     });
   }
 
+  /// Hexadecimal signature of this prefixed with hexadecimal payload to sign.
   String get hexIncludingPayload {
     return crypto.catchUnhandledErrors(() {
       return crypto.hexEncode(Uint8List.fromList(bytes + signedBytes));
