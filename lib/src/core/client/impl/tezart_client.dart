@@ -8,13 +8,39 @@ import 'package:tezart/src/signature/signature.dart';
 
 import 'tezart_node_error.dart';
 
+/// A client that connects to the Tezos node.
+///
+/// ```dart
+/// final client = TezartClient(host: 'localhost', port: '80', scheme: 'http');
+/// ```
+///
+/// The methods throw [TezartNodeError] if a node error occurs.\
+/// Injection operations are retried 3 times if a counter error ocurs.\
+/// Amounts are in µtz. 1tz = 1000000µtz.
 class TezartClient {
   final log = Logger('TezartClient');
+
+  /// A [RpcInterface] instance, generated using `host`, `port`, `scheme`
   final RpcInterface rpcInterface;
 
+  /// Default constructor.
+  ///
+  /// - [host] is required.
+  /// - [port] is by default set to `'80'`
+  /// - [scheme] is by default set to `'http'`
   TezartClient({@required String host, String port = '80', String scheme = 'http'})
       : rpcInterface = RpcInterface(host: host, port: port, scheme: scheme);
 
+  /// Transfers [amount] from [source] to [destination] and returns the operation group id.\
+  ///
+  /// ```dart
+  /// final source = Keystore.fromSecretKey('edskRpm2mUhvoUjHjXgMoDRxMKhtKfww1ixmWiHCWhHuMEEbGzdnz8Ks4vgarKDtxok7HmrEo1JzkXkdkvyw7Rtw6BNtSd7MJ7');
+  /// final destination = 'tz1LmRFP1yFg4oTwfThfbrJx2BfZVAK2h7eW';
+  /// final amount = 1000;
+  /// await client.transfer(source: source, destination: destionation, amount: amount);
+  /// ```
+  ///
+  /// Retries 3 times if a counter error occurs ([TezartNodeErrorTypes.counter_error]).
   Future<String> transfer({
     @required Keystore source,
     @required String destination,
@@ -22,7 +48,7 @@ class TezartClient {
   }) async =>
       _retryOnCounterError(() async {
         return _catchHttpError<String>(() async {
-          log.info('request transfer to the destination $destination');
+          log.info('request transfer $amount µtz from $source.address to the destination $destination');
           final counter = await rpcInterface.counter(source.address) + 1;
           final operation = TransactionOperation(
             amount: amount,
@@ -44,6 +70,10 @@ class TezartClient {
         });
       });
 
+  /// Reveals [source.publicKey] and returns the operation group id
+  ///
+  /// It will reveal the public key associated to an address so that everyone
+  /// can verify the signature for the operation and any future operations.
   Future<String> revealKey(Keystore source) async => _retryOnCounterError(() async {
         return _catchHttpError<String>(() async {
           log.info('request to revealKey');
@@ -68,6 +98,7 @@ class TezartClient {
         });
       });
 
+  /// Returns `true` if the public key of [address] is revealed.
   Future<bool> isKeyRevealed(String address) async {
     log.info('request to find if isKeyRevealed');
     final managerKey = await rpcInterface.managerKey(address);
@@ -75,11 +106,18 @@ class TezartClient {
     return managerKey == null ? false : true;
   }
 
+  /// Returns the balance in µtz of `address`.
   Future<int> getBalance({@required String address}) {
     log.info('request to getBalance');
     return _catchHttpError(() => rpcInterface.balance(address));
   }
 
+  /// Waits for [operationId] to be included in a block.
+  ///
+  /// ```dart
+  /// final operationId = await client.revealKey(source);
+  /// await client.monitorOperation(operationId);
+  /// ```
   Future<void> monitorOperation(String operationId) {
     log.info('request to monitorOperation');
     return _catchHttpError(() => rpcInterface.monitorOperation(operationId: operationId));
