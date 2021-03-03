@@ -1,0 +1,18 @@
+dartdoc:
+  showUndocumentedCategories: true
+  errors:
+    - unresolved-doc-reference
+    - ambiguous-doc-reference
+    - broken-link
+    - missing-from-search-index
+    - no-canonical-found
+    - orphaned-file
+    - reexported-private-api-across-packages
+    - unknown-directive
+    - unknown-file
+    - unknown-macro
+    - unresolved-doc-reference
+    - package
+  linkToSource:
+    root: '.'
+    uriTemplate: 'https://github.com/moneytrackio/tezart/blob/main/%f%#L%l%'
