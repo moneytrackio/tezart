@@ -40,7 +40,7 @@ class TezartClient {
   /// await client.transfer(source: source, destination: destionation, amount: amount);
   /// ```
   ///
-  /// Retries 3 times if a counter error occurs ([TezartNodeErrorTypes.counter_error]).
+  /// Retries 3 times if a counter error occurs ([TezartNodeErrorTypes.counterError]).
   Future<String> transfer({
     @required Keystore source,
     @required String destination,
@@ -127,7 +127,7 @@ class TezartClient {
     final r = RetryOptions(maxAttempts: 3);
     return r.retry(
       func,
-      retryIf: (e) => e is TezartNodeError && e.type == TezartNodeErrorTypes.counter_error,
+      retryIf: (e) => e is TezartNodeError && e.type == TezartNodeErrorTypes.counterError,
     );
   }
 

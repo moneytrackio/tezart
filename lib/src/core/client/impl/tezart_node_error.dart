@@ -6,9 +6,9 @@ import 'package:tezart/src/common/utils/map_extension.dart';
 import 'package:tezart/src/core/rpc/rpc_interface.dart';
 
 enum TezartNodeErrorTypes {
-  already_revealed_key,
-  monitoring_timed_out,
-  counter_error,
+  alreadyRevealedKey,
+  monitoringTimedOut,
+  counterError,
   unhandled,
 }
 
@@ -19,14 +19,13 @@ class TezartNodeError extends CommonException {
   final Map<String, String> metadata;
 
   final staticErrorsMessages = {
-    TezartNodeErrorTypes.already_revealed_key: "You're trying to reveal an already revealed key.",
-    TezartNodeErrorTypes.counter_error: 'A counter error occured',
+    TezartNodeErrorTypes.alreadyRevealedKey: "You're trying to reveal an already revealed key.",
+    TezartNodeErrorTypes.counterError: 'A counter error occured',
     TezartNodeErrorTypes.unhandled: 'Unhandled error',
   };
 
   final dynamicErrorMessages = {
-    TezartNodeErrorTypes.monitoring_timed_out: (String operationId) =>
-        'Monitoring the operation $operationId timed out',
+    TezartNodeErrorTypes.monitoringTimedOut: (String operationId) => 'Monitoring the operation $operationId timed out',
   };
 
   TezartNodeError({@required TezartNodeErrorTypes type, String message, this.metadata})
@@ -44,8 +43,8 @@ class TezartNodeError extends CommonException {
   String get message => _inputMessage ?? _computedMessage;
 
   TezartNodeErrorTypes get _computedType {
-    if (RegExp(r'Counter.*already used.*').hasMatch(errorMsg)) return TezartNodeErrorTypes.counter_error;
-    if (RegExp(r'previously_revealed_key').hasMatch(errorId)) return TezartNodeErrorTypes.already_revealed_key;
+    if (RegExp(r'Counter.*already used.*').hasMatch(errorMsg)) return TezartNodeErrorTypes.counterError;
+    if (RegExp(r'previously_revealed_key').hasMatch(errorId)) return TezartNodeErrorTypes.alreadyRevealedKey;
 
     return TezartNodeErrorTypes.unhandled;
   }
@@ -61,7 +60,7 @@ class TezartNodeError extends CommonException {
     if (staticErrorsMessages.containsKey(type)) return staticErrorsMessages[type];
 
     switch (type) {
-      case TezartNodeErrorTypes.monitoring_timed_out:
+      case TezartNodeErrorTypes.monitoringTimedOut:
         {
           return dynamicErrorMessages[type](metadata.fetch<String>('operationId'));
         }

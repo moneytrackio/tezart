@@ -40,7 +40,7 @@ class OperationsMonitor {
     }
 
     throw TezartNodeError(
-      type: TezartNodeErrorTypes.monitoring_timed_out,
+      type: TezartNodeErrorTypes.monitoringTimedOut,
       metadata: {'operationId': operationId},
     );
   }
