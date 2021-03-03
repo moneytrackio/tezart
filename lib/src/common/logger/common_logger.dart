@@ -35,7 +35,7 @@ void _printOutput({
 }
 
 ///
-/// Enable the logs to be display in the console.
+/// Enables the logs to be displayed in the console.
 ///
 void enableTezartLogger() {
   Logger.root.level = Level.ALL; // defaults to Level.INFO

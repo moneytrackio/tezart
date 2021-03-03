@@ -5,20 +5,24 @@ import 'package:equatable/equatable.dart';
 // internal Library
 //
 // we hide Prefixes from the crypto name and then show it without a name to avoid this:
-// `static const crypto.Prefixes seedPrefix = crypto.Prefixes.edsk2;`
+// `static const crypto.Prefixes _seedPrefix = crypto.Prefixes.edsk2;`
 // and have this instead :
 // `static const Prefixes = Prefixes.edsk2;
 import 'package:tezart/src/crypto/crypto.dart' as crypto hide Prefixes;
 import 'package:tezart/src/crypto/crypto.dart' show Prefixes;
 import 'package:tezart/src/signature/signature.dart';
 
+/// A class that handles key stores and keys (seed, secret key, public key, address) computation.
+///
+/// - [secretKey] is always set
+/// - [mnemonic] might be null
 @immutable
 class Keystore extends Equatable {
-  static const Prefixes seedPrefix = Prefixes.edsk2;
-  static const Prefixes publicKeyPrefix = Prefixes.edpk;
-  static const Prefixes addressPrefix = Prefixes.tz1;
-  static const secretKeyLength = 98;
-  static const seedLength = 54;
+  static const Prefixes _seedPrefix = Prefixes.edsk2;
+  static const Prefixes _publicKeyPrefix = Prefixes.edpk;
+  static const Prefixes _addressPrefix = Prefixes.tz1;
+  static const _secretKeyLength = 98;
+  static const _seedLength = 54;
 
   final String secretKey;
 
@@ -26,9 +30,18 @@ class Keystore extends Equatable {
 
   const Keystore._({@required this.secretKey, this.mnemonic});
 
+  /// A factory that generates a key store from a secret key.
+  ///
+  /// ```dart
+  /// final keystore = Keystore.fromSecretKey('edskRpm2mUhvoUjHjXgMoDRxMKhtKfww1ixmWiHCWhHuMEEbGzdnz8Ks4vgarKDtxok7HmrEo1JzkXkdkvyw7Rtw6BNtSd7MJ7');
+  /// ```
+  ///
+  /// Throws [CryptoError] if :\
+  /// - [secretKey] length is != 98
+  /// - [secretKey] checksum is invalid
   factory Keystore.fromSecretKey(String secretKey) {
     return crypto.catchUnhandledErrors(() {
-      if (secretKey.length != secretKeyLength) {
+      if (secretKey.length != _secretKeyLength) {
         throw crypto.CryptoError(type: crypto.CryptoErrorTypes.secretKeyLengthError);
       }
       _validateChecksum(secretKey);
@@ -37,9 +50,18 @@ class Keystore extends Equatable {
     });
   }
 
+  /// A factory that generates a key store from a seed.
+  ///
+  /// ```dart
+  /// final keystore = Keystore.fromSeed('edsk3RR5U7JsUJ8ctjsuymUPayxMm4LHXaB7VJSfeyMb8fAvbJUnsa');
+  /// ```
+  ///
+  /// Throws [CryptoError] if:\
+  /// - [seed] length is != 54
+  /// - [seed] checksum is invalid
   factory Keystore.fromSeed(String seed) {
     return crypto.catchUnhandledErrors(() {
-      if (seed.length != seedLength) {
+      if (seed.length != _seedLength) {
         throw crypto.CryptoError(type: crypto.CryptoErrorTypes.seedLengthError);
       }
       _validateChecksum(seed);
@@ -48,11 +70,19 @@ class Keystore extends Equatable {
     });
   }
 
+  /// A factory that generates a key store from a mnemonic, email and password.\
+  ///
+  /// [email] and [password] are optional.\
+  /// ```dart
+  /// final keystore = Keystore.fromMnemonic('brief hello carry loop squeeze unknown click abstract lounge figure logic oblige child ripple about vacant scheme magnet open enroll stuff valve hobby what');
+  /// ```
+  ///
+  /// Throws [CryptoError] if [mnemonic] is invalid.
   factory Keystore.fromMnemonic(String mnemonic, {String email = '', String password = ''}) {
     return crypto.catchUnhandledErrors(() {
       final passphrase = '$email$password';
       final seedBytes = crypto.seedBytesFromMnemonic(mnemonic, passphrase: passphrase);
-      final seed = crypto.encodeWithPrefix(prefix: seedPrefix, bytes: seedBytes);
+      final seed = crypto.encodeWithPrefix(prefix: _seedPrefix, bytes: seedBytes);
       final secretKey = crypto.seedToSecretKey(seed);
 
       return Keystore._(
@@ -62,6 +92,11 @@ class Keystore extends Equatable {
     });
   }
 
+  /// A factory that generates a random key store.\
+  ///
+  /// ```dart
+  /// final keystore = Keystore.random();
+  /// ```
   factory Keystore.random() {
     return crypto.catchUnhandledErrors(() {
       final generated = crypto.generateMnemonic();
@@ -69,16 +104,18 @@ class Keystore extends Equatable {
     });
   }
 
+  /// The public key of this.
   String get publicKey => crypto.catchUnhandledErrors(() {
         final seedBytes = crypto.decodeWithoutPrefix(seed);
         var pk = crypto.publicKeyBytesFromSeedBytes(seedBytes);
 
         return crypto.encodeWithPrefix(
-          prefix: publicKeyPrefix,
+          prefix: _publicKeyPrefix,
           bytes: pk,
         );
       });
 
+  /// The address of this.
   String get address => crypto.catchUnhandledErrors(() {
         final publicKeyBytes = crypto.decodeWithoutPrefix(publicKey);
         final hash = crypto.hashWithDigestSize(
@@ -87,20 +124,22 @@ class Keystore extends Equatable {
         );
 
         return crypto.encodeWithPrefix(
-          prefix: addressPrefix,
+          prefix: _addressPrefix,
           bytes: hash,
         );
       });
 
+  /// The seed of this.
   String get seed => crypto.catchUnhandledErrors(() {
         return crypto.secretKeyToSeed(secretKey);
       });
 
-  // signature methods
+  /// Returns [tezart.Signature] of [bytes] signed by this.
   Signature signBytes(Uint8List bytes) => crypto.catchUnhandledErrors(() {
         return Signature.fromBytes(bytes: bytes, keystore: this);
       });
 
+  /// Returns [tezart.Signature] of [data] signed by this.
   Signature signHex(String data) => crypto.catchUnhandledErrors(() {
         return Signature.fromHex(data: data, keystore: this);
       });
