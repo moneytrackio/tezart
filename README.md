@@ -13,23 +13,23 @@
 
 It connects to a tezos node to send transactions, interact with smart contracts and much more !
 
-See the [Quick start](#quick-start) guide for more details.
+See the [Quick start](https://github.com/moneytrackio/tezart#quick-start) guide for more details.
 
 ## Links
 
 - [Documentation](https://moneytrackio.github.io/tezart/)
-- [Contribution](https://moneytrackio.github.io/tezart/?id=contribute)
-- [API Reference]()
+- [Contribution](https://moneytrackio.github.io/tezart/#/?id=contribute)
+<!--- - API Reference  API Reference will be available when the package is published to pub.dev --> 
 
 ## Quick Start
 
-Look at this [example](https://moneytrackio.github.io/tezart/?id=examples)
+Look at this [example](https://moneytrackio.github.io/tezart/#/?id=example)
 
-![Quick start - Example](docs/_media/quickstart-example-tezart.gif)
+![Quick start - Example](https://raw.githubusercontent.com/moneytrackio/tezart/main/docs/_media/quickstart-example-tezart.gif)
 
 ## Feature requests and bugs 
 
-If you want to contribute to this project, read the [code of conduct](CONTRIBUTING.md)
+If you want to contribute to this project, read the [code of conduct](https://github.com/moneytrackio/tezart/blob/main/CONTRIBUTING.md)
 
 Feature requests and bugs at the [issue tracker](https://github.com/moneytrackio/tezart/issues/new)
 
