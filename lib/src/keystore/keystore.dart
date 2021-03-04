@@ -6,4 +6,4 @@
 library keystore;
 
 export 'impl/keystore.dart';
-export 'package:tezart/src/crypto/crypto.dart' show CryptoError;
+export 'package:tezart/src/crypto/impl/crypto_error.dart';

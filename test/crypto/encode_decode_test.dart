@@ -30,7 +30,7 @@ void main() {
 
   test('.ignorePrefix throw error', () {
     expect(() => crypto.ignorePrefix(crypto_common.fakeUint8List()),
-        throwsA(predicate((e) => e is crypto.CryptoError && e.type == crypto.CryptoErrorTypes.unknownPrefix)));
+        throwsA(predicate((e) => e is crypto.CryptoError && e.type == crypto.CryptoErrorTypes.prefixNotFound)));
   });
 
   test('.hexDecode', () {

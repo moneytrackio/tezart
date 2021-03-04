@@ -2,16 +2,55 @@ import 'package:meta/meta.dart';
 import 'package:tezart/src/common/exceptions/common_exception.dart';
 import 'package:tezart/src/common/utils/enum_util.dart';
 
+/// Exhaustive list of cryptographic error types.
 enum CryptoErrorTypes {
+  /// Prefix not found error.
+  ///
+  /// Happens when :
+  /// - trying to encode with an unknown prefix.
+  /// - trying to ignore an unknown prefix.
   prefixNotFound,
-  unknownPrefix,
+
+  /// Invalid seed bytes length
+  ///
+  /// Happens when the seed bytes length is != 32.
   seedBytesLengthError,
+
+  /// Invalid (string) seed length.
+  ///
+  /// Happens when the seed length is != 54.
   seedLengthError,
+
+  /// Invalid (string) secret key length.
+  ///
+  /// Happens when the secret key length is != 98.
   secretKeyLengthError,
+
+  /// Invalid mnemonic.
+  ///
+  /// Happens when :
+  /// - the mnemonic is short.
+  /// - the mnemonic contains an unknown word.
   invalidMnemonic,
+
+  /// Invalid checksum.
+  ///
+  /// Happens when :
+  /// - the checksum of a secret key is invalid.
+  /// - the checksum of a seed is invalid.
   invalidChecksum,
+
+  /// Hexadecimal data length is odd.
+  ///
+  /// Happens when the length of an hexadecimal representation of a list of bytes is odd.
   invalidHexDataLength,
+
+  /// Invalid hexadecimal string.
+  ///
+  /// Happens when the hexadecimal string contains invalid characters (`[a-fA-F0-9]`).
   invalidHex,
+
+  /// Unhandled error.
   unhandled,
 }
 
@@ -33,7 +72,6 @@ class CryptoError extends CommonException {
 
   final staticErrorsMessages = {
     CryptoErrorTypes.prefixNotFound: 'Prefix not found',
-    CryptoErrorTypes.unknownPrefix: 'Unknown prefix',
     CryptoErrorTypes.seedBytesLengthError: 'The seed must be 32 bytes long',
     CryptoErrorTypes.seedLengthError: 'The seed must be 54 characters long',
     CryptoErrorTypes.secretKeyLengthError: 'The secret key must 98 characters long',
