@@ -15,7 +15,17 @@ enum CryptoErrorTypes {
   unhandled,
 }
 
-/// Exception thrown when an error occurs during crypto operation.
+/// Exception thrown when an error occurs during a cryptographic operation.
+///
+/// You can translate the error messages using [key] or [type].
+///
+/// ```dart
+/// try {
+///   aCryptoOperation();
+/// } on CryptoError catch (e) {
+///   print(e.message); // 'Prefix not found'
+///   print(e.key); // 'prefixNotFound'
+/// }
 class CryptoError extends CommonException {
   final CryptoErrorTypes _inputType;
   final String _inputMessage;
@@ -36,12 +46,20 @@ class CryptoError extends CommonException {
     CryptoErrorTypes.unhandled: (dynamic e) => 'Unhandled error: $e',
   };
 
+  /// Default constructor.
+  ///
+  /// - [type] is required.
+  /// - [message] is optional. If provided, it will be used.
+  ///     If not, it will use `staticErrorMessages[type]` or `dynamicErrorMessages[type]` (in this priority order).
+  /// - [cause] is optional, it represents the error that caused this.
   CryptoError({@required CryptoErrorTypes type, String message, this.cause})
       : _inputType = type,
         _inputMessage = message;
 
+  /// Type of this.
   CryptoErrorTypes get type => _inputType;
 
+  /// Human readable explanation of this.
   @override
   String get message => _inputMessage ?? _computedMessage;
 
@@ -60,9 +78,13 @@ class CryptoError extends CommonException {
     }
   }
 
+  /// String representation of type.
   @override
   String get key => EnumUtil.enumToString(type);
 
+  /// Cause of this, might be null.
+  ///
+  /// It represents the error that caused this.
   @override
   dynamic get originalException => cause;
 }

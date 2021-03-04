@@ -2,7 +2,10 @@
 ///
 /// Exposes:
 /// - [Keystore]
+/// - [CryptoError]
+/// - [Signature]
 /// - [TezartClient]
+/// - [TezartNodeError]
 /// - [enableTezartLogger]
 library tezart;
 
