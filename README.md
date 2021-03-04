@@ -13,7 +13,7 @@
 
 It connects to a tezos node to send transactions, interact with smart contracts and much more !
 
-See the [Quick start](https://github.com/moneytrackio/tezart#quick-start) guide for more details.
+See the [Quick start](#quick-start) guide for more details.
 
 ## Links
 
