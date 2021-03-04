@@ -34,9 +34,7 @@ void _printOutput({
   print('${time}[${levelColored}] - ${name} : ${message}');
 }
 
-///
 /// Enables the logs to be displayed in the console.
-///
 void enableTezartLogger() {
   Logger.root.level = Level.ALL; // defaults to Level.INFO
   Logger.root.onRecord.listen((record) {
