@@ -115,6 +115,9 @@ Future<void> main() async {
 
 ## Quick start
 
+### Install dart
+You can install **Dart SDK**, by following the [official dart documentation](https://dart.dev/get-dart)
+
 ### Use this package as a dart library 
 
 1. **Depend on it** 
@@ -248,7 +251,8 @@ To ensure that you can contribute to this project, you will need to setup your e
 
 #### A. Dart SDK for Package development
 
-You can install **Dart SDK**, by following the [official dart documentation](https://dart.dev/get-dart)
+You can follow the instructions to install **Dart SDK** in the quick start [section](#install-dart)
+
 #### B. Docker to run a tezos sandbox locally
 
 1- If you don't have **Docker**, please install it by following the [official docker documentation](https://docs.docker.com/get-docker/)
