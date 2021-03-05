@@ -50,7 +50,7 @@ class Keystore extends Equatable {
     });
   }
 
-  /// A factory that generates a key store from a seed.
+  /// A factory that generates a keystore from a seed.
   ///
   /// ```dart
   /// final keystore = Keystore.fromSeed('edsk3RR5U7JsUJ8ctjsuymUPayxMm4LHXaB7VJSfeyMb8fAvbJUnsa');
