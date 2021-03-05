@@ -35,6 +35,11 @@ jobs:
     - name: Dart pub get
       run: dart pub get
 
+    - name: Documentation generation check
+      run: |
+        pub global activate dartdoc
+        $HOME/.pub-cache/bin/dartdoc
+
     - name: Dart tests
       run: |
         cp .github/workflows/.env.ci .env.test

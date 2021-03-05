@@ -70,7 +70,7 @@ Uint8List ignorePrefix(Uint8List bytes) {
       return bytes.sublist(currentPrefixBytes.length);
     }
   }
-  throw CryptoError(type: CryptoErrorTypes.unknownPrefix);
+  throw CryptoError(type: CryptoErrorTypes.prefixNotFound);
 }
 
 String encodeWithPrefix({@required Prefixes prefix, @required Uint8List bytes}) {
