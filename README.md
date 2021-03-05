@@ -21,12 +21,6 @@ See the [Quick start](#quick-start) guide for more details.
 - [Contribution](https://moneytrackio.github.io/tezart/#/?id=contribute)
 <!--- - API Reference  API Reference will be available when the package is published to pub.dev --> 
 
-## Quick Start
-
-Look at this [example](https://moneytrackio.github.io/tezart/#/?id=example)
-
-![Quick start - Example](https://raw.githubusercontent.com/moneytrackio/tezart/main/docs/_media/quickstart-example-tezart.gif)
-
 ## Feature requests and bugs 
 
 If you want to contribute to this project, read the [code of conduct](https://github.com/moneytrackio/tezart/blob/main/CONTRIBUTING.md)
