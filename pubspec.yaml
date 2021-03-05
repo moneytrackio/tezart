@@ -8,7 +8,7 @@ issue_tracker: https://github.com/moneytrackio/tezart/issues
 publish_to: none # prevent publishing : To be remove when the package is ready to be open source and available on pub.dev
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.10.0 <3.0.0"
 
 dependencies:
   bs58check: ^1.0.1 # implementation of base58check
