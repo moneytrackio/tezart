@@ -12,7 +12,7 @@ import 'package:tezart/src/crypto/crypto.dart' as crypto hide Prefixes;
 import 'package:tezart/src/crypto/crypto.dart' show Prefixes;
 import 'package:tezart/src/signature/signature.dart';
 
-/// A class that handles key stores and keys (seed, secret key, public key, address) computation.
+/// A class that handles keystores and keys (seed, secret key, public key, address) computation.
 ///
 /// - [secretKey] is always set
 /// - [mnemonic] might be null
