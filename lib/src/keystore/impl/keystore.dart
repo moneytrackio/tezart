@@ -30,7 +30,7 @@ class Keystore extends Equatable {
 
   const Keystore._({@required this.secretKey, this.mnemonic});
 
-  /// A factory that generates a key store from a secret key.
+  /// A factory that generates a keystore from a secret key.
   ///
   /// ```dart
   /// final keystore = Keystore.fromSecretKey('edskRpm2mUhvoUjHjXgMoDRxMKhtKfww1ixmWiHCWhHuMEEbGzdnz8Ks4vgarKDtxok7HmrEo1JzkXkdkvyw7Rtw6BNtSd7MJ7');
