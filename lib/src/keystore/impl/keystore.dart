@@ -70,7 +70,7 @@ class Keystore extends Equatable {
     });
   }
 
-  /// A factory that generates a key store from a mnemonic, email and password.\
+  /// A factory that generates a key store from a mnemonic, email and password (for fundraisers).\
   ///
   /// [email] and [password] are optional.\
   /// ```dart
