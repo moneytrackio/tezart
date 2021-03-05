@@ -44,11 +44,8 @@ const String seed = 'edsk3RR5U7JsUJ8ctjsuymUPayxMm4LHXaB7VJSfeyMb8fAvbJUnsa';
 /// 
 /// This is a simple example of using tezart
 /// In this example, we assume that you are running 
-/// a tezos blockchain locally at http://localhost:2000
-/// 
-/// In the README.md of the project, we provided a command line 
-/// to help you launch a local blockchain with docker.
-/// 
+/// a tezos RPC API locally at http://localhost:20000
+///
 Future<void> main() async {
   /// Generate keystore from mnemonic
   var keystore = Keystore.fromMnemonic(mnemonic);
@@ -105,55 +102,103 @@ Future<void> main() async {
 }
 ```
 
-> Output : 
-
-<img src="img/a-output-example-dart.png?raw=true"></img>
-
 ### Special Thanks
 
 [Tezos foundation](https://tezos.foundation/) and [Moneytrack.io](http://moneytrack.io/) for the effort.
 
 ## Quick start
 
-### Install dart
+### Prerequisites
+
+#### Install dart
+
 You can install **Dart SDK**, by following the [official dart documentation](https://dart.dev/get-dart)
 
-### Use this package as a dart library 
+#### Run a Tezos sandbox locally *(optional)*
 
-1. **Depend on it** 
+> *You can skip this part if you want to use a public Tezos node.*
 
-Add this to your package's pubspec.yaml file:
+1- If you don't have **Docker**, please install it by following the [official docker documentation](https://docs.docker.com/get-docker/)
+
+2- You can use [flextesa's sandbox](https://assets.tqtezos.com/docs/setup/2-sandbox/) by running the following command : 
+
+> *Flextesa's sandbox is an ephemeral and isolated sandbox. It can be useful to experiment with faster networks or to automate reproducible tests.*
+
+```bash
+docker run --rm \
+    --name my-sandbox \
+    --detach -p 20000:20000 \
+    tqtezos/flextesa:20201214 delphibox start
+```
+
+### Use this package in a small dart app
+
+1. Use `dart create` to create a command-line app:
 
 ```dart
+dart create -t console-full tezart_example
+```
+
+2. Add tezart to your dependencies:
+
+```yaml
 dependencies:
   tezart:
 ```
 
-2. **Install it**
+```bash
+cd tezart_example
+pub get
+```
 
-You can install packages from the command line:
-
-with pub:
-
-```bash 
-dart pub get
-```  
-
-with Flutter: 
-
-```bash 
-flutter pub get
-``` 
-
-Alternatively, your editor might support dart pub get or flutter pub get. Check the docs for your editor to learn more.
-
-3. **Import it**
-
-Now in your Dart code, you can use:
+3. Change `lib/tezart_example.dart` to :
 
 ```dart
 import 'package:tezart/tezart.dart';
+
+Future<void> main() async {
+  const String secretKey = 'edskRpm2mUhvoUjHjXgMoDRxMKhtKfww1ixmWiHCWhHuMEEbGzdnz8Ks4vgarKDtxok7HmrEo1JzkXkdkvyw7Rtw6BNtSd7MJ7';
+  final sourceKeystore = Keystore.fromSecretKey(secretKey);
+  final destination = Keystore.random().address;
+  final client = TezartClient(host: 'localhost', port: '20000', scheme: 'http');
+  final amount = 10000;
+
+  print('Starting transfer of $amount µtz from ${sourceKeystore.address} to ${destination} ...');
+  final operationId = await client.transfer(
+    source: sourceKeystore,
+    destination: destination,
+    amount: amount,
+  );
+  print('Transfer completed.');
+  print('Monitoring the operation ...');
+  await client.monitorOperation(operationId);
+  print('Monitoring completed.');
+}
+
 ```
+
+4. Change `bin/tezart_example.dart` to :
+
+```dart
+import 'package:tezart_example/tezart_example.dart' as tezart_example;
+
+void main(List<String> arguments) async {
+  await tezart_example.main();
+}
+```
+
+5. Run the app :
+
+```bash
+dart run
+```
+
+> Output
+
+<img src="img/quick-start-example-output.gif?raw=true"></img>
+
+
+## API Overview and Examples
 
 ### Enable logging
 
@@ -209,8 +254,6 @@ Future<void> main() async {
 
 <img src="img/a-output-example-log-dart.png?raw=true"></img>
 
-## API Overview and Examples
-
 ### Tezos Chain Operations
 
 ### Smart Contract Interactions
@@ -239,34 +282,14 @@ Read [dart package versioning](https://dart.dev/tools/pub/versioning) to learn m
 
 ### Setup your development environment
 
-**The following setup only work for Mac and Linux**
+> *The following setup only works for Mac and Linux*
 
-**Tezart** is a [dart](https://dart.dev/) package that will help your applications to interact with the tezos blockchain.
+To ensure that you can contribute to this project, you will need to setup your environment :
 
-To ensure that you can contribute to this project, you will need to setup your environment with the installation of the following tools : 
+#### A. Install prerequisites
+You can follow the instructions in the prerequisites [section](#prerequisites)
 
-- [dart sdk for package development](https://dart.dev/get-dart)
-- [docker for local testing](https://docs.docker.com/get-docker/)
-- [lefthook to our git hooks](https://github.com/Arkweid/lefthook)
-
-#### A. Dart SDK for Package development
-
-You can follow the instructions to install **Dart SDK** in the quick start [section](#install-dart)
-
-#### B. Docker to run a tezos sandbox locally
-
-1- If you don't have **Docker**, please install it by following the [official docker documentation](https://docs.docker.com/get-docker/)
-
-2- If you have **Docker**, You will need a running blockchain on your local environment to launch the tests. You can use [tqtezos's sandbox](https://assets.tqtezos.com/docs/setup/2-sandbox/) by running the following command : 
-
-```bash
-docker run --rm \
-    --name my-sandbox \
-    --detach -p 20000:20000 \
-    tqtezos/flextesa:20201214 delphibox start
-```
-
-#### C. Setup Lefthook
+#### B. Setup Lefthook
 
 To install lefthook, just follow [this](https://github.com/Arkweid/lefthook/blob/master/docs/full_guide.md#installation) guide, then run :
 
@@ -274,7 +297,7 @@ To install lefthook, just follow [this](https://github.com/Arkweid/lefthook/blob
 lefthook install
 ```
 
-#### Verify your setup 
+#### C. Verify your setup 
 
 To ensure that your environment is ready for contribution, please run the following command at the root of the project: 
 
