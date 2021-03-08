@@ -4,7 +4,7 @@
 [![GitHub Actions](https://github.com/moneytrackio/tezart/workflows/Run%20tests/badge.svg)](https://github.com/moneytrackio/tezart/actions?query=workflow%3A%22Run+tests%22)
 [![Coverage with codecov.io](https://codecov.io/gh/moneytrackio/tezart/branch/main/graph/badge.svg?token=0BOIGV5QCT)](https://codecov.io/gh/moneytrackio/tezart)
 
-
+*WARNING: Please be aware that this project is a work in progress. There will be breaking changes.*
 
 > A library for building decentralized applications in [dart language](https://dart.dev/), currently focused on the [Tezos](http://tezos.com/) platform.
 
@@ -255,12 +255,12 @@ Future<void> main() async {
 <img src="img/a-output-example-log-dart.png?raw=true"></img>
 
 ### Tezos Chain Operations
+WIP
 
 ### Smart Contract Interactions
+WIP
 
 ## Contribute
-
-
 There are many ways to contribute to this project.
 You can : 
 - add some example into the `example folder`,
