@@ -13,9 +13,7 @@ environment:
 dependencies:
   bs58check: ^1.0.1 # implementation of base58check
   bip39: ^1.0.4 # Mnemonic code for generating deterministic keys
-  blake2b: # library used for hash computation
-    git: # use pub get version when https://github.com/riclava/blake2b/pull/2 is merged
-      url: git://github.com/moneytrackio/blake2b
+  pointycastle: ^2.0.1 # a library that implements popular crypto algorithms
   convert: ^2.1.1 # Encoders and decoders for converting between different data representations
   dio: ^3.0.10 # http client
   http: ^0.12.2 # TODO: decide whether to use http or dio
