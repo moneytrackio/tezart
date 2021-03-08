@@ -17,7 +17,6 @@ dependencies:
   convert: ^2.1.1 # Encoders and decoders for converting between different data representations
   dio: ^3.0.10 # http client
   http: ^0.12.2 # TODO: decide whether to use http or dio
-  envify: ^2.0.0 # .env files management
   equatable: ^1.2.5
   pinenacl: 0.1.5 # Dart implementation of TweetNacl
   json_serializable: ^3.5.1 # code generation for toJson and fromJson methods
@@ -31,5 +30,6 @@ dev_dependencies:
   build_runner: ^1.10.0
   mockito: ^4.1.1 # mocks
   test: ^1.9.0
-  envify_generator: ^1.1.0 # code generation for envify
+  envify: ^1.0.6 # .env files management
+  envify_generator: ^1.0.6 # code generation for envify
   test_coverage: ^0.5.0
