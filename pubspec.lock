@@ -50,15 +50,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.4"
-  blake2b:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: HEAD
-      resolved-ref: f35595046e20f0780fac3884b0c76f347e33fcb0
-      url: "git://github.com/moneytrackio/blake2b"
-    source: git
-    version: "0.1.2"
   boolean_selector:
     dependency: transitive
     description:
@@ -410,7 +401,7 @@ packages:
     source: hosted
     version: "0.1.5"
   pointycastle:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: pointycastle
       url: "https://pub.dartlang.org"
