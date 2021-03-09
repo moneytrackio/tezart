@@ -6,8 +6,7 @@ repository: https://github.com/moneytrackio/tezart
 issue_tracker: https://github.com/moneytrackio/tezart/issues
 
 environment:
-  # The minimum required version for development environment is 2.12
-  sdk: ">=2.10.0 <3.0.0"
+  sdk: ">=2.11.0 <3.0.0"
 
 dependencies:
   bs58check: ^1.0.1 # implementation of base58check
