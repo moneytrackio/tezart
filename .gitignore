@@ -85,3 +85,5 @@ test/.test_coverage.dart
 .env.test
 test/env/env.g.dart
 
+# It is recommended to ignore pubspec.lock in library packages
+pubspec.lock
