@@ -1,7 +1,6 @@
 name: tezart
 description: A Dart library to connect to Tezos clients. Send transactions and interact with smart contracts!
 version: 0.2.0
-author: moneytrack.io
 homepage: https://moneytrackio.github.io/tezart/
 repository: https://github.com/moneytrackio/tezart
 issue_tracker: https://github.com/moneytrackio/tezart/issues
@@ -18,12 +17,15 @@ dependencies:
   dio: ^3.0.10 # http client
   http: ^0.12.2 # TODO: decide whether to use http or dio
   equatable: ^1.2.5
-  pinenacl: 0.1.5 # Dart implementation of TweetNacl
+  pinenacl: ^0.1.5 # Dart implementation of TweetNacl
   json_serializable: ^3.5.1 # code generation for toJson and fromJson methods
+  json_annotation: ^3.1.1 # Classes and helper functions that support JSON code generation via the `json_serializable` package.
   retry: ^3.0.1 # retry a function if an error happens
   memoize: ^2.0.0 # memoize method calls
   logging: ^0.11.4 # official dart team : Provides APIs for debugging and error logging.
   ansicolor: ^1.0.2 # Use AnsiPen to add ANSI color codes to your log messages.
+  meta: ^1.3.0 # annotations that can be used by the tools that are shipped with the Dart SDK
+  collection: ^1.15.0 # Collections and utilities functions and classes related to collections
 
 dev_dependencies:
   pedantic: ^1.9.0 # linter
