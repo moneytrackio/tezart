@@ -20,16 +20,11 @@ import 'tezart_node_error.dart';
 class TezartClient {
   final log = Logger('TezartClient');
 
-  /// A [RpcInterface] instance, generated using `host`, `port`, `scheme`
+  /// A [RpcInterface] instance, generated using `url`
   final RpcInterface rpcInterface;
 
   /// Default constructor.
-  ///
-  /// - [host] is required.
-  /// - [port] is by default set to `'80'`
-  /// - [scheme] is by default set to `'http'`
-  TezartClient({@required String host, String port = '80', String scheme = 'http'})
-      : rpcInterface = RpcInterface(host: host, port: port, scheme: scheme);
+  TezartClient(String url) : rpcInterface = RpcInterface(url);
 
   /// Transfers [amount] from [source] to [destination] and returns the operation group id.\
   ///

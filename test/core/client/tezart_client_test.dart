@@ -6,7 +6,7 @@ import 'package:tezart/tezart.dart';
 import '../../env/env.dart';
 
 void main() {
-  final tezart = TezartClient(host: Env.tezosNodeHost, port: Env.tezosNodePort, scheme: Env.tezosNodeScheme);
+  final tezart = TezartClient(Env.tezosNodeUrl);
   final originatorKeystore = Keystore.fromSecretKey(Env.originatorSk);
 
   group('#transfer', () {
