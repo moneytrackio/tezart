@@ -8,6 +8,7 @@ issue_tracker: https://github.com/moneytrackio/tezart/issues
 publish_to: none # prevent publishing : To be remove when the package is ready to be open source and available on pub.dev
 
 environment:
+  # The minimum required version for development environment is 2.12
   sdk: ">=2.10.0 <3.0.0"
 
 dependencies:
@@ -30,6 +31,6 @@ dev_dependencies:
   build_runner: ^1.10.0
   mockito: ^4.1.1 # mocks
   test: ^1.9.0
-  envify: ^1.0.6 # .env files management
+  envify: ^2.0.0 # .env files management
   envify_generator: ^1.0.6 # code generation for envify
   test_coverage: ^0.5.0
