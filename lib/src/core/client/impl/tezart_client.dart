@@ -11,7 +11,7 @@ import 'tezart_node_error.dart';
 /// A client that connects to the Tezos node.
 ///
 /// ```dart
-/// final client = TezartClient(host: 'localhost', port: '80', scheme: 'http');
+/// final client = TezartClient('http://localhost:20000/');
 /// ```
 ///
 /// The methods throw [TezartNodeError] if a node error occurs.\

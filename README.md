@@ -6,13 +6,11 @@
 
 *WARNING: Please be aware that this project is a work in progress. There will be breaking changes.*
 
-> A library for building decentralized applications in [dart language](https://dart.dev/), currently focused on the [Tezos](https://tezos.com/) platform.
-
 ## What it is 
 
-[Tezart](https://github.com/moneytrackio/tezart) connects to interact with the Tezos blockchain. 
+[Tezart](https://github.com/moneytrackio/tezart) is a [Dart](https://dart.dev/) library for building decentralized applications on [Tezos](https://tezos.com) blockchain.
 
-It connects to a tezos node to send transactions, interact with smart contracts and much more !
+Tezart interacts with a Tezos node to send transactions, interact with smart contracts and much more!
 
 See the [Quick start](#quick-start) guide for more details.
 

@@ -89,7 +89,7 @@ Future<void> main() async {
   final sourceKeystore = Keystore.fromSecretKey(
       'edskRpm2mUhvoUjHjXgMoDRxMKhtKfww1ixmWiHCWhHuMEEbGzdnz8Ks4vgarKDtxok7HmrEo1JzkXkdkvyw7Rtw6BNtSd7MJ7');
   final destinationKeystore = Keystore.random();
-  final client = TezartClient(host: 'localhost', port: '20000', scheme: 'http');
+  final client = TezartClient('http://localhost:20000/');
   final amount = 10000;
   final operationId = await client.transfer(
     source: sourceKeystore,
@@ -160,7 +160,7 @@ Future<void> main() async {
   const String secretKey = 'edskRpm2mUhvoUjHjXgMoDRxMKhtKfww1ixmWiHCWhHuMEEbGzdnz8Ks4vgarKDtxok7HmrEo1JzkXkdkvyw7Rtw6BNtSd7MJ7';
   final sourceKeystore = Keystore.fromSecretKey(secretKey);
   final destination = Keystore.random().address;
-  final client = TezartClient(host: 'localhost', port: '20000', scheme: 'http');
+  final client = TezartClient('http://localhost:20000/');
   final amount = 10000;
 
   print('Starting transfer of $amount µtz from ${sourceKeystore.address} to ${destination} ...');
@@ -236,7 +236,7 @@ Future<void> main() async {
   final sourceKeystore = Keystore.fromSecretKey(
       'edskRpm2mUhvoUjHjXgMoDRxMKhtKfww1ixmWiHCWhHuMEEbGzdnz8Ks4vgarKDtxok7HmrEo1JzkXkdkvyw7Rtw6BNtSd7MJ7');
   final destinationKeystore = Keystore.random();
-  final client = TezartClient(host: 'localhost', port: '20000', scheme: 'http');
+  final client = TezartClient('http://localhost:20000/');
   final amount = 10000;
   final operationId = await client.transfer(
     source: sourceKeystore,
