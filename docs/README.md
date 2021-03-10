@@ -143,7 +143,7 @@ dart create -t console-full tezart_example
 
 ```yaml
 dependencies:
-  tezart:
+  tezart: ^0.2.1
 ```
 
 ```bash
@@ -287,8 +287,6 @@ Read [dart package versioning](https://dart.dev/tools/pub/versioning) to learn m
 To ensure that you can contribute to this project, you will need to setup your environment :
 
 #### A. Install prerequisites
-> *Please note that you need Dart version >= 2.12 in development environment.*
-
 You can follow the instructions in the prerequisites [section](#prerequisites)
 
 #### B. Setup Lefthook

@@ -6,7 +6,7 @@ import 'package:tezart/src/keystore/keystore.dart';
 import '../../env/env.dart';
 
 void main() {
-  final rpcInterface = RpcInterface(host: Env.tezosNodeHost, port: Env.tezosNodePort, scheme: Env.tezosNodeScheme);
+  final rpcInterface = RpcInterface(Env.tezosNodeUrl);
   final originator = Keystore.fromSecretKey(Env.originatorSk);
 
   group('#pendingOperations()', () {

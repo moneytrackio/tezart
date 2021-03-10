@@ -15,8 +15,7 @@ class RpcInterface {
   final TezartHttpClient httpClient;
   final log = Logger('RpcInterface');
 
-  RpcInterface({@required String host, String port = '80', String scheme = 'http'})
-      : httpClient = TezartHttpClient(host: host, port: port, scheme: scheme);
+  RpcInterface(String url) : httpClient = TezartHttpClient(url);
 
   Future<String> branch([chain = 'main', level = 'head']) async {
     log.info('request for branch [ chain:$chain, level:$level]');

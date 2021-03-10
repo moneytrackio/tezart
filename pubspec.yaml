@@ -1,13 +1,12 @@
 name: tezart
 description: A Dart library to connect to Tezos clients. Send transactions and interact with smart contracts!
-version: 0.2.0
+version: 0.2.1
 homepage: https://moneytrackio.github.io/tezart/
 repository: https://github.com/moneytrackio/tezart
 issue_tracker: https://github.com/moneytrackio/tezart/issues
 
 environment:
-  # The minimum required version for development environment is 2.12
-  sdk: ">=2.10.0 <3.0.0"
+  sdk: ">=2.11.0 <3.0.0"
 
 dependencies:
   bs58check: ^1.0.1 # implementation of base58check
@@ -15,8 +14,7 @@ dependencies:
   pointycastle: ^2.0.1 # a library that implements popular crypto algorithms
   convert: ^2.1.1 # Encoders and decoders for converting between different data representations
   dio: ^3.0.10 # http client
-  http: ^0.12.2 # TODO: decide whether to use http or dio
-  equatable: ^1.2.5
+  equatable: ^2.0.0
   pinenacl: ^0.1.5 # Dart implementation of TweetNacl
   json_serializable: ^3.5.1 # code generation for toJson and fromJson methods
   json_annotation: ^3.1.1 # Classes and helper functions that support JSON code generation via the `json_serializable` package.
