@@ -58,25 +58,25 @@ jobs:
     - name: Analyse the package with pana 
       run: |
         ./tezart pana
-        #echo "SCORE=$(tool/pana-output-parser)" >> $GITHUB_ENV
-        SCORE=$(tool/pana-output-parser) && echo "::set-output name=SCORE::$SCORE"
+        echo "SCORE=$(tool/pana-output-parser)" >> $GITHUB_ENV
+        #SCORE=$(tool/pana-output-parser) && echo "::set-output name=SCORE::$SCORE"
 
     - name: Build pana bagde OK == 100
-      if: steps.main.outputs.SCORE == 100
+      if: env.SCORE == 100
       uses: RubbaBoy/BYOB@v1.2.0
       with:
         NAME: pana
         LABEL: 'pub.dev Score'
-        STATUS: ${{ steps.main.outputs.SCORE }}/100
+        STATUS: ${{ env.SCORE }}/100
         COLOR: green
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build pana bagde KO < 100 
-      if: steps.main.outputs.SCORE  < 100
+      if: env.SCORE  < 100
       uses: RubbaBoy/BYOB@v1.2.0
       with:
         NAME: pana
         LABEL: 'pub.dev Score'
-        STATUS: ${{ steps.main.outputs.SCORE }}/100
+        STATUS: ${{ env.SCORE }}/100
         COLOR: red
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
