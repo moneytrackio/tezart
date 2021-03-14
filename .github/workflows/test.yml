@@ -69,6 +69,7 @@ jobs:
         LABEL: 'pub.dev Score'
         STATUS: ${{ steps.main.outputs.SCORE }}/100
         COLOR: green
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build pana bagde KO < 100 
       if: steps.main.outputs.SCORE  < 100
@@ -78,3 +79,4 @@ jobs:
         LABEL: 'pub.dev Score'
         STATUS: ${{ steps.main.outputs.SCORE }}/100
         COLOR: red
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
