@@ -59,24 +59,8 @@ jobs:
       run: |
         ./tezart pana
         echo "SCORE=$(tool/pana-output-parser)" >> $GITHUB_ENV
-        #SCORE=$(tool/pana-output-parser) && echo "::set-output name=SCORE::$SCORE"
 
-    - name: Build pana bagde OK == 100
-      if: env.SCORE == 100
-      uses: RubbaBoy/BYOB@v1.2.0
-      with:
-        NAME: pana
-        LABEL: 'pub.dev Score'
-        STATUS: ${{ env.SCORE }}/100
-        COLOR: green
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Build pana bagde KO < 100 
-      if: env.SCORE  < 100
-      uses: RubbaBoy/BYOB@v1.2.0
-      with:
-        NAME: pana
-        LABEL: 'pub.dev Score'
-        STATUS: ${{ env.SCORE }}/100
-        COLOR: red
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Check if pana score is 100
+      if: env.SCORE != 100
+      run: |
+        echo "the pana score is ${{ env.SCORE }}/100" && exit 1
