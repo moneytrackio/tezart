@@ -87,3 +87,7 @@ test/env/env.g.dart
 
 # It is recommended to ignore pubspec.lock in library packages
 pubspec.lock
+
+# pana
+tool/pana-output-parser
+pana_output.json

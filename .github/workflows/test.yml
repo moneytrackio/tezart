@@ -54,3 +54,27 @@ jobs:
       with:
         token: ${{secrets.CODECOV_TOKEN}} #required
         file: ./coverage/lcov.info
+
+    - name: Analyse the package with pana 
+      run: |
+        ./tezart pana
+        #echo "SCORE=$(tool/pana-output-parser)" >> $GITHUB_ENV
+        SCORE=$(tool/pana-output-parser) && echo "::set-output name=SCORE::$SCORE"
+
+    - name: Build pana bagde OK == 100
+      if: steps.main.outputs.SCORE == 100
+      uses: RubbaBoy/BYOB@v1.2.0
+      with:
+        NAME: pana
+        LABEL: 'pub.dev Score'
+        STATUS: ${{ steps.main.outputs.SCORE }}/100
+        COLOR: green
+
+    - name: Build pana bagde KO < 100 
+      if: steps.main.outputs.SCORE  < 100
+      uses: RubbaBoy/BYOB@v1.2.0
+      with:
+        NAME: pana
+        LABEL: 'pub.dev Score'
+        STATUS: ${{ steps.main.outputs.SCORE }}/100
+        COLOR: red
