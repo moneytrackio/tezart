@@ -9,7 +9,9 @@ import 'crypto_error.dart';
 
 // These methods are a wrapper of (Nacl|PineNacl|Bouncy Castle) lib methods
 Uint8List seedBytesFromMnemonic(String mnemonic, {String passphrase = ''}) {
-  if (!bip39.validateMnemonic(mnemonic)) throw CryptoError(type: CryptoErrorTypes.invalidMnemonic);
+  if (!bip39.validateMnemonic(mnemonic)) {
+    throw CryptoError(type: CryptoErrorTypes.invalidMnemonic);
+  }
 
   final seedBytes = bip39.mnemonicToSeed(mnemonic, passphrase: passphrase);
 

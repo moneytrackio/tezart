@@ -51,7 +51,9 @@ class Signature extends Equatable {
     return crypto.catchUnhandledErrors(() {
       HexValidator(data).validate();
       // Because two hexadecimal digits correspond to a single byte, this will throw an error if the length of the data is odd
-      if (data.length.isOdd) throw crypto.CryptoError(type: crypto.CryptoErrorTypes.invalidHexDataLength);
+      if (data.length.isOdd) {
+        throw crypto.CryptoError(type: crypto.CryptoErrorTypes.invalidHexDataLength);
+      }
       var bytes = crypto.hexDecode(data);
 
       return Signature.fromBytes(bytes: bytes, keystore: keystore, watermark: watermark);

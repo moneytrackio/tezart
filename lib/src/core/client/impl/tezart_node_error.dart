@@ -81,8 +81,13 @@ class TezartNodeError extends CommonException {
   String get message => _inputMessage ?? _computedMessage;
 
   TezartNodeErrorTypes get _computedType {
-    if (RegExp(r'Counter.*already used.*').hasMatch(_errorMsg)) return TezartNodeErrorTypes.counterError;
-    if (RegExp(r'previously_revealed_key').hasMatch(_errorId)) return TezartNodeErrorTypes.alreadyRevealedKey;
+    if (RegExp(r'Counter.*already used.*').hasMatch(_errorMsg)) {
+      return TezartNodeErrorTypes.counterError;
+    }
+
+    if (RegExp(r'previously_revealed_key').hasMatch(_errorId)) {
+      return TezartNodeErrorTypes.alreadyRevealedKey;
+    }
 
     return TezartNodeErrorTypes.unhandled;
   }
@@ -96,7 +101,9 @@ class TezartNodeError extends CommonException {
   String get key => EnumUtil.enumToString(type);
 
   String get _computedMessage {
-    if (staticErrorsMessages.containsKey(type)) return staticErrorsMessages[type];
+    if (staticErrorsMessages.containsKey(type)) {
+      return staticErrorsMessages[type];
+    }
 
     switch (type) {
       case TezartNodeErrorTypes.monitoringTimedOut:
