@@ -174,7 +174,7 @@ tezart::run_pana() {
 	pub global run pana -j > pana_output.json 
 	
 	score=$(tool/pana-output-parser)
-	log::info "pub.dev Score is $score/100"
+	log::info "pub.dev Score is $score"
 }
 
 # ███╗   ███╗ █████╗ ██╗███╗   ██╗    
