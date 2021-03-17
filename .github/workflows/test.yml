@@ -55,10 +55,12 @@ jobs:
         token: ${{secrets.CODECOV_TOKEN}} #required
         file: ./coverage/lcov.info
 
-    - uses: docker://cirrusci/flutter:2.0.2
+    - uses: subosito/flutter-action@v1
+      name: Analyse the package with pana
+      with:
+        flutter-version: '1.22.4'
 
-    - name: Analyse the package with pana 
-      run: |
+    -  run: |
         ./tezart pana
         echo "SCORE=$(tool/pana-output-parser)" >> $GITHUB_ENV
 
