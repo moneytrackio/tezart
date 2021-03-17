@@ -55,16 +55,12 @@ jobs:
         token: ${{secrets.CODECOV_TOKEN}} #required
         file: ./coverage/lcov.info
 
-    - uses: subosito/flutter-action@v1
-      name: Analyse the package with pana
-      with:
-        flutter-version: '2.0.0'
-
-    -  run: |
+    - name: Analyse the package with pana
+      run: |
         ./tezart pana
         echo "SCORE=$(tool/pana-output-parser)" >> $GITHUB_ENV
 
-    - name: Check if pana score is 100
-      if: env.SCORE != 100
+    - name: KO if pana score < 70
+      if: env.SCORE < 70
       run: |
-        echo "the pana score is ${{ env.SCORE }}" && exit 1
+        echo "the pana score is ${{ env.SCORE }}/100" && exit 1
