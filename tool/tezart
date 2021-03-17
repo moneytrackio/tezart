@@ -167,13 +167,11 @@ tezart::run_docs() {
 tezart::run_pana() {
 	log::info "$USAGE_RUN_PANA :"
 
-	# generate a bin to run on CI
-	dart2native tool/pana_output_parser.dart -o tool/pana-output-parser
 	pub global activate pana 0.15.3 > /dev/null 
 	export PATH="$PATH":"$HOME/.pub-cache/bin"
 	pub global run pana -j > pana_output.json 
 	
-	score=$(tool/pana-output-parser)
+	score=$(dart tool/pana_output_parser.dart)
 	log::info "pub.dev Score is $score"
 }
 

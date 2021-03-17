@@ -89,5 +89,4 @@ test/env/env.g.dart
 pubspec.lock
 
 # pana
-tool/pana-output-parser
 pana_output.json
