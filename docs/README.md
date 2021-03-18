@@ -6,15 +6,15 @@
 
 *WARNING: Please be aware that this project is a work in progress. There will be breaking changes.*
 
-> A library for building decentralized applications in [dart language](https://dart.dev/), currently focused on the [Tezos](http://tezos.com/) platform.
+### What it is
 
-### What it is 
+[Tezart](https://github.com/moneytrackio/tezart) is a [Dart](https://dart.dev/) library for building decentralized applications on [Tezos](https://tezos.com) blockchain.
 
-[Tezart](https://github.com/moneytrackio/tezart) connects to interact with the Tezos blockchain. It connects to a tezos node to send transactions, interact with smart contracts and much more !
+Tezart interacts with a Tezos node to send transactions, interact with smart contracts and much more!
 
 See the [Quick start](#quick-start) guide for more details.
 
-### Features 
+### Features
 
 - [Tezos Chain Operations](#tezos-chain-operations)
 - [Smart Contract Interactions](#smart-contract-interactions)
@@ -24,7 +24,7 @@ See the [Quick start](#quick-start) guide for more details.
 > tezart/example/example.dart
 
 ```dart
-// Copyright (c), Moneytrack.io authors. 
+
 // All rights reserved. Use of this source code is governed by a 
 // MIT license that can be found in the LICENSE file.
 
@@ -104,7 +104,7 @@ Future<void> main() async {
 
 ### Special Thanks
 
-[Tezos foundation](https://tezos.foundation/) and [Moneytrack.io](http://moneytrack.io/) for the effort.
+[Tezos Foundation](https://tezos.foundation/) and [MoneyTrack](https://moneytrack.io/) for the effort.
 
 ## Quick start
 
@@ -112,7 +112,7 @@ Future<void> main() async {
 
 #### Install dart
 
-You can install **Dart SDK**, by following the [official dart documentation](https://dart.dev/get-dart)
+You can install **Dart SDK**, by following the [official dart documentation](https://dart.dev/get-dart).
 
 #### Run a Tezos sandbox locally *(optional)*
 
