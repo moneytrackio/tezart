@@ -58,9 +58,4 @@ jobs:
     - name: Analyse the package with pana
       run: |
         ./tezart pana
-        echo "SCORE=$(dart tool/pana_output_parser.dart)" >> $GITHUB_ENV
-
-    - name: KO if pana score < 70
-      if: env.SCORE < 70
-      run: |
-        echo "the pana score is ${{ env.SCORE }}/100" && exit 1
+        [[ "$(dart tool/pana_output_parser.dart)" < 70 ]] && echo "KO because pana score < 70" && exit 1
