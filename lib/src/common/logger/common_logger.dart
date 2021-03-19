@@ -31,7 +31,7 @@ void _printOutput({
       levelColored = _cyan(level);
       break;
   }
-  print('${time}[${levelColored}] - ${name} : ${message}');
+  print('$time[$levelColored] - $name : $message');
 }
 
 /// Enables the logs to be displayed in the console.

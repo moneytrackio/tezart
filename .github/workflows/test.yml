@@ -54,3 +54,7 @@ jobs:
       with:
         token: ${{secrets.CODECOV_TOKEN}} #required
         file: ./coverage/lcov.info
+
+    - name: Analyse the package with pana
+      run: |
+        ./tezart pana

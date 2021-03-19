@@ -102,7 +102,9 @@ class CryptoError extends CommonException {
   String get message => _inputMessage ?? _computedMessage;
 
   String get _computedMessage {
-    if (staticErrorsMessages.containsKey(type)) return staticErrorsMessages[type];
+    if (staticErrorsMessages.containsKey(type)) {
+      return staticErrorsMessages[type];
+    }
 
     switch (type) {
       case CryptoErrorTypes.unhandled:
@@ -131,7 +133,9 @@ T catchUnhandledErrors<T>(T Function() func) {
   try {
     return func();
   } catch (e) {
-    if (e is CryptoError) rethrow;
+    if (e is CryptoError) {
+      rethrow;
+    }
     throw CryptoError(type: CryptoErrorTypes.unhandled, cause: e);
   }
 }

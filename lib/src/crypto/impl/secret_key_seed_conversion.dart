@@ -26,7 +26,9 @@ String seedToSecretKey(String seed) {
   const secretKeyPrefix = Prefixes.edsk;
 
   final seedBytes = decodeWithoutPrefix(seed);
-  if (seedBytes.length != 32) throw CryptoError(type: CryptoErrorTypes.seedBytesLengthError);
+  if (seedBytes.length != 32) {
+    throw CryptoError(type: CryptoErrorTypes.seedBytesLengthError);
+  }
 
   final secretKey = secretKeyBytesFromSeedBytes(seedBytes);
 

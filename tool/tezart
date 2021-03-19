@@ -25,6 +25,7 @@ USAGE_RUN_DOCTOR='Process to run the setup of the project'
 USAGE_RUN_TESTS='Process to run tests'
 USAGE_RUN_COVERAGE='Process to run the code coverage in dev environment'
 USAGE_RUN_DOCS='Process to launch the documentation in dev environment'
+USAGE_RUN_PANA='Process for analyzing the package with pana'
 
 usage() {
 
@@ -39,6 +40,7 @@ usage() {
 	tests		$USAGE_RUN_TESTS
 	coverage 	$USAGE_RUN_COVERAGE
 	docs 		$USAGE_RUN_DOCS
+	pana 		$USAGE_RUN_PANA
 	-h 		$USAGE_HELP
 
 EOF
@@ -162,6 +164,24 @@ tezart::run_docs() {
 	dhttpd --path docs
 }
 
+tezart::run_pana() {
+	log::info "$USAGE_RUN_PANA :"
+
+	pub global activate pana 0.15.3 > /dev/null 
+	export PATH="$PATH":"$HOME/.pub-cache/bin"
+	pub global run pana -j > pana_output.json 
+	
+	score=$(dart tool/pana_output_parser.dart)
+	log::info "pub.dev Score is $score"
+	if [[ $score < 70 ]]
+	then
+		log::error_and_exit "You must improve the pana score"
+	else
+		log::title_success "the score is ok"
+	fi
+	
+}
+
 # ███╗   ███╗ █████╗ ██╗███╗   ██╗    
 # ████╗ ████║██╔══██╗██║████╗  ██║    
 # ██╔████╔██║███████║██║██╔██╗ ██║    
@@ -175,12 +195,14 @@ RUN_DOCTOR=
 RUN_TESTS=
 RUN_COVERAGE=
 RUN_DOCS=
+RUN_PANA=
 
 main() {
 	[[ -n $RUN_DOCTOR ]] && tezart::run_doctor
 	[[ -n $RUN_TESTS ]] && tezart::run_tests
 	[[ -n $RUN_COVERAGE ]] && tezart::run_coverage
 	[[ -n $RUN_DOCS ]] && tezart::run_docs
+	[[ -n $RUN_PANA ]] && tezart::run_pana
 	exit 0
 }
 
@@ -220,6 +242,9 @@ case "$subcommand" in
 		;;
 	docs)
 		RUN_DOCS=1
+		;;
+	pana)
+		RUN_PANA=1
 		;;
 	*)
 		log::error "Unknow parameter '$subcommand' !"
