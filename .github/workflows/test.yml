@@ -58,4 +58,3 @@ jobs:
     - name: Analyse the package with pana
       run: |
         ./tezart pana
-        [[ "$(dart tool/pana_output_parser.dart)" < 70 ]] && echo "KO because pana score < 70" && exit 1
