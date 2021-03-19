@@ -28,7 +28,7 @@ dependencies:
 dev_dependencies:
   pedantic: ^1.9.0 # linter
   build_runner: ^1.10.0
-  mockito: ^4.1.1 # mocks
+  mockito: ^4.1.4 # mocks
   test: ^1.9.0
   envify: ^2.0.0 # .env files management
   envify_generator: ^1.0.6 # code generation for envify
