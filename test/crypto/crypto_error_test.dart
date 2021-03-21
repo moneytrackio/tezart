@@ -42,13 +42,6 @@ void main() {
   });
 
   group('when is not static error messages', () {
-    final subject = () => CryptoError(type: type);
-    test('type is unhandled', () {
-      print(subject().message);
-    });
-  });
-
-  group('when is not static error messages', () {
     test('type is unhandled', () {
       final subject = () => CryptoError(type: CryptoErrorTypes.unhandled);
       expect(subject().message, equals('Unhandled error: null'));
