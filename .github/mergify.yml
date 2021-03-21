@@ -1,0 +1,49 @@
+pull_request_rules:
+  - name: automatic merge for master when Github Action Run tests passes with at least 1 review and not WIP
+    conditions:
+      - "#approved-reviews-by>=1"
+      # https://docs.mergify.io/conditions.html#github-actions
+      - check-success=Run tests
+      - base=master
+      - label!=work-in-progress
+    actions:
+      merge:
+        method: merge
+
+  - name: delete head branch after merge
+    conditions:
+      - merged
+    actions:
+      delete_head_branch: {}
+
+  - name: remove outdated reviews
+    conditions:
+      - base=master
+    actions:
+      dismiss_reviews: {}
+
+  - name: merge when all requested reviews are valid
+    conditions:
+      - "#approved-reviews-by>=1"
+      - "#review-requested=0"
+      - "#changes-requested-reviews-by=0"
+      - "#commented-reviews-by=0"
+    actions:
+        merge:
+          method: merge
+
+  - name: say hi on new contribution
+    conditions:
+      - author!=@myorg/regularcontributors
+    actions:
+        comment:
+          message: |
+              Welcome to our great project Tezart!
+              We're delighted to have you onboard <3
+
+  - name: ask to resolve conflict
+    conditions:
+      - conflict
+    actions:
+        comment:
+          message: This pull request is now in conflicts. Could you fix it @{{author}}? 🙏
