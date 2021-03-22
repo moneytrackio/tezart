@@ -41,8 +41,8 @@ void main() {
     });
   });
 
-  group('when is not static error messages', () {
-    test('type is unhandled', () {
+  group('when the error type is unhandled', () {
+    test('the message is computed dynamically', () {
       final subject = () => CryptoError(type: CryptoErrorTypes.unhandled);
       expect(subject().message, equals('Unhandled error: null'));
     });
