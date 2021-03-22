@@ -31,6 +31,28 @@ class TransactionOperation extends Operation {
         );
 }
 
+// Origination Operation
+class OriginationOperation extends Operation {
+  OriginationOperation({
+    @required String source,
+    @required int balance,
+    @required int counter,
+    @required List<Map<String, dynamic>> code,
+    @required Map<String, dynamic> storage,
+    int storageLimit,
+  }) : super(
+          kind: Kinds.origination,
+          source: source,
+          balance: balance,
+          counter: counter,
+          script: {
+            'code': code,
+            'storage': storage,
+          },
+          storageLimit: storageLimit,
+        );
+}
+
 @JsonSerializable(includeIfNull: false)
 class Operation {
   final String source;
@@ -47,11 +69,17 @@ class Operation {
   @JsonKey(nullable: true, fromJson: _stringToInt, toJson: _toString)
   final int amount;
 
+  @JsonKey(nullable: true, fromJson: _stringToInt, toJson: _toString)
+  final int balance;
+
   @JsonKey(fromJson: _stringToInt, toJson: _toString)
   final int counter;
 
   @JsonKey(nullable: true)
   Map<String, dynamic> parameters;
+
+  @JsonKey(nullable: true)
+  Map<String, dynamic> script;
 
   @JsonKey(name: 'gas_limit', fromJson: _stringToInt, toJson: _toString)
   final int gasLimit;
@@ -65,9 +93,11 @@ class Operation {
       @required this.source,
       @required this.counter,
       this.amount,
+      this.balance,
       this.destination,
       this.publicKey,
       this.parameters,
+      this.script,
       int gasLimit,
       int fee,
       int storageLimit})
