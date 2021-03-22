@@ -126,18 +126,40 @@ void main() {
   });
 
   group('#originateContract', () {
-    test('it deploys a contract', () async {
-      final subject = () => tezart.originateContract(
-            source: originatorKeystore,
-            balance: 1,
-            code: testContractScript['code'],
-            storage: testContractScript['storage'],
-            storageLimit: 2570,
-          );
-      final operation = await subject();
-      final operationResult = operation[0]['metadata']['operation_result'];
+    final storageLimit = 2570;
 
-      expect(operationResult['status'], 'applied');
+    group('when all inputs are valid', () {
+      test('it deploys the contract', () async {
+        final subject = () => tezart.originateContract(
+              source: originatorKeystore,
+              balance: 1,
+              code: testContractScript['code'],
+              storage: testContractScript['storage'],
+              storageLimit: storageLimit,
+            );
+
+        final operation = await subject();
+        final operationResult = operation[0]['metadata']['operation_result'];
+
+        expect(operationResult['status'], 'applied');
+      });
+    });
+
+    group('when script values are invalid', () {
+      test('it fails to deploy the contract', () async {
+        final subject = () => tezart.originateContract(
+              source: originatorKeystore,
+              balance: 1,
+              code: [{}],
+              storage: {},
+              storageLimit: storageLimit,
+            );
+
+        final operation = await subject();
+        final operationResult = operation[0]['metadata']['operation_result'];
+
+        expect(operationResult['status'], 'failed');
+      });
     });
   });
 }

@@ -161,7 +161,8 @@ class TezartClient {
       watermark: Watermarks.generic,
     ).hexIncludingPayload;
 
-    await rpcInterface.injectOperation(signedOperationHex);
+    final operationId = await rpcInterface.injectOperation(signedOperationHex);
+    await rpcInterface.monitorOperation(operationId: operationId);
 
     return operationResult;
   }
