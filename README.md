@@ -29,3 +29,13 @@ Feature requests and bugs at the [issue tracker](https://github.com/moneytrackio
 ## License
 
 [MIT](https://github.com/moneytrackio/tezart/blob/main/LICENSE)
+
+## Special thanks
+
+Thanks to [Tezos Foundation](https://tezos.foundation) for supporting this project.
+
+Theses Tezos libraries have been great references, kudos to their maintainers:
+
+- https://github.com/ecadlabs/taquito
+- https://github.com/Cryptonomic/ConseilJS
+- https://github.com/moneytrackio/tezos_client
