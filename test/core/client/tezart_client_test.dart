@@ -4,6 +4,7 @@ import 'package:test/test.dart';
 import 'package:tezart/tezart.dart';
 
 import '../../env/env.dart';
+import '../../contracts/test_contract_script.dart';
 
 void main() {
   final tezart = TezartClient(Env.tezosNodeUrl);
@@ -121,6 +122,22 @@ void main() {
             throwsA(predicate(
                 (e) => e is TezartNodeError && e.message == 'Monitoring the operation $operationId timed out')));
       });
+    });
+  });
+
+  group('#originateContract', () {
+    test('it deploys a contract', () async {
+      final subject = () => tezart.originateContract(
+            source: originatorKeystore,
+            balance: 1,
+            code: testContractScript['code'],
+            storage: testContractScript['storage'],
+            storageLimit: 2570,
+          );
+      final operation = await subject();
+      final operationResult = operation[0]['metadata']['operation_result'];
+
+      expect(operationResult['status'], 'applied');
     });
   });
 }
