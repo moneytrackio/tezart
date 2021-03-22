@@ -12,7 +12,7 @@
 
 Tezart interacts with a Tezos node to send transactions, interact with smart contracts and much more!
 
-See the [Quick start](#quick-start) guide for more details.
+See the [Quick start](https://moneytrackio.github.io/tezart/#/?id=quick-start) guide for more details.
 
 ## Links
 
@@ -22,9 +22,9 @@ See the [Quick start](#quick-start) guide for more details.
 
 ## Feature requests and bugs 
 
-If you want to contribute to this project, read the [code of conduct](https://github.com/moneytrackio/tezart/blob/main/CONTRIBUTING.md)
+If you want to contribute to this project, read the [code of conduct](https://github.com/moneytrackio/tezart/blob/main/CONTRIBUTING.md).
 
-Feature requests and bugs at the [issue tracker](https://github.com/moneytrackio/tezart/issues/new)
+Feature requests and bugs at the [issue tracker](https://github.com/moneytrackio/tezart/issues/new).
 
 ## License
 
