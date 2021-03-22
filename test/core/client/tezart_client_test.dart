@@ -4,7 +4,7 @@ import 'package:test/test.dart';
 import 'package:tezart/tezart.dart';
 
 import '../../env/env.dart';
-import '../../contracts/test_contract_script.dart';
+import '../../test_utils/test_contract_script.dart';
 
 void main() {
   final tezart = TezartClient(Env.tezosNodeUrl);
