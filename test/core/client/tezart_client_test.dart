@@ -126,57 +126,18 @@ void main() {
   });
 
   group('#originateContract', () {
-    final balanceAmount = 1;
-    final lowStorageLimit = 100;
-    final storageLimit = 2570;
+    test('it deploys a contract', () async {
+      final subject = () => tezart.originateContract(
+            source: originatorKeystore,
+            balance: 1,
+            code: testContractScript['code'],
+            storage: testContractScript['storage'],
+            storageLimit: 2570,
+          );
+      final operation = await subject();
+      final operationResult = operation[0]['metadata']['operation_result'];
 
-    group('when inputs are valid', () {
-      test('it deploys a contract', () async {
-        final subject = () => tezart.originateContract(
-              source: originatorKeystore,
-              balance: balanceAmount,
-              code: testContractScript['code'],
-              storage: testContractScript['storage'],
-              storageLimit: storageLimit,
-            );
-        final operation = await subject();
-        final operationResult = operation[0]['metadata']['operation_result'];
-
-        expect(operationResult['status'], 'applied');
-      });
-    });
-
-    group('when script params are empty', () {
-      test('it fails to deploy the contract ', () async {
-        final subject = () => tezart.originateContract(
-              source: originatorKeystore,
-              balance: balanceAmount,
-              code: [{}],
-              storage: {},
-              storageLimit: storageLimit,
-            );
-
-        final operation = await subject();
-        final operationResult = operation[0]['metadata']['operation_result'];
-
-        expect(operationResult['status'], 'failed');
-      });
-    });
-
-    group('when storage is too low', () {
-      test('it fails to deploy the contract', () async {
-        final subject = () => tezart.originateContract(
-              source: originatorKeystore,
-              balance: balanceAmount,
-              code: testContractScript['code'],
-              storage: testContractScript['storage'],
-              storageLimit: lowStorageLimit,
-            );
-        final operation = await subject();
-        final operationResult = operation[0]['metadata']['operation_result'];
-
-        expect(operationResult['status'], 'backtracked');
-      });
+      expect(operationResult['status'], 'applied');
     });
   });
 }
