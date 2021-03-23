@@ -4,7 +4,6 @@ import 'package:test/test.dart';
 import 'package:tezart/tezart.dart';
 
 import '../../env/env.dart';
-import '../../test_utils/test_contract_script.dart';
 
 void main() {
   final tezart = TezartClient(Env.tezosNodeUrl);
@@ -125,41 +124,6 @@ void main() {
     });
   });
 
-  group('#originateContract', () {
-    final storageLimit = 2570;
-
-    group('when all inputs are valid', () {
-      test('it deploys the contract', () async {
-        final subject = () => tezart.originateContract(
-              source: originatorKeystore,
-              balance: 1,
-              code: testContractScript['code'],
-              storage: testContractScript['storage'],
-              storageLimit: storageLimit,
-            );
-
-        final operation = await subject();
-        final operationResult = operation[0]['metadata']['operation_result'];
-
-        expect(operationResult['status'], 'applied');
-      });
-    });
-
-    group('when script values are invalid', () {
-      test('it fails to deploy the contract', () async {
-        final subject = () => tezart.originateContract(
-              source: originatorKeystore,
-              balance: 1,
-              code: [{}],
-              storage: {},
-              storageLimit: storageLimit,
-            );
-
-        final operation = await subject();
-        final operationResult = operation[0]['metadata']['operation_result'];
-
-        expect(operationResult['status'], 'failed');
-      });
-    });
-  });
+// TODO: write tests once Operation refactor is done
+  group('#originateContract', () {});
 }
