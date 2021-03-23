@@ -8,6 +8,7 @@ import 'package:tezart/src/models/operation_list/operation_list.dart';
 import 'package:tezart/src/signature/signature.dart';
 import 'package:tezart/src/models/operation/operation_result.dart';
 import 'package:tezart/src/models/operation/origination_operation.dart';
+import 'package:tezart/src/models/operation/reveal_operation.dart';
 import 'package:tezart/src/models/operation/transaction_operation.dart';
 
 import 'tezart_node_error.dart';
@@ -101,12 +102,10 @@ class TezartClient {
         return _catchHttpError<OperationResult>(() async {
           log.info('request to revealKey');
           final counter = await rpcInterface.counter(source.address) + 1;
-          final operation = Operation(
+          final operation = RevealOperation(
             rpcInterface,
-            kind: Kinds.reveal,
             source: source,
             counter: counter,
-            publicKey: source.publicKey,
           );
 
           return operation.execute();
