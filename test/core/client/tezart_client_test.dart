@@ -4,6 +4,8 @@ import 'package:test/test.dart';
 import 'package:tezart/tezart.dart';
 
 import '../../env/env.dart';
+// TODO: uncomment for originateContract tests
+// import '../../test_utils/test_contract_script.dart';
 
 void main() {
   final tezart = TezartClient(Env.tezosNodeUrl);
@@ -124,6 +126,37 @@ void main() {
     });
   });
 
-// TODO: write tests once Operation refactor is done
-  group('#originateContract', () {});
+// TODO: uncomment tests once Operation refactor is done
+//   group('#originateContract', () {
+//     final balanceAmount = 1;
+//     final storageLimit = 2570;
+
+//     group('when all inputs are valid', () {
+//       test('it deploys the contract', () async {
+//         final subject = () => tezart.originateContract(
+//               source: originatorKeystore,
+//               balance: balanceAmount,
+//               code: testContractScript['code'],
+//               storage: testContractScript['storage'],
+//               storageLimit: storageLimit,
+//             );
+
+//         await subject();
+//       });
+//     });
+
+//     group('when script values are invalid', () {
+//       test('it fails to deploy the contract', () async {
+//         final subject = () => tezart.originateContract(
+//               source: originatorKeystore,
+//               balance: balanceAmount,
+//               code: [{}],
+//               storage: {},
+//               storageLimit: storageLimit,
+//             );
+
+//         await subject();
+//       });
+//     });
+//   });
 }
