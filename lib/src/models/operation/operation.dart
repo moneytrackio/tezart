@@ -1,6 +1,10 @@
 import 'package:meta/meta.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:tezart/src/common/utils/enum_util.dart';
+import 'package:tezart/src/core/rpc/impl/rpc_interface.dart';
+import 'package:tezart/src/keystore/keystore.dart';
+import 'package:tezart/src/models/operation/operation_result.dart';
+import 'package:tezart/src/signature/signature.dart';
 
 import 'constants.dart';
 
@@ -15,49 +19,14 @@ enum Kinds {
   reveal,
 }
 
-// Transaction Operation
-class TransactionOperation extends Operation {
-  TransactionOperation({
-    @required int amount,
-    @required String source,
-    @required String destination,
-    @required int counter,
-  }) : super(
-          kind: Kinds.transaction,
-          source: source,
-          destination: destination,
-          amount: amount,
-          counter: counter,
-        );
-}
-
-// Origination Operation
-class OriginationOperation extends Operation {
-  OriginationOperation({
-    @required String source,
-    @required int balance,
-    @required int counter,
-    @required List<Map<String, dynamic>> code,
-    @required Map<String, dynamic> storage,
-    int storageLimit,
-  }) : super(
-          kind: Kinds.origination,
-          source: source,
-          balance: balance,
-          counter: counter,
-          script: {
-            'code': code,
-            'storage': storage,
-          },
-          storageLimit: storageLimit,
-        );
-}
-
-@JsonSerializable(includeIfNull: false)
+@JsonSerializable(includeIfNull: false, createFactory: false)
 class Operation {
-  final String source;
+  @JsonKey(ignore: true)
+  final RpcInterface rpcInterface;
+  @JsonKey(toJson: _keystoreToAddress)
+  final Keystore source;
 
-  @JsonKey(toJson: _kindToString, fromJson: _stringToKind)
+  @JsonKey(toJson: _kindToString)
   final Kinds kind;
 
   @JsonKey(nullable: true)
@@ -66,13 +35,13 @@ class Operation {
   @JsonKey(name: 'public_key', nullable: true)
   final String publicKey;
 
-  @JsonKey(nullable: true, fromJson: _stringToInt, toJson: _toString)
+  @JsonKey(nullable: true, toJson: _toString)
   final int amount;
 
-  @JsonKey(nullable: true, fromJson: _stringToInt, toJson: _toString)
+  @JsonKey(nullable: true, toJson: _toString)
   final int balance;
 
-  @JsonKey(fromJson: _stringToInt, toJson: _toString)
+  @JsonKey(toJson: _toString)
   int counter;
 
   @JsonKey(nullable: true)
@@ -81,14 +50,14 @@ class Operation {
   @JsonKey(nullable: true)
   Map<String, dynamic> script;
 
-  @JsonKey(name: 'gas_limit', fromJson: _stringToInt, toJson: _toString)
+  @JsonKey(name: 'gas_limit', toJson: _toString)
   final int gasLimit;
-  @JsonKey(fromJson: _stringToInt, toJson: _toString)
+  @JsonKey(toJson: _toString)
   final int fee;
-  @JsonKey(name: 'storage_limit', fromJson: _stringToInt, toJson: _toString)
+  @JsonKey(name: 'storage_limit', toJson: _toString)
   final int storageLimit;
 
-  Operation(
+  Operation(this.rpcInterface,
       {@required this.kind,
       @required this.source,
       @required this.counter,
@@ -105,12 +74,30 @@ class Operation {
         fee = fee ?? defaultFee[kind],
         storageLimit = storageLimit ?? defaultStorageLimit[kind];
 
-  factory Operation.fromJson(Map<String, dynamic> json) => _$OperationFromJson(json);
-
   Map<String, dynamic> toJson() => _$OperationToJson(this);
 
-  static int _stringToInt(String string) => int.parse(string);
   static String _toString(int integer) => integer == null ? null : integer.toString();
   static String _kindToString(Kinds kind) => EnumUtil.enumToString(kind);
-  static Kinds _stringToKind(String stringKind) => EnumUtil.stringToEnum(Kinds.values, stringKind);
+  static String _keystoreToAddress(Keystore keystore) => keystore.address;
+
+  Future<List<dynamic>> run() async => rpcInterface.runOperations([this]);
+  Future<String> forge() async => rpcInterface.forgeOperations([this]);
+  String sign(String forgedOperation) {
+    return Signature.fromHex(
+      data: forgedOperation,
+      keystore: source,
+      watermark: Watermarks.generic,
+    ).hexIncludingPayload;
+  }
+
+  Future<String> inject(String signedOperationHex) async => rpcInterface.injectOperation(signedOperationHex);
+
+  Future<OperationResult> execute() async {
+    final simulationResult = await run();
+    final forgedOperation = await forge();
+    final signedOperationHex = sign(forgedOperation);
+    final opId = await inject(signedOperationHex);
+
+    return OperationResult(id: opId, simulationResult: simulationResult, blockHash: null);
+  }
 }

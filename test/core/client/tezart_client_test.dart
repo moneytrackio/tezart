@@ -36,8 +36,9 @@ void main() {
 
       setUp(() async {
         source = Keystore.random();
-        final opId = await tezart.transfer(source: originatorKeystore, destination: source.address, amount: 100000);
-        await tezart.monitorOperation(opId);
+        final operationId =
+            await tezart.transfer(source: originatorKeystore, destination: source.address, amount: 100000);
+        await tezart.monitorOperation(operationId);
       });
 
       test('it transfers the amount from source to destination', () async {
@@ -100,9 +101,9 @@ void main() {
       });
 
       test('it reveals the key', () async {
-        final operationId = await subject(keystore);
+        final operationResult = await subject(keystore);
 
-        await tezart.monitorOperation(operationId);
+        await tezart.monitorOperation(operationResult.id);
         final isKeyRevealed = await tezart.isKeyRevealed(keystore.address);
 
         expect(isKeyRevealed, isTrue);

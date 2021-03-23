@@ -1,13 +1,14 @@
 import 'package:test/test.dart';
 import 'package:tezart/src/common/utils/enum_util.dart';
+import 'package:tezart/src/core/rpc/impl/rpc_interface.dart';
 import 'package:tezart/src/models/operation/operation.dart';
 import 'package:tezart/tezart.dart';
 
 void main() {
+  final rpcInterface = RpcInterface('http://localhost:20000');
   const kind = Kinds.generic;
-  final sourceKeystore = Keystore.fromSeed('edsk4CCa2afKwHWGxB5oZd4jvhq6tgd5EzFaryyR4vLdC3nvpjKUG6');
-  final source = sourceKeystore.address;
-  final publicKey = sourceKeystore.publicKey;
+  final source = Keystore.fromSeed('edsk4CCa2afKwHWGxB5oZd4jvhq6tgd5EzFaryyR4vLdC3nvpjKUG6');
+  final publicKey = source.publicKey;
   const destination = 'tz1Q9L8us1DWMNDCyPcaScghH9fcgUSD1zFy';
   const amount = 1;
   const balance = 1;
@@ -19,11 +20,12 @@ void main() {
 
   group('#toJson()', () {
     test('returns valid Json when all fields are present', () {
-      final operation = Operation(
+      final operation = Operation(rpcInterface,
           kind: kind,
           source: source,
           destination: destination,
           publicKey: publicKey,
+          balance: balance,
           amount: amount,
           counter: counter,
           fee: fee,
@@ -33,9 +35,10 @@ void main() {
 
       final expectedResult = {
         'kind': EnumUtil.enumToString(kind),
-        'source': source,
+        'source': source.address,
         'public_key': publicKey,
         'destination': destination,
+        'balance': balance.toString(),
         'amount': amount.toString(),
         'counter': counter.toString(),
         'gas_limit': gasLimit.toString(),
@@ -48,7 +51,7 @@ void main() {
     });
 
     test('returns valid Json when publicKey is missing', () {
-      final operation = Operation(
+      final operation = Operation(rpcInterface,
           kind: kind,
           source: source,
           destination: destination,
@@ -64,62 +67,35 @@ void main() {
 
     test('returns valid Json when amount is missing', () {
       final operation = Operation(
-          kind: kind,
-          source: source,
-          destination: destination,
-          counter: counter,
-          fee: fee,
-          gasLimit: gasLimit,
-          storageLimit: storageLimit,
-          parameters: parameters);
+        rpcInterface,
+        kind: kind,
+        source: source,
+        destination: destination,
+        counter: counter,
+        fee: fee,
+        gasLimit: gasLimit,
+        storageLimit: storageLimit,
+        parameters: parameters,
+      );
 
       expect(operation.toJson().keys, isNot(contains('amount')));
     });
 
     test('returns valid Json when parameters is missing', () {
       final operation = Operation(
-          kind: kind,
-          source: source,
-          destination: destination,
-          publicKey: publicKey,
-          amount: amount,
-          fee: fee,
-          gasLimit: gasLimit,
-          storageLimit: storageLimit,
-          counter: counter);
+        rpcInterface,
+        kind: kind,
+        source: source,
+        destination: destination,
+        publicKey: publicKey,
+        amount: amount,
+        fee: fee,
+        gasLimit: gasLimit,
+        storageLimit: storageLimit,
+        counter: counter,
+      );
 
       expect(operation.toJson().keys, isNot(contains('parameters')));
-    });
-  });
-
-  group('.fromJson()', () {
-    final subject = () => Operation.fromJson({
-          'kind': EnumUtil.enumToString(kind),
-          'source': source,
-          'destination': destination,
-          'public_key': publicKey,
-          'amount': amount.toString(),
-          'balance': balance.toString(),
-          'counter': counter.toString(),
-          'fee': fee.toString(),
-          'gas_limit': gasLimit.toString(),
-          'storage_limit': storageLimit.toString(),
-          'parameters': parameters
-        });
-
-    test('it sets all the fields correctly', () {
-      final result = subject();
-
-      expect(result.kind, equals(kind));
-      expect(result.source, equals(source));
-      expect(result.destination, equals(destination));
-      expect(result.publicKey, equals(publicKey));
-      expect(result.amount, equals(amount));
-      expect(result.counter, equals(counter));
-      expect(result.fee, equals(fee));
-      expect(result.gasLimit, equals(gasLimit));
-      expect(result.storageLimit, equals(storageLimit));
-      expect(result.parameters, equals(parameters));
     });
   });
 }

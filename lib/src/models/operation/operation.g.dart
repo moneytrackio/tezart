@@ -6,23 +6,6 @@ part of 'operation.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-Operation _$OperationFromJson(Map<String, dynamic> json) {
-  return Operation(
-    kind: Operation._stringToKind(json['kind'] as String),
-    source: json['source'] as String,
-    counter: Operation._stringToInt(json['counter'] as String),
-    amount: Operation._stringToInt(json['amount'] as String),
-    balance: Operation._stringToInt(json['balance'] as String),
-    destination: json['destination'] as String,
-    publicKey: json['public_key'] as String,
-    parameters: json['parameters'] as Map<String, dynamic>,
-    script: json['script'] as Map<String, dynamic>,
-    gasLimit: Operation._stringToInt(json['gas_limit'] as String),
-    fee: Operation._stringToInt(json['fee'] as String),
-    storageLimit: Operation._stringToInt(json['storage_limit'] as String),
-  );
-}
-
 Map<String, dynamic> _$OperationToJson(Operation instance) {
   final val = <String, dynamic>{};
 
@@ -32,7 +15,7 @@ Map<String, dynamic> _$OperationToJson(Operation instance) {
     }
   }
 
-  writeNotNull('source', instance.source);
+  writeNotNull('source', Operation._keystoreToAddress(instance.source));
   writeNotNull('kind', Operation._kindToString(instance.kind));
   writeNotNull('destination', instance.destination);
   writeNotNull('public_key', instance.publicKey);

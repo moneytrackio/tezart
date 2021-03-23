@@ -6,6 +6,9 @@ import 'package:tezart/src/keystore/keystore.dart';
 import 'package:tezart/src/models/operation/operation.dart';
 import 'package:tezart/src/models/operation_list/operation_list.dart';
 import 'package:tezart/src/signature/signature.dart';
+import 'package:tezart/src/models/operation/operation_result.dart';
+import 'package:tezart/src/models/operation/origination_operation.dart';
+import 'package:tezart/src/models/operation/transaction_operation.dart';
 
 import 'tezart_node_error.dart';
 
@@ -43,7 +46,7 @@ class TezartClient {
     @required int amount,
     bool reveal = true,
   }) async {
-    return _retryOnCounterError(() async {
+    return _retryOnCounterError<String>(() async {
       return _catchHttpError<String>(() async {
         log.info('request transfer $amount µtz from $source.address to the destination $destination');
 
@@ -52,8 +55,9 @@ class TezartClient {
 
         var counter = await rpcInterface.counter(source.address) + 1;
         ops.addOperation(TransactionOperation(
+          rpcInterface,
           amount: amount,
-          source: source.address,
+          source: source,
           destination: destination,
           counter: counter,
         ));
@@ -81,8 +85,9 @@ class TezartClient {
   Future<Operation> getRevealOperation(Keystore source) async {
     final counter = await rpcInterface.counter(source.address) + 1;
     return Operation(
+      rpcInterface,
       kind: Kinds.reveal,
-      source: source.address,
+      source: source,
       counter: counter,
       publicKey: source.publicKey,
     );
@@ -92,27 +97,19 @@ class TezartClient {
   ///
   /// It will reveal the public key associated to an address so that everyone
   /// can verify the signature for the operation and any future operations.
-  Future<String> revealKey(Keystore source) async => _retryOnCounterError(() async {
-        return _catchHttpError<String>(() async {
+  Future<OperationResult> revealKey(Keystore source) async => _retryOnCounterError<OperationResult>(() async {
+        return _catchHttpError<OperationResult>(() async {
           log.info('request to revealKey');
           final counter = await rpcInterface.counter(source.address) + 1;
           final operation = Operation(
+            rpcInterface,
             kind: Kinds.reveal,
-            source: source.address,
+            source: source,
             counter: counter,
             publicKey: source.publicKey,
           );
 
-          await rpcInterface.runOperations([operation]);
-
-          final forgedOperation = await rpcInterface.forgeOperations([operation]);
-          final signedOperationHex = Signature.fromHex(
-            data: forgedOperation,
-            keystore: source,
-            watermark: Watermarks.generic,
-          ).hexIncludingPayload;
-
-          return rpcInterface.injectOperation(signedOperationHex);
+          return operation.execute();
         });
       });
 
@@ -127,7 +124,7 @@ class TezartClient {
   /// Returns the balance in µtz of `address`.
   Future<int> getBalance({@required String address}) {
     log.info('request to getBalance');
-    return _catchHttpError(() => rpcInterface.balance(address));
+    return _catchHttpError<int>(() => rpcInterface.balance(address));
   }
 
   /// Waits for [operationId] to be included in a block.
@@ -138,7 +135,7 @@ class TezartClient {
   /// ```
   Future<void> monitorOperation(String operationId) {
     log.info('request to monitorOperation');
-    return _catchHttpError(() => rpcInterface.monitorOperation(operationId: operationId));
+    return _catchHttpError<void>(() => rpcInterface.monitorOperation(operationId: operationId));
   }
 
   Future<String> originateContract({
@@ -150,7 +147,7 @@ class TezartClient {
     bool reveal = true,
   }) async {
     //TODO: implement tests
-    return _retryOnCounterError(() async {
+    return _retryOnCounterError<String>(() async {
       return _catchHttpError<String>(() async {
         log.info('request to originateContract');
 
@@ -159,7 +156,8 @@ class TezartClient {
 
         final counter = await rpcInterface.counter(source.address) + 1;
         ops.addOperation(OriginationOperation(
-          source: source.address,
+          rpcInterface,
+          source: source,
           balance: balance,
           counter: counter,
           code: code,

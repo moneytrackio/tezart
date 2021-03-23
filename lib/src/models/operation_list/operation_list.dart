@@ -1,5 +1,6 @@
 import 'package:tezart/src/core/rpc/impl/rpc_interface.dart';
 import 'package:tezart/src/models/operation/operation.dart';
+import 'package:tezart/src/models/operation/operation_result.dart';
 
 class OperationList {
   final List<Operation> opsList = [];
