@@ -147,6 +147,24 @@ void main() {
     });
   });
 
+  group('.fromEncryptedSecretKey', () {
+    group('when encryptedSecretKey is valid', () {
+      test('sets secretKey correctly', () {
+        final encryptedSecretKey =
+            'edesk232hbyYJgsHSQQrFLpnsaotRXAJxGfDgYWcxJi6s1upfMLXuA72F3UQpZ22hQZ4GMYanwxRebEPwcZycRRy';
+        final decryptedSecretKey =
+            'edskS3DtVSbWbPD1yviMGebjYwWJtruMjDcfAZsH9uba22EzKeYhmQkkraFosFETmEMfFNVcDYQ5QbFerj9ozDKroXZ6mb5oxV';
+        final password = '12345';
+
+        final subject = () => Keystore.fromEncryptedSecretKey(encryptedSecretKey, password);
+
+        final keystore = subject();
+
+        expect(keystore.secretKey, decryptedSecretKey);
+      });
+    });
+  });
+
   group('compare keystore', () {
     test('is equals', () {
       final secretKey =

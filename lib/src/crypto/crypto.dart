@@ -3,6 +3,7 @@
 library crypto;
 
 export 'impl/encode_decode.dart';
+export 'impl/derivator.dart';
 export 'impl/digest.dart';
 export 'impl/mnemonic.dart';
 export 'impl/external_crypto_wrapper.dart';

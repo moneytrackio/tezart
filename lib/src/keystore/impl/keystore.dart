@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
@@ -89,6 +90,31 @@ class Keystore extends Equatable {
         secretKey: secretKey,
         mnemonic: mnemonic,
       );
+    });
+  }
+
+  factory Keystore.fromEncryptedSecretKey(
+    String encryptedSecretKey,
+    String passphrase,
+  ) {
+    return crypto.catchUnhandledErrors(() {
+      final bytes = crypto.decodeWithoutPrefix(encryptedSecretKey);
+      final salt = bytes.sublist(0, 8);
+      final secretKeyBytes = bytes.sublist(8);
+
+      secretKeyBytes;
+
+      final encryptionKey = crypto.deriveBits(
+        passphrase: utf8.encode(passphrase),
+        salt: salt,
+        iterationCount: 32768,
+        keyLength: 32,
+      );
+
+      encryptionKey;
+
+      // TODO: remove once secret key is decrypted
+      return Keystore.random();
     });
   }
 
