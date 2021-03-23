@@ -21,6 +21,21 @@ See the [Quick start](#quick-start) guide for more details.
 
 ### Example
 
+1. [Install Dart](#install-dart) and [run a Tezos sandbox locally](#run-a-tezos-sandbox-locally-optional)
+2. Clone the project:
+```bash
+git clone git@github.com:moneytrackio/tezart.git
+```
+3. run pub get:
+```bash
+cd tezart/
+pub get
+```
+4. Execute the example:
+```bash
+dart tezart/example/example.dart
+```
+
 > tezart/example/example.dart
 
 ```dart
@@ -113,6 +128,8 @@ Future<void> main() async {
 #### Install dart
 
 You can install **Dart SDK**, by following the [official dart documentation](https://dart.dev/get-dart).
+
+> *The minimal required version to use this package is 2.12*
 
 #### Run a Tezos sandbox locally *(optional)*
 
