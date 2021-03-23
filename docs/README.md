@@ -331,6 +331,12 @@ Following is the output usage :
 
 <img src="img/a-current-usage.png?raw=true"></img>
 
+### Tests policy
+
+- Integration tests for exposed classes: `TezartClient` `RpcInterface` `Keystore` `Signature`.
+- Unit tests for private classes.
+- Ensure code coverage is higher than 85%.
+
 ### Pull Request advice
 
 - Ensure to have a correct output for `tezart doctor` in your development environment. 

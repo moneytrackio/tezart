@@ -8,11 +8,18 @@ class TezartHttpClient {
   http_client.Dio client;
   final String url;
 
-  TezartHttpClient(this.url) {
+  // Add client as optional parameter for testing
+  TezartHttpClient(this.url, {this.client}) {
     // ensure that the url ends with '/' (double / is ok)
     final baseUrl = '$url/';
+
+    if (client != null) {
+      client.options.baseUrl = baseUrl;
+      return;
+    }
+
     final options = http_client.BaseOptions(baseUrl: baseUrl, contentType: 'application/json');
-    client = http_client.Dio(options);
+    client ??= http_client.Dio(options);
   }
 
   Future<http_client.Response> post(String path, {dynamic data}) {
