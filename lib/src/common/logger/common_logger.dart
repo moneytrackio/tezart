@@ -35,8 +35,8 @@ void _printOutput({
 }
 
 /// Enables the logs to be displayed in the console.
-void enableTezartLogger() {
-  Logger.root.level = Level.ALL; // defaults to Level.INFO
+void enableTezartLogger({Level level = Level.ALL}) {
+  Logger.root.level = level;
   Logger.root.onRecord.listen((record) {
     _printOutput(
       time: record.time,
