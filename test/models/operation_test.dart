@@ -10,6 +10,7 @@ void main() {
   final publicKey = sourceKeystore.publicKey;
   const destination = 'tz1Q9L8us1DWMNDCyPcaScghH9fcgUSD1zFy';
   const amount = 1;
+  const balance = 1;
   const counter = 543;
   final parameters = {'first': 'parameter', 'second': 'parameter'};
   final fee = 1;
@@ -98,6 +99,7 @@ void main() {
           'destination': destination,
           'public_key': publicKey,
           'amount': amount.toString(),
+          'balance': balance.toString(),
           'counter': counter.toString(),
           'fee': fee.toString(),
           'gas_limit': gasLimit.toString(),

@@ -118,6 +118,39 @@ class TezartClient {
     return _catchHttpError(() => rpcInterface.monitorOperation(operationId: operationId));
   }
 
+  Future<String> originateContract({
+    @required Keystore source,
+    @required List<Map<String, dynamic>> code,
+    @required Map<String, dynamic> storage,
+    @required int balance,
+    int storageLimit, // TODO: remove this line because it must be computed via a dry run call
+  }) async =>
+      _retryOnCounterError(() async {
+        return _catchHttpError<String>(() async {
+          log.info('request to originateContract');
+          final counter = await rpcInterface.counter(source.address) + 1;
+          final operation = OriginationOperation(
+            source: source.address,
+            balance: balance,
+            counter: counter,
+            code: code,
+            storage: storage,
+            storageLimit: storageLimit,
+          );
+
+          await rpcInterface.runOperations([operation]);
+
+          final forgedOperation = await rpcInterface.forgeOperations([operation]);
+          final signedOperationHex = Signature.fromHex(
+            data: forgedOperation,
+            keystore: source,
+            watermark: Watermarks.generic,
+          ).hexIncludingPayload;
+
+          return rpcInterface.injectOperation(signedOperationHex);
+        });
+      });
+
   Future<T> _retryOnCounterError<T>(func) {
     final r = RetryOptions(maxAttempts: 3);
     return r.retry(
