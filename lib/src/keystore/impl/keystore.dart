@@ -28,7 +28,9 @@ class Keystore extends Equatable {
 
   final String mnemonic;
 
-  const Keystore._({@required this.secretKey, this.mnemonic});
+  Keystore._({@required this.secretKey, this.mnemonic});
+
+  bool isKeyRevealed = false;
 
   /// A factory that generates a keystore from a secret key.
   ///

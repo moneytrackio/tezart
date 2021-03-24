@@ -71,9 +71,11 @@ class TezartClient {
   }
 
   Future<void> _revealKeyIfNotRevealed(Keystore source) async {
+    if (source.isKeyRevealed) return;
     if (!await isKeyRevealed(source.address)) {
       final opId = await revealKey(source);
       await monitorOperation(opId);
+      source.isKeyRevealed = true;
     }
   }
 
