@@ -40,8 +40,9 @@ class TezartClient {
     @required Keystore source,
     @required String destination,
     @required int amount,
+    bool reveal = true,
   }) async {
-    await _revealKeyIfNotRevealed(source);
+    if (reveal) await _revealKeyIfNotRevealed(source);
 
     return _retryOnCounterError(() async {
       return _catchHttpError<String>(() async {
@@ -135,8 +136,9 @@ class TezartClient {
     @required Map<String, dynamic> storage,
     @required int balance,
     int storageLimit, // TODO: remove this line because it must be computed via a dry run call
+    bool reveal = true,
   }) async {
-    await _revealKeyIfNotRevealed(source);
+    if (reveal) await _revealKeyIfNotRevealed(source);
     //TODO: implement tests
     return _retryOnCounterError(() async {
       return _catchHttpError<String>(() async {
