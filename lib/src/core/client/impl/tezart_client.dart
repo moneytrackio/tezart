@@ -4,6 +4,7 @@ import 'package:retry/retry.dart';
 import 'package:tezart/src/core/rpc/rpc_interface.dart';
 import 'package:tezart/src/keystore/keystore.dart';
 import 'package:tezart/src/models/operation/operation.dart';
+import 'package:tezart/src/models/operation_list/operation_list.dart';
 import 'package:tezart/src/signature/signature.dart';
 
 import 'tezart_node_error.dart';
@@ -42,13 +43,16 @@ class TezartClient {
     @required int amount,
     bool reveal = true,
   }) async {
-    if (reveal) await _revealKeyIfNotRevealed(source);
-
     return _retryOnCounterError(() async {
       return _catchHttpError<String>(() async {
         log.info('request transfer $amount µtz from $source.address to the destination $destination');
 
-        final counter = await rpcInterface.counter(source.address) + 1;
+        var ops = OperationList();
+        if (reveal && !await isKeyRevealed(source.address)) {
+          ops.addOperation(await getRevealOperation(source));
+        }
+
+        var counter = await rpcInterface.counter(source.address) + 1;
         final operation = TransactionOperation(
           amount: amount,
           source: source.address,
@@ -56,9 +60,10 @@ class TezartClient {
           counter: counter,
         );
 
-        await rpcInterface.runOperations([operation]);
+        ops.addOperation(operation);
+        await rpcInterface.runOperations(ops.opsList);
 
-        final forgedOperation = await rpcInterface.forgeOperations([operation]);
+        final forgedOperation = await rpcInterface.forgeOperations(ops.opsList);
         final signedOperationHex = Signature.fromHex(
           data: forgedOperation,
           keystore: source,
@@ -77,6 +82,16 @@ class TezartClient {
       await monitorOperation(opId);
       source.isKeyRevealed = true;
     }
+  }
+
+  Future<Operation> getRevealOperation(Keystore source) async {
+    final counter = await rpcInterface.counter(source.address) + 1;
+    return Operation(
+      kind: Kinds.reveal,
+      source: source.address,
+      counter: counter,
+      publicKey: source.publicKey,
+    );
   }
 
   /// Reveals [source.publicKey] and returns the operation group id

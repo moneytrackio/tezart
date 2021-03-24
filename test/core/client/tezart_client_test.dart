@@ -36,7 +36,7 @@ void main() {
 
       setUp(() async {
         source = Keystore.random();
-        final opId = await tezart.transfer(source: originatorKeystore, destination: source.address, amount: 10000);
+        final opId = await tezart.transfer(source: originatorKeystore, destination: source.address, amount: 100000);
         await tezart.monitorOperation(opId);
       });
 
