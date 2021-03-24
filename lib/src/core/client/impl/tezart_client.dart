@@ -40,30 +40,37 @@ class TezartClient {
     @required Keystore source,
     @required String destination,
     @required int amount,
-  }) async =>
-      _retryOnCounterError(() async {
-        return _catchHttpError<String>(() async {
-          log.info('request transfer $amount µtz from $source.address to the destination $destination');
-          final counter = await rpcInterface.counter(source.address) + 1;
-          final operation = TransactionOperation(
-            amount: amount,
-            source: source.address,
-            destination: destination,
-            counter: counter,
-          );
+  }) async {
+    if (!await isKeyRevealed(source.address)) {
+      final opId = await revealKey(source);
+      await monitorOperation(opId);
+    }
 
-          await rpcInterface.runOperations([operation]);
+    return _retryOnCounterError(() async {
+      return _catchHttpError<String>(() async {
+        log.info('request transfer $amount µtz from $source.address to the destination $destination');
 
-          final forgedOperation = await rpcInterface.forgeOperations([operation]);
-          final signedOperationHex = Signature.fromHex(
-            data: forgedOperation,
-            keystore: source,
-            watermark: Watermarks.generic,
-          ).hexIncludingPayload;
+        final counter = await rpcInterface.counter(source.address) + 1;
+        final operation = TransactionOperation(
+          amount: amount,
+          source: source.address,
+          destination: destination,
+          counter: counter,
+        );
 
-          return rpcInterface.injectOperation(signedOperationHex);
-        });
+        await rpcInterface.runOperations([operation]);
+
+        final forgedOperation = await rpcInterface.forgeOperations([operation]);
+        final signedOperationHex = Signature.fromHex(
+          data: forgedOperation,
+          keystore: source,
+          watermark: Watermarks.generic,
+        ).hexIncludingPayload;
+
+        return rpcInterface.injectOperation(signedOperationHex);
       });
+    });
+  }
 
   /// Reveals [source.publicKey] and returns the operation group id
   ///
