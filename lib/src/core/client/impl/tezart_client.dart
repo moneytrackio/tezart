@@ -41,10 +41,7 @@ class TezartClient {
     @required String destination,
     @required int amount,
   }) async {
-    if (!await isKeyRevealed(source.address)) {
-      final opId = await revealKey(source);
-      await monitorOperation(opId);
-    }
+    await _revealKeyIfNotRevealed(source);
 
     return _retryOnCounterError(() async {
       return _catchHttpError<String>(() async {
@@ -70,6 +67,13 @@ class TezartClient {
         return rpcInterface.injectOperation(signedOperationHex);
       });
     });
+  }
+
+  Future<void> _revealKeyIfNotRevealed(Keystore source) async {
+    if (!await isKeyRevealed(source.address)) {
+      final opId = await revealKey(source);
+      await monitorOperation(opId);
+    }
   }
 
   /// Reveals [source.publicKey] and returns the operation group id
@@ -131,32 +135,35 @@ class TezartClient {
     @required Map<String, dynamic> storage,
     @required int balance,
     int storageLimit, // TODO: remove this line because it must be computed via a dry run call
-  }) async =>
-      _retryOnCounterError(() async {
-        return _catchHttpError<String>(() async {
-          log.info('request to originateContract');
-          final counter = await rpcInterface.counter(source.address) + 1;
-          final operation = OriginationOperation(
-            source: source.address,
-            balance: balance,
-            counter: counter,
-            code: code,
-            storage: storage,
-            storageLimit: storageLimit,
-          );
+  }) async {
+    await _revealKeyIfNotRevealed(source);
+    //TODO: implement tests
+    return _retryOnCounterError(() async {
+      return _catchHttpError<String>(() async {
+        log.info('request to originateContract');
+        final counter = await rpcInterface.counter(source.address) + 1;
+        final operation = OriginationOperation(
+          source: source.address,
+          balance: balance,
+          counter: counter,
+          code: code,
+          storage: storage,
+          storageLimit: storageLimit,
+        );
 
-          await rpcInterface.runOperations([operation]);
+        await rpcInterface.runOperations([operation]);
 
-          final forgedOperation = await rpcInterface.forgeOperations([operation]);
-          final signedOperationHex = Signature.fromHex(
-            data: forgedOperation,
-            keystore: source,
-            watermark: Watermarks.generic,
-          ).hexIncludingPayload;
+        final forgedOperation = await rpcInterface.forgeOperations([operation]);
+        final signedOperationHex = Signature.fromHex(
+          data: forgedOperation,
+          keystore: source,
+          watermark: Watermarks.generic,
+        ).hexIncludingPayload;
 
-          return rpcInterface.injectOperation(signedOperationHex);
-        });
+        return rpcInterface.injectOperation(signedOperationHex);
       });
+    });
+  }
 
   Future<T> _retryOnCounterError<T>(func) {
     final r = RetryOptions(maxAttempts: 3);
