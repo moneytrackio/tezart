@@ -47,20 +47,16 @@ class TezartClient {
       return _catchHttpError<String>(() async {
         log.info('request transfer $amount µtz from $source.address to the destination $destination');
 
-        var ops = OperationList();
-        if (reveal && !await isKeyRevealed(source.address)) {
-          ops.addOperation(await getRevealOperation(source));
-        }
+        final ops = OperationList();
+        if (reveal) await _prependRevealIfNotRevealed(ops, source);
 
         var counter = await rpcInterface.counter(source.address) + 1;
-        final operation = TransactionOperation(
+        ops.addOperation(TransactionOperation(
           amount: amount,
           source: source.address,
           destination: destination,
           counter: counter,
-        );
-
-        ops.addOperation(operation);
+        ));
         await rpcInterface.runOperations(ops.opsList);
 
         final forgedOperation = await rpcInterface.forgeOperations(ops.opsList);
@@ -75,12 +71,10 @@ class TezartClient {
     });
   }
 
-  Future<void> _revealKeyIfNotRevealed(Keystore source) async {
+  Future<void> _prependRevealIfNotRevealed(OperationList list, Keystore source) async {
     if (source.isKeyRevealed) return;
     if (!await isKeyRevealed(source.address)) {
-      final opId = await revealKey(source);
-      await monitorOperation(opId);
-      source.isKeyRevealed = true;
+      list.prependOperation(await getRevealOperation(source));
     }
   }
 
@@ -155,24 +149,27 @@ class TezartClient {
     int storageLimit, // TODO: remove this line because it must be computed via a dry run call
     bool reveal = true,
   }) async {
-    if (reveal) await _revealKeyIfNotRevealed(source);
     //TODO: implement tests
     return _retryOnCounterError(() async {
       return _catchHttpError<String>(() async {
         log.info('request to originateContract');
+
+        var ops = OperationList();
+        if (reveal) await _prependRevealIfNotRevealed(ops, source);
+
         final counter = await rpcInterface.counter(source.address) + 1;
-        final operation = OriginationOperation(
+        ops.addOperation(OriginationOperation(
           source: source.address,
           balance: balance,
           counter: counter,
           code: code,
           storage: storage,
           storageLimit: storageLimit,
-        );
+        ));
 
-        await rpcInterface.runOperations([operation]);
+        await rpcInterface.runOperations(ops.opsList);
 
-        final forgedOperation = await rpcInterface.forgeOperations([operation]);
+        final forgedOperation = await rpcInterface.forgeOperations(ops.opsList);
         final signedOperationHex = Signature.fromHex(
           data: forgedOperation,
           keystore: source,
