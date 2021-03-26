@@ -1,40 +1,35 @@
-pull_request_rules:
-  - name: automatic merge for master when Github Action Run tests passes with at least 1 review and not WIP
+queue_rules:
+  - name: urgent
     conditions:
-      - "#approved-reviews-by>=1"
       # https://docs.mergify.io/conditions.html#github-actions
       - check-success=Run tests
-      - base=master
-      - label!=work-in-progress
-    actions:
-      merge:
-        method: merge
-
-  - name: delete head branch after merge
+  - name: default
     conditions:
-      - merged
-    actions:
-      delete_head_branch: {}
+      - check-success=Run tests
 
-  - name: remove outdated reviews
+pull_request_rules:
+  - name: move to urgent queue when 2 reviews and label urgent
     conditions:
-      - base=master
+      - base=main
+      - "#approved-reviews-by>=2"
+      - label=urgent
     actions:
-      dismiss_reviews: {}
+      queue:
+        name: urgent
 
-  - name: merge when all requested reviews are valid
+  - name: merge using the merge queue
     conditions:
+      - base=main
       - "#approved-reviews-by>=1"
-      - "#review-requested=0"
-      - "#changes-requested-reviews-by=0"
-      - "#commented-reviews-by=0"
+      - check-success=Run tests
+      - label!=urgent
     actions:
-        merge:
-          method: merge
-
+      queue:
+        name: default
+        
   - name: say hi on new contribution
     conditions:
-      - author!=@myorg/regularcontributors
+      - author!=@moneytrackio/regularcontributors
     actions:
         comment:
           message: |
