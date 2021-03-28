@@ -18,6 +18,7 @@ See the [Quick start](https://moneytrackio.github.io/tezart/#/?id=quick-start) g
 
 - [Documentation](https://moneytrackio.github.io/tezart/)
 - [Contribution](https://moneytrackio.github.io/tezart/#/?id=contribute)
+- [Architecture]((https://github.com/moneytrackio/tezart/blob/main/docs/ARCHITECTURE.md))
 <!--- - API Reference  API Reference will be available when the package is published to pub.dev --> 
 
 ## Feature requests and bugs 
