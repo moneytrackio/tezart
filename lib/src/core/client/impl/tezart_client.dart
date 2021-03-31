@@ -4,6 +4,7 @@ import 'package:retry/retry.dart';
 import 'package:tezart/src/core/rpc/rpc_interface.dart';
 import 'package:tezart/src/keystore/keystore.dart';
 import 'package:tezart/src/models/operation/operation.dart';
+import 'package:tezart/src/models/operation_list/operation_list.dart';
 import 'package:tezart/src/signature/signature.dart';
 
 import 'tezart_node_error.dart';
@@ -40,30 +41,52 @@ class TezartClient {
     @required Keystore source,
     @required String destination,
     @required int amount,
-  }) async =>
-      _retryOnCounterError(() async {
-        return _catchHttpError<String>(() async {
-          log.info('request transfer $amount µtz from $source.address to the destination $destination');
-          final counter = await rpcInterface.counter(source.address) + 1;
-          final operation = TransactionOperation(
-            amount: amount,
-            source: source.address,
-            destination: destination,
-            counter: counter,
-          );
+    bool reveal = true,
+  }) async {
+    return _retryOnCounterError(() async {
+      return _catchHttpError<String>(() async {
+        log.info('request transfer $amount µtz from $source.address to the destination $destination');
 
-          await rpcInterface.runOperations([operation]);
+        final ops = OperationList();
+        if (reveal) await _prependRevealIfNotRevealed(ops, source);
 
-          final forgedOperation = await rpcInterface.forgeOperations([operation]);
-          final signedOperationHex = Signature.fromHex(
-            data: forgedOperation,
-            keystore: source,
-            watermark: Watermarks.generic,
-          ).hexIncludingPayload;
+        var counter = await rpcInterface.counter(source.address) + 1;
+        ops.addOperation(TransactionOperation(
+          amount: amount,
+          source: source.address,
+          destination: destination,
+          counter: counter,
+        ));
+        await rpcInterface.runOperations(ops.opsList);
 
-          return rpcInterface.injectOperation(signedOperationHex);
-        });
+        final forgedOperation = await rpcInterface.forgeOperations(ops.opsList);
+        final signedOperationHex = Signature.fromHex(
+          data: forgedOperation,
+          keystore: source,
+          watermark: Watermarks.generic,
+        ).hexIncludingPayload;
+
+        return rpcInterface.injectOperation(signedOperationHex);
       });
+    });
+  }
+
+  Future<void> _prependRevealIfNotRevealed(OperationList list, Keystore source) async {
+    if (source.isKeyRevealed) return;
+    if (!await isKeyRevealed(source.address)) {
+      list.prependOperation(await getRevealOperation(source));
+    }
+  }
+
+  Future<Operation> getRevealOperation(Keystore source) async {
+    final counter = await rpcInterface.counter(source.address) + 1;
+    return Operation(
+      kind: Kinds.reveal,
+      source: source.address,
+      counter: counter,
+      publicKey: source.publicKey,
+    );
+  }
 
   /// Reveals [source.publicKey] and returns the operation group id
   ///
@@ -124,32 +147,39 @@ class TezartClient {
     @required Map<String, dynamic> storage,
     @required int balance,
     int storageLimit, // TODO: remove this line because it must be computed via a dry run call
-  }) async =>
-      _retryOnCounterError(() async {
-        return _catchHttpError<String>(() async {
-          log.info('request to originateContract');
-          final counter = await rpcInterface.counter(source.address) + 1;
-          final operation = OriginationOperation(
-            source: source.address,
-            balance: balance,
-            counter: counter,
-            code: code,
-            storage: storage,
-            storageLimit: storageLimit,
-          );
+    bool reveal = true,
+  }) async {
+    //TODO: implement tests
+    return _retryOnCounterError(() async {
+      return _catchHttpError<String>(() async {
+        log.info('request to originateContract');
 
-          await rpcInterface.runOperations([operation]);
+        var ops = OperationList();
+        if (reveal) await _prependRevealIfNotRevealed(ops, source);
 
-          final forgedOperation = await rpcInterface.forgeOperations([operation]);
-          final signedOperationHex = Signature.fromHex(
-            data: forgedOperation,
-            keystore: source,
-            watermark: Watermarks.generic,
-          ).hexIncludingPayload;
+        final counter = await rpcInterface.counter(source.address) + 1;
+        ops.addOperation(OriginationOperation(
+          source: source.address,
+          balance: balance,
+          counter: counter,
+          code: code,
+          storage: storage,
+          storageLimit: storageLimit,
+        ));
 
-          return rpcInterface.injectOperation(signedOperationHex);
-        });
+        await rpcInterface.runOperations(ops.opsList);
+
+        final forgedOperation = await rpcInterface.forgeOperations(ops.opsList);
+        final signedOperationHex = Signature.fromHex(
+          data: forgedOperation,
+          keystore: source,
+          watermark: Watermarks.generic,
+        ).hexIncludingPayload;
+
+        return rpcInterface.injectOperation(signedOperationHex);
       });
+    });
+  }
 
   Future<T> _retryOnCounterError<T>(func) {
     final r = RetryOptions(maxAttempts: 3);

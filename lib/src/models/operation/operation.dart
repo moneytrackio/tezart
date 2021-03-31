@@ -73,7 +73,7 @@ class Operation {
   final int balance;
 
   @JsonKey(fromJson: _stringToInt, toJson: _toString)
-  final int counter;
+  int counter;
 
   @JsonKey(nullable: true)
   Map<String, dynamic> parameters;
