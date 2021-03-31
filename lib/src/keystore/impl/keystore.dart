@@ -1,9 +1,8 @@
-import 'dart:convert';
 import 'dart:typed_data';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
+import 'package:pinenacl/secret.dart' show SecretBox;
 
-import 'package:pinenacl/crypto/tweetnacl.dart';
 // internal Library
 //
 // we hide Prefixes from the crypto name and then show it without a name to avoid this:
@@ -102,24 +101,26 @@ class Keystore extends Equatable {
       final bytes = crypto.decodeWithoutPrefix(encryptedSecretKey);
       final salt = bytes.sublist(0, 8);
       final secretKeyBytes = bytes.sublist(8);
+      final iterationCount = 32768;
+      final keyLength = 32;
+      final nonce = Uint8List(24);
 
       final encryptionKey = crypto.deriveBits(
-        passphrase: utf8.encode(passphrase),
+        passphrase: Uint8List.fromList(passphrase.codeUnits),
         salt: salt,
-        iterationCount: 32768,
-        keyLength: 32,
+        iterationCount: iterationCount,
+        keyLength: keyLength,
       );
 
-      TweetNaCl.crypto_secretbox_open(
-        Uint8List(TweetNaCl.macBytes),
-        encryptionKey,
-        encryptionKey.length,
-        Uint8List(TweetNaCl.nonceLength),
-        secretKeyBytes,
+      final secretbox = SecretBox(encryptionKey);
+      final decryptedBytes = secretbox.decrypt(secretKeyBytes, nonce: nonce);
+
+      final secretKey = crypto.encodeWithPrefix(
+        prefix: Prefixes.edsk2,
+        bytes: decryptedBytes,
       );
 
-      // TODO: remove once secret key is decrypted
-      return Keystore.random();
+      return Keystore.fromSeed(secretKey);
     });
   }
 

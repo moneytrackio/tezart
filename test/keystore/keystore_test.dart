@@ -151,10 +151,10 @@ void main() {
     group('when encryptedSecretKey is valid', () {
       test('sets secretKey correctly', () {
         final encryptedSecretKey =
-            'edesk232hbyYJgsHSQQrFLpnsaotRXAJxGfDgYWcxJi6s1upfMLXuA72F3UQpZ22hQZ4GMYanwxRebEPwcZycRRy';
+            'edesk1KdMoTVgwTy1SHx7BBWktMT2vJmnkhz5nCCTiMP12uZFr2tYFqpTZaeUH4JC9E5dmpQPAk93rpFM7WgQxRj';
         final decryptedSecretKey =
-            'edskS3DtVSbWbPD1yviMGebjYwWJtruMjDcfAZsH9uba22EzKeYhmQkkraFosFETmEMfFNVcDYQ5QbFerj9ozDKroXZ6mb5oxV';
-        final password = '12345';
+            'edskRsojwt2M58draF6UMxJ2jdNJUSz4hLqH3heKshe6d6eBDhEjCikeiReE59kNQzmFYAB1PTaEtRPrT2ehsrQ3zSjXo6GD72';
+        final password = 'password';
 
         final subject = () => Keystore.fromEncryptedSecretKey(encryptedSecretKey, password);
 

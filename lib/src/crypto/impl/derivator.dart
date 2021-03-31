@@ -10,7 +10,7 @@ Uint8List deriveBits({
 }) {
   final target = Uint8List(keyLength);
   final params = Pbkdf2Parameters(salt, iterationCount, keyLength);
-  final derivator = PBKDF2KeyDerivator((HMac(SHA512Digest(), keyLength)));
+  final derivator = PBKDF2KeyDerivator((HMac(SHA512Digest(), 128)));
 
   derivator.init(params);
   derivator.deriveKey(passphrase, 0, target, 0);
