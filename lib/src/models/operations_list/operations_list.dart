@@ -26,6 +26,19 @@ class OperationsList {
     operations.add(op);
   }
 
+  Future<void> simulate() async {
+    if (result.signedOperationHex == null) throw ArgumentError.notNull('result.signedOperationHex');
+
+    final simulationResults = await rpcInterface.preapplyOperations(
+      operations: operations,
+      signature: result.signedOperationHex,
+    );
+
+    for (var i = 0; i < simulationResults.length; i++) {
+      operations[i].simulationResult = simulationResults[i];
+    }
+  }
+
   Future<void> run() async {
     final simulationResults = await rpcInterface.runOperations(operations);
 
@@ -65,9 +78,9 @@ class OperationsList {
 
   Future<void> execute() async {
     await computeCounters();
-    await run();
     await forge();
     sign();
+    await simulate();
     await inject();
   }
 

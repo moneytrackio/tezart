@@ -70,6 +70,27 @@ class RpcInterface {
     return response.data;
   }
 
+  Future<List<dynamic>> preapplyOperations({
+    List<Operation> operations,
+    String signature,
+    chain = 'main',
+    level = 'head',
+  }) async {
+    log.info('request for preapplyOperations [ chain:$chain, level:$level]');
+    var content = {
+      'operation': {
+        'branch': await branch(),
+        'contents': operations.map((operation) => operation.toJson()).toList(),
+        'signature': randomSignature
+      },
+      'chain_id': await chainId()
+    };
+
+    var response = await httpClient.post(paths.runOperations(chain: chain, level: level), data: content);
+
+    return response.data['contents'];
+  }
+
   Future<List<dynamic>> runOperations(List<Operation> operations, [chain = 'main', level = 'head']) async {
     log.info('request for runOperations [ chain:$chain, level:$level]');
     var content = {

@@ -17,6 +17,9 @@ final forgeOperations = ({@required String chain, @required String level}) =>
 final runOperations = ({@required String chain, @required String level}) =>
     '${_levelPath(chain: chain, level: level)}/helpers/scripts/run_operation';
 
+final preapplyOperations = ({@required String chain, @required String level}) =>
+    '${_levelPath(chain: chain, level: level)}/helpers/preapply/operations';
+
 final injectOperation = (String chain) => 'injection/operation?chain=$chain';
 
 final balance = ({@required String chain, @required String level, @required String address}) =>
