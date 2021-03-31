@@ -3,7 +3,6 @@ import 'package:meta/meta.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:tezart/src/common/utils/enum_util.dart';
 import 'package:tezart/src/keystore/keystore.dart';
-import 'package:tezart/src/models/operation/operation_result.dart';
 import 'package:tezart/src/models/operations_list/operations_list.dart';
 
 import 'constants.dart';
@@ -22,7 +21,7 @@ enum Kinds {
 @JsonSerializable(includeIfNull: false, createFactory: false)
 class Operation {
   @JsonKey(ignore: true)
-  final operationResult = OperationResult();
+  Map<String, dynamic> simulationResult;
   @JsonKey(ignore: true)
   OperationsList operationsList;
   @JsonKey(ignore: true)

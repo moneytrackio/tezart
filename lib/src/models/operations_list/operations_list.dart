@@ -36,7 +36,7 @@ class OperationsList {
     final simulationResults = await rpcInterface.runOperations(operations);
 
     for (var i = 0; i < simulationResults.length; i++) {
-      operations[i].operationResult.simulationResult = simulationResults[i];
+      operations[i].simulationResult = simulationResults[i];
     }
   }
 
