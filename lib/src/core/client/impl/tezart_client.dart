@@ -4,7 +4,6 @@ import 'package:meta/meta.dart';
 import 'package:retry/retry.dart';
 import 'package:tezart/src/core/rpc/rpc_interface.dart';
 import 'package:tezart/src/keystore/keystore.dart';
-import 'package:tezart/src/models/operation/operation.dart';
 import 'package:tezart/src/models/operations_list/operations_list.dart';
 import 'package:tezart/src/models/operation/origination_operation.dart';
 import 'package:tezart/src/models/operation/reveal_operation.dart';
@@ -53,13 +52,10 @@ class TezartClient {
         final operationsList = OperationsList(source: source, rpcInterface: rpcInterface);
         if (reveal) await _prependRevealIfNotRevealed(operationsList, source);
 
-        var counter = await rpcInterface.counter(source.address) + 1;
         operationsList.addOperation(TransactionOperation(
-          rpcInterface,
           operationsList: operationsList,
           amount: amount,
           destination: destination,
-          counter: counter,
         ));
         await operationsList.execute();
 
@@ -70,17 +66,8 @@ class TezartClient {
 
   Future<void> _prependRevealIfNotRevealed(OperationsList list, Keystore source) async {
     if (!await isKeyRevealed(source.address)) {
-      list.prependOperation(await getRevealOperation(source));
+      list.prependOperation(RevealOperation());
     }
-  }
-
-  Future<Operation> getRevealOperation(Keystore source) async {
-    final counter = await rpcInterface.counter(source.address) + 1;
-
-    return RevealOperation(
-      rpcInterface,
-      counter: counter,
-    );
   }
 
   /// Reveals [source.publicKey] and returns the operation group id
@@ -90,7 +77,7 @@ class TezartClient {
   Future<OperationsList> revealKey(Keystore source) async => _retryOnCounterError<OperationsList>(() async {
         return _catchHttpError<OperationsList>(() async {
           log.info('request to revealKey');
-          final operation = await getRevealOperation(source);
+          final operation = RevealOperation();
           final operationsList = OperationsList(source: source, rpcInterface: rpcInterface)..addOperation(operation);
           await operationsList.execute();
 
@@ -140,11 +127,8 @@ class TezartClient {
         var operationsList = OperationsList(source: source, rpcInterface: rpcInterface);
         if (reveal) await _prependRevealIfNotRevealed(operationsList, source);
 
-        final counter = await rpcInterface.counter(source.address) + 1;
         operationsList.addOperation(OriginationOperation(
-          rpcInterface,
           balance: balance,
-          counter: counter,
           code: code,
           storage: storage,
           storageLimit: storageLimit,

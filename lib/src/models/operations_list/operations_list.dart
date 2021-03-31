@@ -19,16 +19,10 @@ class OperationsList {
   void prependOperation(Operation op) {
     op.operationsList = this;
     operations.insert(0, op);
-    if (operations.length == 1) return;
-
-    for (var i = 1; i < operations.length - 1; i++) {
-      operations[i].counter = operations[i + 1].counter;
-    }
   }
 
   void addOperation(Operation op) {
     op.operationsList = this;
-    if (operations.isNotEmpty) op.counter = operations.last.counter + 1;
     operations.add(op);
   }
 
@@ -60,7 +54,17 @@ class OperationsList {
     result.id = await rpcInterface.injectOperation(result.signedOperationHex);
   }
 
+  Future<void> computeCounters() async {
+    final firstOperation = operations.first;
+    firstOperation.counter = await rpcInterface.counter(source.address) + 1;
+
+    for (var i = 1; i < operations.length; i++) {
+      operations[i].counter = operations[i - 1].counter + 1;
+    }
+  }
+
   Future<void> execute() async {
+    await computeCounters();
     await run();
     await forge();
     sign();

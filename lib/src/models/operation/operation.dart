@@ -26,6 +26,7 @@ class Operation {
   OperationsList operationsList;
   @JsonKey(ignore: true)
   final log = Logger('Operation');
+
   @JsonKey(toJson: _kindToString)
   final Kinds kind;
 
@@ -56,7 +57,6 @@ class Operation {
 
   Operation({
     @required this.kind,
-    @required this.counter,
     this.amount,
     this.balance,
     this.destination,
