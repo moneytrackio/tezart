@@ -1,7 +1,7 @@
 import 'operation.dart';
 
 class RevealOperation extends Operation {
-  RevealOperation({int storageLimit})
+  RevealOperation()
       : super(
           kind: Kinds.reveal,
         );
