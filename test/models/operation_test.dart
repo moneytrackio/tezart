@@ -1,7 +1,7 @@
 import 'package:test/test.dart';
 import 'package:tezart/src/core/rpc/impl/rpc_interface.dart';
 import 'package:tezart/src/models/operation/operation.dart';
-import 'package:tezart/src/models/operation_list/operation_list.dart';
+import 'package:tezart/src/models/operations_list/operations_list.dart';
 import 'package:tezart/tezart.dart';
 
 void main() {
@@ -30,8 +30,8 @@ void main() {
           gasLimit: gasLimit,
           storageLimit: storageLimit,
           parameters: parameters);
-      final operationList = OperationList(source);
-      operation.operationList = operationList;
+      final operationsList = OperationsList(source);
+      operation.operationsList = operationsList;
 
       final expectedResult = {
         'kind': 'reveal',
@@ -60,8 +60,8 @@ void main() {
           gasLimit: gasLimit,
           storageLimit: storageLimit,
           parameters: parameters);
-      final operationList = OperationList(source);
-      operation.operationList = operationList;
+      final operationsList = OperationsList(source);
+      operation.operationsList = operationsList;
 
       expect(operation.toJson().keys, isNot(contains('public_key')));
     });
@@ -77,8 +77,8 @@ void main() {
         storageLimit: storageLimit,
         parameters: parameters,
       );
-      final operationList = OperationList(source);
-      operation.operationList = operationList;
+      final operationsList = OperationsList(source);
+      operation.operationsList = operationsList;
 
       expect(operation.toJson().keys, isNot(contains('amount')));
     });
@@ -94,8 +94,8 @@ void main() {
         storageLimit: storageLimit,
         counter: counter,
       );
-      final operationList = OperationList(source);
-      operation.operationList = operationList;
+      final operationsList = OperationsList(source);
+      operation.operationsList = operationsList;
 
       expect(operation.toJson().keys, isNot(contains('parameters')));
     });

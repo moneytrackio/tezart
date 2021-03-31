@@ -5,7 +5,7 @@ import 'package:retry/retry.dart';
 import 'package:tezart/src/core/rpc/rpc_interface.dart';
 import 'package:tezart/src/keystore/keystore.dart';
 import 'package:tezart/src/models/operation/operation.dart';
-import 'package:tezart/src/models/operation_list/operation_list.dart';
+import 'package:tezart/src/models/operations_list/operations_list.dart';
 import 'package:tezart/src/models/operation/origination_operation.dart';
 import 'package:tezart/src/models/operation/reveal_operation.dart';
 import 'package:tezart/src/models/operation/transaction_operation.dart';
@@ -40,35 +40,35 @@ class TezartClient {
   /// ```
   ///
   /// Retries 3 times if a counter error occurs ([TezartNodeErrorTypes.counterError]).
-  Future<OperationList> transfer({
+  Future<OperationsList> transfer({
     @required Keystore source,
     @required String destination,
     @required int amount,
     bool reveal = true,
   }) async {
-    return _retryOnCounterError<OperationList>(() async {
-      return _catchHttpError<OperationList>(() async {
+    return _retryOnCounterError<OperationsList>(() async {
+      return _catchHttpError<OperationsList>(() async {
         log.info('request transfer $amount µtz from $source.address to the destination $destination');
 
-        final operationList = OperationList(source);
-        if (reveal) await _prependRevealIfNotRevealed(operationList, source);
+        final operationsList = OperationsList(source);
+        if (reveal) await _prependRevealIfNotRevealed(operationsList, source);
 
         var counter = await rpcInterface.counter(source.address) + 1;
-        operationList.addOperation(TransactionOperation(
+        operationsList.addOperation(TransactionOperation(
           rpcInterface,
-          operationList: operationList,
+          operationsList: operationsList,
           amount: amount,
           destination: destination,
           counter: counter,
         ));
-        await operationList.execute();
+        await operationsList.execute();
 
-        return operationList;
+        return operationsList;
       });
     });
   }
 
-  Future<void> _prependRevealIfNotRevealed(OperationList list, Keystore source) async {
+  Future<void> _prependRevealIfNotRevealed(OperationsList list, Keystore source) async {
     if (!await isKeyRevealed(source.address)) {
       list.prependOperation(await getRevealOperation(source));
     }
@@ -87,14 +87,14 @@ class TezartClient {
   ///
   /// It will reveal the public key associated to an address so that everyone
   /// can verify the signature for the operation and any future operations.
-  Future<OperationList> revealKey(Keystore source) async => _retryOnCounterError<OperationList>(() async {
-        return _catchHttpError<OperationList>(() async {
+  Future<OperationsList> revealKey(Keystore source) async => _retryOnCounterError<OperationsList>(() async {
+        return _catchHttpError<OperationsList>(() async {
           log.info('request to revealKey');
           final operation = await getRevealOperation(source);
-          final operationList = OperationList(source)..addOperation(operation);
-          await operationList.execute();
+          final operationsList = OperationsList(source)..addOperation(operation);
+          await operationsList.execute();
 
-          return operationList;
+          return operationsList;
         });
       });
 
@@ -124,7 +124,7 @@ class TezartClient {
     return _catchHttpError<String>(() => rpcInterface.monitorOperation(operationId: operationId));
   }
 
-  Future<OperationList> originateContract({
+  Future<OperationsList> originateContract({
     @required Keystore source,
     @required List<Map<String, dynamic>> code,
     @required Map<String, dynamic> storage,
@@ -133,15 +133,15 @@ class TezartClient {
     bool reveal = true,
   }) async {
     //TODO: implement tests
-    return _retryOnCounterError<OperationList>(() async {
-      return _catchHttpError<OperationList>(() async {
+    return _retryOnCounterError<OperationsList>(() async {
+      return _catchHttpError<OperationsList>(() async {
         log.info('request to originateContract');
 
-        var operationList = OperationList(source);
-        if (reveal) await _prependRevealIfNotRevealed(operationList, source);
+        var operationsList = OperationsList(source);
+        if (reveal) await _prependRevealIfNotRevealed(operationsList, source);
 
         final counter = await rpcInterface.counter(source.address) + 1;
-        operationList.addOperation(OriginationOperation(
+        operationsList.addOperation(OriginationOperation(
           rpcInterface,
           balance: balance,
           counter: counter,
@@ -150,9 +150,9 @@ class TezartClient {
           storageLimit: storageLimit,
         ));
 
-        await operationList.execute();
+        await operationsList.execute();
 
-        return operationList;
+        return operationsList;
       });
     });
   }

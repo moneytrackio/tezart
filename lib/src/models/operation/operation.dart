@@ -5,7 +5,7 @@ import 'package:tezart/src/common/utils/enum_util.dart';
 import 'package:tezart/src/core/rpc/impl/rpc_interface.dart';
 import 'package:tezart/src/keystore/keystore.dart';
 import 'package:tezart/src/models/operation/operation_result.dart';
-import 'package:tezart/src/models/operation_list/operation_list.dart';
+import 'package:tezart/src/models/operations_list/operations_list.dart';
 
 import 'constants.dart';
 
@@ -25,7 +25,7 @@ class Operation {
   @JsonKey(ignore: true)
   final operationResult = OperationResult();
   @JsonKey(ignore: true)
-  OperationList operationList;
+  OperationsList operationsList;
   @JsonKey(ignore: true)
   final log = Logger('Operation');
   @JsonKey(ignore: true)
@@ -76,7 +76,7 @@ class Operation {
         storageLimit = storageLimit ?? defaultStorageLimit[kind];
 
   @JsonKey(toJson: _keystoreToAddress)
-  Keystore get source => operationList.source;
+  Keystore get source => operationsList.source;
 
   @JsonKey(name: 'public_key', nullable: true)
   String get publicKey => kind == Kinds.reveal ? source.publicKey : null;

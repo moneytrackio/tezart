@@ -4,18 +4,18 @@ import 'package:tezart/src/keystore/keystore.dart';
 import 'package:tezart/src/models/operation/operation.dart';
 import 'package:tezart/src/signature/signature.dart';
 
-import 'operation_list_result.dart';
+import 'operations_list_result.dart';
 
-class OperationList {
+class OperationsList {
   final log = Logger('Operation');
   final List<Operation> opsList = [];
-  final result = OperationListResult();
+  final result = OperationsListResult();
   final Keystore source;
 
-  OperationList(this.source);
+  OperationsList(this.source);
 
   void prependOperation(Operation op) {
-    op.operationList = this;
+    op.operationsList = this;
     opsList.insert(0, op);
     if (opsList.length == 1) return;
 
@@ -25,7 +25,7 @@ class OperationList {
   }
 
   void addOperation(Operation op) {
-    op.operationList = this;
+    op.operationsList = this;
     if (opsList.isNotEmpty) op.counter = opsList.last.counter + 1;
     opsList.add(op);
   }

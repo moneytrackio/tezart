@@ -1,6 +1,6 @@
-import 'package:tezart/src/models/operation_list/operation_list_result.dart';
+import 'package:tezart/src/models/operations_list/operations_list_result.dart';
 
-class OperationResult extends OperationListResult {
+class OperationResult extends OperationsListResult {
   Map<String, dynamic> simulationResult;
 
   OperationResult();

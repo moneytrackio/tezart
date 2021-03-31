@@ -1,4 +1,4 @@
-class OperationListResult {
+class OperationsListResult {
   String forgedOperation;
   String signedOperationHex;
   String id;

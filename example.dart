@@ -54,12 +54,12 @@ Future<void> main() async {
   final client = TezartClient('http://localhost:20000');
   final amount = 10000;
 
-  final operationList = await client.transfer(
+  final operationsList = await client.transfer(
     source: sourceKeystore,
     destination: destinationKeystore.address,
     amount: amount,
   );
-  await operationList.monitor();
+  await operationsList.monitor();
 
   print(await client.getBalance(address: destinationKeystore.address));
   // => 10000
