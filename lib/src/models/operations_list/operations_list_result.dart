@@ -1,6 +1,6 @@
 class OperationsListResult {
   String forgedOperation;
-  String signedOperationHex;
+  String signature;
   String id;
   String blockHash;
 }

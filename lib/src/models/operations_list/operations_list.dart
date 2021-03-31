@@ -27,11 +27,11 @@ class OperationsList {
   }
 
   Future<void> simulate() async {
-    if (result.signedOperationHex == null) throw ArgumentError.notNull('result.signedOperationHex');
+    if (result.signature == null) throw ArgumentError.notNull('result.signature');
 
     final simulationResults = await rpcInterface.preapplyOperations(
       operations: operations,
-      signature: result.signedOperationHex,
+      signature: result.signature,
     );
 
     for (var i = 0; i < simulationResults.length; i++) {
@@ -54,7 +54,7 @@ class OperationsList {
   void sign() {
     if (result.forgedOperation == null) throw ArgumentError.notNull('result.forgedOperation');
 
-    result.signedOperationHex = Signature.fromHex(
+    result.signature = Signature.fromHex(
       data: result.forgedOperation,
       keystore: source,
       watermark: Watermarks.generic,
@@ -62,9 +62,9 @@ class OperationsList {
   }
 
   Future<void> inject() async {
-    if (result.signedOperationHex == null) throw ArgumentError.notNull('result.signedOperationHex');
+    if (result.signature == null) throw ArgumentError.notNull('result.signature');
 
-    result.id = await rpcInterface.injectOperation(result.signedOperationHex);
+    result.id = await rpcInterface.injectOperation(result.signature);
   }
 
   Future<void> computeCounters() async {
