@@ -1,7 +1,7 @@
 import 'package:test/test.dart';
-import 'package:tezart/src/common/utils/enum_util.dart';
 import 'package:tezart/src/core/rpc/impl/rpc_interface.dart';
 import 'package:tezart/src/models/operation/operation.dart';
+import 'package:tezart/src/models/operation_list/operation_list.dart';
 import 'package:tezart/tezart.dart';
 
 void main() {
@@ -19,12 +19,10 @@ void main() {
   final storageLimit = 100;
 
   group('#toJson()', () {
-    test('returns valid Json when all fields are present', () {
+    test('returns valid Json when including public_key when the kind is revealall fields are present', () {
       final operation = Operation(rpcInterface,
-          kind: kind,
-          source: source,
+          kind: Kinds.reveal,
           destination: destination,
-          publicKey: publicKey,
           balance: balance,
           amount: amount,
           counter: counter,
@@ -32,12 +30,14 @@ void main() {
           gasLimit: gasLimit,
           storageLimit: storageLimit,
           parameters: parameters);
+      final operationList = OperationList(source);
+      operation.operationList = operationList;
 
       final expectedResult = {
-        'kind': EnumUtil.enumToString(kind),
+        'kind': 'reveal',
         'source': source.address,
-        'public_key': publicKey,
         'destination': destination,
+        'public_key': publicKey,
         'balance': balance.toString(),
         'amount': amount.toString(),
         'counter': counter.toString(),
@@ -53,7 +53,6 @@ void main() {
     test('returns valid Json when publicKey is missing', () {
       final operation = Operation(rpcInterface,
           kind: kind,
-          source: source,
           destination: destination,
           amount: amount,
           counter: counter,
@@ -61,6 +60,8 @@ void main() {
           gasLimit: gasLimit,
           storageLimit: storageLimit,
           parameters: parameters);
+      final operationList = OperationList(source);
+      operation.operationList = operationList;
 
       expect(operation.toJson().keys, isNot(contains('public_key')));
     });
@@ -69,7 +70,6 @@ void main() {
       final operation = Operation(
         rpcInterface,
         kind: kind,
-        source: source,
         destination: destination,
         counter: counter,
         fee: fee,
@@ -77,6 +77,8 @@ void main() {
         storageLimit: storageLimit,
         parameters: parameters,
       );
+      final operationList = OperationList(source);
+      operation.operationList = operationList;
 
       expect(operation.toJson().keys, isNot(contains('amount')));
     });
@@ -85,15 +87,15 @@ void main() {
       final operation = Operation(
         rpcInterface,
         kind: kind,
-        source: source,
         destination: destination,
-        publicKey: publicKey,
         amount: amount,
         fee: fee,
         gasLimit: gasLimit,
         storageLimit: storageLimit,
         counter: counter,
       );
+      final operationList = OperationList(source);
+      operation.operationList = operationList;
 
       expect(operation.toJson().keys, isNot(contains('parameters')));
     });

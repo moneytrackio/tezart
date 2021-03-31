@@ -1,9 +1,7 @@
-import 'package:meta/meta.dart';
+import 'package:tezart/src/models/operation_list/operation_list_result.dart';
 
-class OperationResult {
-  final String id;
-  final List<dynamic> simulationResult;
-  final String blockHash;
+class OperationResult extends OperationListResult {
+  Map<String, dynamic> simulationResult;
 
-  OperationResult({@required this.id, @required this.simulationResult, @required this.blockHash});
+  OperationResult();
 }

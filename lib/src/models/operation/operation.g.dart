@@ -15,10 +15,8 @@ Map<String, dynamic> _$OperationToJson(Operation instance) {
     }
   }
 
-  writeNotNull('source', Operation._keystoreToAddress(instance.source));
   writeNotNull('kind', Operation._kindToString(instance.kind));
   writeNotNull('destination', instance.destination);
-  writeNotNull('public_key', instance.publicKey);
   writeNotNull('amount', Operation._toString(instance.amount));
   writeNotNull('balance', Operation._toString(instance.balance));
   writeNotNull('counter', Operation._toString(instance.counter));
@@ -27,5 +25,7 @@ Map<String, dynamic> _$OperationToJson(Operation instance) {
   writeNotNull('gas_limit', Operation._toString(instance.gasLimit));
   writeNotNull('fee', Operation._toString(instance.fee));
   writeNotNull('storage_limit', Operation._toString(instance.storageLimit));
+  writeNotNull('source', Operation._keystoreToAddress(instance.source));
+  writeNotNull('public_key', instance.publicKey);
   return val;
 }

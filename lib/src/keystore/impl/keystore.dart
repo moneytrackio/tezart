@@ -31,8 +31,6 @@ class Keystore extends Equatable {
 
   Keystore._({@required this.secretKey, this.mnemonic});
 
-  bool isKeyRevealed = false;
-
   /// A factory that generates a keystore from a secret key.
   ///
   /// ```dart

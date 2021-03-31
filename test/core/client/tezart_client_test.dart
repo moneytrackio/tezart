@@ -22,12 +22,12 @@ void main() {
 
       test('it transfers the amount from source to destination', () async {
         var beforeTransferBalance = await tezart.getBalance(address: destination);
-        final operationId = await subject(source, destination, amount);
-        await tezart.monitorOperation(operationId);
+        final operationList = await subject(source, destination, amount);
+        await operationList.monitor();
         final afterTransferBalance = await tezart.getBalance(address: destination);
 
         expect(afterTransferBalance - beforeTransferBalance, equals(amount));
-        expect(RegExp(r'^o\w+$').hasMatch(operationId), true);
+        expect(RegExp(r'^o\w+$').hasMatch(operationList.result.id), true);
       });
     });
 
@@ -36,23 +36,23 @@ void main() {
 
       setUp(() async {
         source = Keystore.random();
-        final operationId =
+        final operationList =
             await tezart.transfer(source: originatorKeystore, destination: source.address, amount: 100000);
-        await tezart.monitorOperation(operationId);
+        await operationList.monitor();
       });
 
       test('it transfers the amount from source to destination', () async {
         var beforeTransferBalance = await tezart.getBalance(address: destination);
-        final operationId = await subject(source, destination, amount);
-        await tezart.monitorOperation(operationId);
+        final operationList = await subject(source, destination, amount);
+        await operationList.monitor();
         final afterTransferBalance = await tezart.getBalance(address: destination);
         expect(afterTransferBalance - beforeTransferBalance, equals(amount));
-        expect(RegExp(r'^o\w+$').hasMatch(operationId), true);
+        expect(RegExp(r'^o\w+$').hasMatch(operationList.result.id), true);
       });
 
       test('it reveals the key', () async {
-        final operationId = await subject(source, destination, amount);
-        await tezart.monitorOperation(operationId);
+        final operationList = await subject(source, destination, amount);
+        await operationList.monitor();
         expect(await tezart.isKeyRevealed(source.address), true);
       });
     });
@@ -85,12 +85,12 @@ void main() {
   group('#revealKey', () {
     final subject = (Keystore keystore) => tezart.revealKey(keystore);
     final transferToDest = (Keystore destinationKeystore) async {
-      final operationId = await tezart.transfer(
+      final operationList = await tezart.transfer(
         source: originatorKeystore,
         destination: destinationKeystore.address,
         amount: 10000,
       );
-      await tezart.monitorOperation(operationId);
+      await operationList.monitor();
     };
 
     group('when the key is not revealed', () {
@@ -101,9 +101,8 @@ void main() {
       });
 
       test('it reveals the key', () async {
-        final operationResult = await subject(keystore);
-
-        await tezart.monitorOperation(operationResult.id);
+        final operationList = await subject(keystore);
+        await operationList.monitor();
         final isKeyRevealed = await tezart.isKeyRevealed(keystore.address);
 
         expect(isKeyRevealed, isTrue);
@@ -131,12 +130,12 @@ void main() {
         final destination = Keystore.random();
         final amount = 1;
         final balanceBeforeTransfer = await getBalance();
-        final operationId = await tezart.transfer(
+        final operationList = await tezart.transfer(
           source: originatorKeystore,
           destination: destination.address,
           amount: amount,
         );
-        await subject(operationId);
+        await subject(operationList.result.id);
         final balanceAfterMonitoring = await getBalance();
 
         expect(balanceAfterMonitoring, lessThan(balanceBeforeTransfer));

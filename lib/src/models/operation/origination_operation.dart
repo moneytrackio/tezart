@@ -1,13 +1,11 @@
 import 'package:meta/meta.dart';
 import 'package:tezart/src/core/rpc/impl/rpc_interface.dart';
-import 'package:tezart/src/keystore/keystore.dart';
 
 import 'operation.dart';
 
 class OriginationOperation extends Operation {
   OriginationOperation(
     RpcInterface rpcInterface, {
-    @required Keystore source,
     @required int balance,
     @required int counter,
     @required List<Map<String, dynamic>> code,
@@ -16,7 +14,6 @@ class OriginationOperation extends Operation {
   }) : super(
           rpcInterface,
           kind: Kinds.origination,
-          source: source,
           balance: balance,
           counter: counter,
           script: {
