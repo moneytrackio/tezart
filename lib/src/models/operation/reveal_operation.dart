@@ -9,7 +9,6 @@ class RevealOperation extends Operation {
     @required int counter,
     int storageLimit,
   }) : super(
-          rpcInterface,
           kind: Kinds.reveal,
           counter: counter,
         );

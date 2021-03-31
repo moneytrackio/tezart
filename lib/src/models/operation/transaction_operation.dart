@@ -12,7 +12,6 @@ class TransactionOperation extends Operation {
     @required String destination,
     @required int counter,
   }) : super(
-          rpcInterface,
           kind: Kinds.transaction,
           destination: destination,
           amount: amount,

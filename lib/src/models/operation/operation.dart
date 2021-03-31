@@ -2,7 +2,6 @@ import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:tezart/src/common/utils/enum_util.dart';
-import 'package:tezart/src/core/rpc/impl/rpc_interface.dart';
 import 'package:tezart/src/keystore/keystore.dart';
 import 'package:tezart/src/models/operation/operation_result.dart';
 import 'package:tezart/src/models/operations_list/operations_list.dart';
@@ -28,9 +27,6 @@ class Operation {
   OperationsList operationsList;
   @JsonKey(ignore: true)
   final log = Logger('Operation');
-  @JsonKey(ignore: true)
-  final RpcInterface rpcInterface;
-
   @JsonKey(toJson: _kindToString)
   final Kinds kind;
 
@@ -59,8 +55,7 @@ class Operation {
   @JsonKey(name: 'storage_limit', toJson: _toString)
   final int storageLimit;
 
-  Operation(
-    this.rpcInterface, {
+  Operation({
     @required this.kind,
     @required this.counter,
     this.amount,

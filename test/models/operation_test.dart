@@ -20,7 +20,7 @@ void main() {
 
   group('#toJson()', () {
     test('returns valid Json when including public_key when the kind is revealall fields are present', () {
-      final operation = Operation(rpcInterface,
+      final operation = Operation(
           kind: Kinds.reveal,
           destination: destination,
           balance: balance,
@@ -30,7 +30,7 @@ void main() {
           gasLimit: gasLimit,
           storageLimit: storageLimit,
           parameters: parameters);
-      final operationsList = OperationsList(source);
+      final operationsList = OperationsList(source: source, rpcInterface: rpcInterface);
       operation.operationsList = operationsList;
 
       final expectedResult = {
@@ -51,16 +51,17 @@ void main() {
     });
 
     test('returns valid Json when publicKey is missing', () {
-      final operation = Operation(rpcInterface,
-          kind: kind,
-          destination: destination,
-          amount: amount,
-          counter: counter,
-          fee: fee,
-          gasLimit: gasLimit,
-          storageLimit: storageLimit,
-          parameters: parameters);
-      final operationsList = OperationsList(source);
+      final operation = Operation(
+        kind: kind,
+        destination: destination,
+        amount: amount,
+        counter: counter,
+        fee: fee,
+        gasLimit: gasLimit,
+        storageLimit: storageLimit,
+        parameters: parameters,
+      );
+      final operationsList = OperationsList(source: source, rpcInterface: rpcInterface);
       operation.operationsList = operationsList;
 
       expect(operation.toJson().keys, isNot(contains('public_key')));
@@ -68,7 +69,6 @@ void main() {
 
     test('returns valid Json when amount is missing', () {
       final operation = Operation(
-        rpcInterface,
         kind: kind,
         destination: destination,
         counter: counter,
@@ -77,7 +77,7 @@ void main() {
         storageLimit: storageLimit,
         parameters: parameters,
       );
-      final operationsList = OperationsList(source);
+      final operationsList = OperationsList(source: source, rpcInterface: rpcInterface);
       operation.operationsList = operationsList;
 
       expect(operation.toJson().keys, isNot(contains('amount')));
@@ -85,7 +85,6 @@ void main() {
 
     test('returns valid Json when parameters is missing', () {
       final operation = Operation(
-        rpcInterface,
         kind: kind,
         destination: destination,
         amount: amount,
@@ -94,7 +93,7 @@ void main() {
         storageLimit: storageLimit,
         counter: counter,
       );
-      final operationsList = OperationsList(source);
+      final operationsList = OperationsList(source: source, rpcInterface: rpcInterface);
       operation.operationsList = operationsList;
 
       expect(operation.toJson().keys, isNot(contains('parameters')));

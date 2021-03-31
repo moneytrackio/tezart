@@ -50,7 +50,7 @@ class TezartClient {
       return _catchHttpError<OperationsList>(() async {
         log.info('request transfer $amount µtz from $source.address to the destination $destination');
 
-        final operationsList = OperationsList(source);
+        final operationsList = OperationsList(source: source, rpcInterface: rpcInterface);
         if (reveal) await _prependRevealIfNotRevealed(operationsList, source);
 
         var counter = await rpcInterface.counter(source.address) + 1;
@@ -91,7 +91,7 @@ class TezartClient {
         return _catchHttpError<OperationsList>(() async {
           log.info('request to revealKey');
           final operation = await getRevealOperation(source);
-          final operationsList = OperationsList(source)..addOperation(operation);
+          final operationsList = OperationsList(source: source, rpcInterface: rpcInterface)..addOperation(operation);
           await operationsList.execute();
 
           return operationsList;
@@ -137,7 +137,7 @@ class TezartClient {
       return _catchHttpError<OperationsList>(() async {
         log.info('request to originateContract');
 
-        var operationsList = OperationsList(source);
+        var operationsList = OperationsList(source: source, rpcInterface: rpcInterface);
         if (reveal) await _prependRevealIfNotRevealed(operationsList, source);
 
         final counter = await rpcInterface.counter(source.address) + 1;

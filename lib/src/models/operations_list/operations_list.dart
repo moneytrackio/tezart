@@ -1,4 +1,5 @@
 import 'package:logging/logging.dart';
+import 'package:meta/meta.dart';
 import 'package:tezart/src/core/rpc/impl/rpc_interface.dart';
 import 'package:tezart/src/keystore/keystore.dart';
 import 'package:tezart/src/models/operation/operation.dart';
@@ -11,8 +12,9 @@ class OperationsList {
   final List<Operation> operations = [];
   final result = OperationsListResult();
   final Keystore source;
+  final RpcInterface rpcInterface;
 
-  OperationsList(this.source);
+  OperationsList({@required this.source, @required this.rpcInterface});
 
   void prependOperation(Operation op) {
     op.operationsList = this;
@@ -31,7 +33,7 @@ class OperationsList {
   }
 
   Future<void> run() async {
-    final simulationResults = await _rpcInterface.runOperations(operations);
+    final simulationResults = await rpcInterface.runOperations(operations);
 
     for (var i = 0; i < simulationResults.length; i++) {
       operations[i].operationResult.simulationResult = simulationResults[i];
@@ -39,7 +41,7 @@ class OperationsList {
   }
 
   Future<void> forge() async {
-    result.forgedOperation = await _rpcInterface.forgeOperations(operations);
+    result.forgedOperation = await rpcInterface.forgeOperations(operations);
   }
 
   void sign() {
@@ -55,7 +57,7 @@ class OperationsList {
   Future<void> inject() async {
     if (result.signedOperationHex == null) throw ArgumentError.notNull('result.signedOperationHex');
 
-    result.id = await _rpcInterface.injectOperation(result.signedOperationHex);
+    result.id = await rpcInterface.injectOperation(result.signedOperationHex);
   }
 
   Future<void> execute() async {
@@ -67,12 +69,7 @@ class OperationsList {
 
   Future<void> monitor() async {
     log.info('request to monitorOperation ${result.id}');
-    final blockHash = await _rpcInterface.monitorOperation(operationId: result.id);
+    final blockHash = await rpcInterface.monitorOperation(operationId: result.id);
     result.blockHash = blockHash;
-  }
-
-  RpcInterface get _rpcInterface {
-    // TODO: throw an error if rpc interfaces of operations are not equal
-    return operations.first.rpcInterface;
   }
 }

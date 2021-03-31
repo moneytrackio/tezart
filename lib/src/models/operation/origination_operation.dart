@@ -12,7 +12,6 @@ class OriginationOperation extends Operation {
     @required Map<String, dynamic> storage,
     int storageLimit,
   }) : super(
-          rpcInterface,
           kind: Kinds.origination,
           balance: balance,
           counter: counter,
