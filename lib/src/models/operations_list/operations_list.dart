@@ -8,7 +8,7 @@ import 'operations_list_result.dart';
 
 class OperationsList {
   final log = Logger('Operation');
-  final List<Operation> opsList = [];
+  final List<Operation> operations = [];
   final result = OperationsListResult();
   final Keystore source;
 
@@ -16,30 +16,30 @@ class OperationsList {
 
   void prependOperation(Operation op) {
     op.operationsList = this;
-    opsList.insert(0, op);
-    if (opsList.length == 1) return;
+    operations.insert(0, op);
+    if (operations.length == 1) return;
 
-    for (var i = 1; i < opsList.length - 1; i++) {
-      opsList[i].counter = opsList[i + 1].counter;
+    for (var i = 1; i < operations.length - 1; i++) {
+      operations[i].counter = operations[i + 1].counter;
     }
   }
 
   void addOperation(Operation op) {
     op.operationsList = this;
-    if (opsList.isNotEmpty) op.counter = opsList.last.counter + 1;
-    opsList.add(op);
+    if (operations.isNotEmpty) op.counter = operations.last.counter + 1;
+    operations.add(op);
   }
 
   Future<void> run() async {
-    final simulationResults = await _rpcInterface.runOperations(opsList);
+    final simulationResults = await _rpcInterface.runOperations(operations);
 
     for (var i = 0; i < simulationResults.length; i++) {
-      opsList[i].operationResult.simulationResult = simulationResults[i];
+      operations[i].operationResult.simulationResult = simulationResults[i];
     }
   }
 
   Future<void> forge() async {
-    result.forgedOperation = await _rpcInterface.forgeOperations(opsList);
+    result.forgedOperation = await _rpcInterface.forgeOperations(operations);
   }
 
   void sign() {
@@ -72,7 +72,7 @@ class OperationsList {
   }
 
   RpcInterface get _rpcInterface {
-    // TODO: throw an error if rpc interfaces of opsList are not equal
-    return opsList.first.rpcInterface;
+    // TODO: throw an error if rpc interfaces of operations are not equal
+    return operations.first.rpcInterface;
   }
 }
