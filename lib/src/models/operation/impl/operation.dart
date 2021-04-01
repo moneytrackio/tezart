@@ -88,5 +88,6 @@ class Operation {
     SimulationResultValidator(_simulationResult).validate();
   }
 
+  @JsonKey(ignore: true)
   Map<String, dynamic> get simulationResult => _simulationResult;
 }

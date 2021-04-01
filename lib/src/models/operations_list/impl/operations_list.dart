@@ -1,6 +1,8 @@
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
-import 'package:tezart/src/core/rpc/impl/rpc_interface.dart';
+import 'package:retry/retry.dart';
+import 'package:tezart/src/core/client/tezart_client.dart';
+import 'package:tezart/src/core/rpc/rpc_interface.dart';
 import 'package:tezart/src/keystore/keystore.dart';
 import 'package:tezart/src/models/operation/operation.dart';
 import 'package:tezart/src/signature/signature.dart';
@@ -27,28 +29,34 @@ class OperationsList {
   }
 
   Future<void> preapply() async {
-    if (result.signature == null) throw ArgumentError.notNull('result.signature');
+    await _catchHttpError<void>(() async {
+      if (result.signature == null) throw ArgumentError.notNull('result.signature');
 
-    final simulationResults = await rpcInterface.preapplyOperations(
-      operationsList: this,
-      signature: result.signature,
-    );
+      final simulationResults = await rpcInterface.preapplyOperations(
+        operationsList: this,
+        signature: result.signature,
+      );
 
-    for (var i = 0; i < simulationResults.length; i++) {
-      operations[i].simulationResult = simulationResults[i];
-    }
+      for (var i = 0; i < simulationResults.length; i++) {
+        operations[i].simulationResult = simulationResults[i];
+      }
+    });
   }
 
   Future<void> run() async {
-    final simulationResults = await rpcInterface.runOperations(this);
+    await _catchHttpError<void>(() async {
+      final simulationResults = await rpcInterface.runOperations(this);
 
-    for (var i = 0; i < simulationResults.length; i++) {
-      operations[i].simulationResult = simulationResults[i];
-    }
+      for (var i = 0; i < simulationResults.length; i++) {
+        operations[i].simulationResult = simulationResults[i];
+      }
+    });
   }
 
   Future<void> forge() async {
-    result.forgedOperation = await rpcInterface.forgeOperations(this);
+    await _catchHttpError<void>(() async {
+      result.forgedOperation = await rpcInterface.forgeOperations(this);
+    });
   }
 
   void sign() {
@@ -62,25 +70,31 @@ class OperationsList {
   }
 
   Future<void> inject() async {
-    if (result.signature == null) throw ArgumentError.notNull('result.signature');
+    await _catchHttpError<void>(() async {
+      if (result.signature == null) throw ArgumentError.notNull('result.signature');
 
-    result.id = await rpcInterface.injectOperation(result.signature);
+      result.id = await rpcInterface.injectOperation(result.signature);
+    });
   }
 
   // TODO: use expirable cache based on time between blocks so that we can
   // call this method before forge, sign, preapply and run
   Future<void> computeCounters() async {
-    final firstOperation = operations.first;
-    firstOperation.counter = await rpcInterface.counter(source.address) + 1;
+    await _catchHttpError<void>(() async {
+      final firstOperation = operations.first;
+      firstOperation.counter = await rpcInterface.counter(source.address) + 1;
 
-    for (var i = 1; i < operations.length; i++) {
-      operations[i].counter = operations[i - 1].counter + 1;
-    }
+      for (var i = 1; i < operations.length; i++) {
+        operations[i].counter = operations[i - 1].counter + 1;
+      }
+    });
   }
 
   Future<void> execute() async {
-    await simulate();
-    await inject();
+    await _retryOnCounterError<void>(() async {
+      await simulate();
+      await inject();
+    });
   }
 
   Future<void> simulate() async {
@@ -91,8 +105,24 @@ class OperationsList {
   }
 
   Future<void> monitor() async {
+    if (result.id == null) throw ArgumentError.notNull('result.id');
+
     log.info('request to monitorOperation ${result.id}');
     final blockHash = await rpcInterface.monitorOperation(operationId: result.id);
     result.blockHash = blockHash;
+  }
+
+  Future<T> _catchHttpError<T>(Future<T> Function() func) {
+    return catchHttpError<T>(func, onError: (TezartHttpError e) {
+      log.severe('Http Error', e);
+    });
+  }
+
+  Future<T> _retryOnCounterError<T>(func) {
+    final r = RetryOptions(maxAttempts: 3);
+    return r.retry<T>(
+      func,
+      retryIf: (e) => e is TezartNodeError && e.type == TezartNodeErrorTypes.counterError,
+    );
   }
 }
