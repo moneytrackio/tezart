@@ -87,4 +87,6 @@ class Operation {
     _simulationResult = value;
     SimulationResultValidator(_simulationResult).validate();
   }
+
+  Map<String, dynamic> get simulationResult => _simulationResult;
 }

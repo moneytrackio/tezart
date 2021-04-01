@@ -97,4 +97,45 @@ void main() {
       expect(operation.toJson().keys, isNot(contains('parameters')));
     });
   });
+
+  group('#simulationResult=', () {
+    final subject = (Map<String, dynamic> simulationResult) {
+      final operation = Operation(
+        kind: kind,
+        destination: destination,
+        amount: amount,
+        fee: fee,
+        gasLimit: gasLimit,
+        storageLimit: storageLimit,
+        parameters: parameters,
+      )
+        ..operationsList = operationsList
+        ..counter = counter;
+      operation.simulationResult = simulationResult;
+    };
+
+    group('when the simulation fails', () {
+      final simulationResult = {
+        'kind': 'origination',
+        'metadata': {
+          'operation_result': {
+            'status': 'failed',
+            'errors': [
+              {
+                'id': 'proto.error1',
+              },
+              {
+                'id': 'proto.error2',
+              },
+            ],
+          },
+        },
+      };
+
+      test('throws an error', () {
+        expect(() => subject(simulationResult),
+            throwsA(predicate((e) => e is TezartNodeError && e.type == TezartNodeErrorTypes.simulationFailed)));
+      });
+    });
+  });
 }
