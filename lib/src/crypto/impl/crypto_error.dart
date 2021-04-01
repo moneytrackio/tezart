@@ -26,6 +26,11 @@ enum CryptoErrorTypes {
   /// Happens when the secret key length is != 98.
   secretKeyLengthError,
 
+  /// Invalid (string) encrypted secret key length.
+  ///
+  /// Happens when the encrypted secret key length is != 88.
+  encryptedSecretKeyLengthError,
+
   /// Invalid mnemonic.
   ///
   /// Happens when :

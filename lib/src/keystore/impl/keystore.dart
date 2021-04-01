@@ -23,6 +23,7 @@ class Keystore extends Equatable {
   static const Prefixes _publicKeyPrefix = Prefixes.edpk;
   static const Prefixes _addressPrefix = Prefixes.tz1;
   static const _secretKeyLength = 98;
+  static const _encryptedSecretKeyLength = 88;
   static const _seedLength = 54;
 
   final String secretKey;
@@ -98,6 +99,10 @@ class Keystore extends Equatable {
     String passphrase,
   ) {
     return crypto.catchUnhandledErrors(() {
+      if (encryptedSecretKey.length != _encryptedSecretKeyLength) {
+        throw crypto.CryptoError(type: crypto.CryptoErrorTypes.encryptedSecretKeyLengthError);
+      }
+
       final bytes = crypto.decodeWithoutPrefix(encryptedSecretKey);
       final salt = bytes.sublist(0, 8);
       final secretKeyBytes = bytes.sublist(8);
@@ -115,12 +120,12 @@ class Keystore extends Equatable {
       final secretbox = SecretBox(encryptionKey);
       final decryptedBytes = secretbox.decrypt(secretKeyBytes, nonce: nonce);
 
-      final secretKey = crypto.encodeWithPrefix(
+      final seed = crypto.encodeWithPrefix(
         prefix: Prefixes.edsk2,
         bytes: decryptedBytes,
       );
 
-      return Keystore.fromSeed(secretKey);
+      return Keystore.fromSeed(seed);
     });
   }
 
