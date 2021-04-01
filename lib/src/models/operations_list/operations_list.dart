@@ -30,7 +30,7 @@ class OperationsList {
     if (result.signature == null) throw ArgumentError.notNull('result.signature');
 
     final simulationResults = await rpcInterface.preapplyOperations(
-      operations: operations,
+      operationsList: this,
       signature: result.signature,
     );
 
@@ -40,7 +40,7 @@ class OperationsList {
   }
 
   Future<void> run() async {
-    final simulationResults = await rpcInterface.runOperations(operations);
+    final simulationResults = await rpcInterface.runOperations(this);
 
     for (var i = 0; i < simulationResults.length; i++) {
       operations[i].simulationResult = simulationResults[i];
@@ -48,7 +48,7 @@ class OperationsList {
   }
 
   Future<void> forge() async {
-    result.forgedOperation = await rpcInterface.forgeOperations(operations);
+    result.forgedOperation = await rpcInterface.forgeOperations(this);
   }
 
   void sign() {
