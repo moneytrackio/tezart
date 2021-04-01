@@ -97,6 +97,11 @@ class OperationsList {
     });
   }
 
+  Future<void> executeAndMonitor() async {
+    await execute();
+    await monitor();
+  }
+
   Future<void> simulate() async {
     await computeCounters();
     await forge();

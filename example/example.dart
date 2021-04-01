@@ -73,8 +73,7 @@ Future<void> main() async {
     destination: destinationKeystore.address,
     amount: amount,
   );
-  await operationsList.execute();
-  await operationsList.monitor();
+  await operationsList.executeAndMonitor();
   print(await client.getBalance(address: destinationKeystore.address));
   // => 10000
 }
