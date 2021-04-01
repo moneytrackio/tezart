@@ -26,7 +26,7 @@ class OperationsList {
     operations.add(op);
   }
 
-  Future<void> simulate() async {
+  Future<void> preapply() async {
     if (result.signature == null) throw ArgumentError.notNull('result.signature');
 
     final simulationResults = await rpcInterface.preapplyOperations(
@@ -67,6 +67,8 @@ class OperationsList {
     result.id = await rpcInterface.injectOperation(result.signature);
   }
 
+  // TODO: use expirable cache based on time between blocks so that we can
+  // call this method before forge, sign, preapply and run
   Future<void> computeCounters() async {
     final firstOperation = operations.first;
     firstOperation.counter = await rpcInterface.counter(source.address) + 1;
@@ -77,11 +79,15 @@ class OperationsList {
   }
 
   Future<void> execute() async {
+    await simulate();
+    await inject();
+  }
+
+  Future<void> simulate() async {
     await computeCounters();
     await forge();
     sign();
-    await simulate();
-    await inject();
+    await preapply();
   }
 
   Future<void> monitor() async {
