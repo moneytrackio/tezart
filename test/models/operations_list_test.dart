@@ -148,6 +148,15 @@ void main() {
             returnsNormally,
           );
         });
+
+        test('it sets contractAddress correctly', () async {
+          final operationsList = await subject(
+            code: testContractScript['code'],
+            storage: testContractScript['storage'],
+          );
+
+          expect((operationsList.operations.first as OriginationOperation).contractAddress.startsWith('KT'), true);
+        });
       });
 
       group('when code and storage are invalid', () {
