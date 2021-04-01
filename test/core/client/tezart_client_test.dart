@@ -79,8 +79,8 @@ void main() {
 
     final keystore = Keystore.random();
 
-    test('the operations list contains a reveal operation only', () async {
-      final operationsList = await subject(keystore);
+    test('the operations list contains a reveal operation only', () {
+      final operationsList = subject(keystore);
 
       expect(operationsList.operations.length, 1);
       expect(operationsList.operations.first, isA<RevealOperation>());
@@ -88,7 +88,7 @@ void main() {
   });
 
   group('#monitorOperation', () {
-    final subject = (String operationId) => tezart.monitorOperation(operationId);
+    final subject = (String operationId) async => tezart.monitorOperation(operationId);
 
     group('when the operationId exists', () {
       test('it monitors the operation', () async {
