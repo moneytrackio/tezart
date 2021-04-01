@@ -4,10 +4,8 @@ import 'package:meta/meta.dart';
 import 'package:retry/retry.dart';
 import 'package:tezart/src/core/rpc/rpc_interface.dart';
 import 'package:tezart/src/keystore/keystore.dart';
+import 'package:tezart/src/models/operation/operation.dart';
 import 'package:tezart/src/models/operations_list/operations_list.dart';
-import 'package:tezart/src/models/operation/origination_operation.dart';
-import 'package:tezart/src/models/operation/reveal_operation.dart';
-import 'package:tezart/src/models/operation/transaction_operation.dart';
 
 import 'tezart_node_error.dart';
 
