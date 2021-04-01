@@ -24,6 +24,9 @@ enum TezartNodeErrorTypes {
   /// Happens when the counter of an operation has already been used.
   counterError,
 
+  /// Simulation status is != applied
+  simulationFailed,
+
   /// Unhandled error.
   unhandled,
 }
@@ -53,6 +56,8 @@ class TezartNodeError extends CommonException {
 
   final dynamicErrorMessages = {
     TezartNodeErrorTypes.monitoringTimedOut: (String operationId) => 'Monitoring the operation $operationId timed out',
+    TezartNodeErrorTypes.simulationFailed: (String operationKind, String reason) =>
+        'The simulation of the operation: "$operationKind" failed with error(s) : $reason',
   };
 
   /// Default constructor.
@@ -107,14 +112,16 @@ class TezartNodeError extends CommonException {
 
     switch (type) {
       case TezartNodeErrorTypes.monitoringTimedOut:
-        {
-          return dynamicErrorMessages[type](metadata.fetch<String>('operationId'));
-        }
+        return dynamicErrorMessages[type](metadata.fetch<String>('operationId'));
+
+        break;
+      case TezartNodeErrorTypes.simulationFailed:
+        return dynamicErrorMessages[type](metadata.fetch<String>('operationKind'), metadata.fetch<String>('reason'));
+
         break;
       default:
-        {
-          throw UnimplementedError('Unimplemented error type $type');
-        }
+        throw UnimplementedError('Unimplemented error type $type');
+
         break;
     }
   }

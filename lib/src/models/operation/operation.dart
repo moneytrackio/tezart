@@ -2,8 +2,10 @@ import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:tezart/src/common/utils/enum_util.dart';
+import 'package:tezart/src/common/validators/simulation_result_validator.dart';
 import 'package:tezart/src/keystore/keystore.dart';
 import 'package:tezart/src/models/operations_list/operations_list.dart';
+import 'package:tezart/tezart.dart';
 
 import 'constants.dart';
 
@@ -21,7 +23,7 @@ enum Kinds {
 @JsonSerializable(includeIfNull: false, createFactory: false)
 class Operation {
   @JsonKey(ignore: true)
-  Map<String, dynamic> simulationResult;
+  Map<String, dynamic> _simulationResult;
   @JsonKey(ignore: true)
   OperationsList operationsList;
   @JsonKey(ignore: true)
@@ -80,4 +82,9 @@ class Operation {
   static String _toString(int integer) => integer == null ? null : integer.toString();
   static String _kindToString(Kinds kind) => EnumUtil.enumToString(kind);
   static String _keystoreToAddress(Keystore keystore) => keystore.address;
+
+  set simulationResult(Map<String, dynamic> value) {
+    _simulationResult = value;
+    SimulationResultValidator(_simulationResult).validate();
+  }
 }

@@ -64,11 +64,8 @@ class TezartClient {
     });
   }
 
-  Future<void> _prependRevealIfNotRevealed(OperationsList list, Keystore source) async {
-    if (!await isKeyRevealed(source.address)) {
-      list.prependOperation(RevealOperation());
-    }
-  }
+  Future<void> _prependRevealIfNotRevealed(OperationsList list, Keystore source) async =>
+      await isKeyRevealed(source.address) ? null : list.prependOperation(RevealOperation());
 
   /// Reveals [source.publicKey] and returns the operation group id
   ///
