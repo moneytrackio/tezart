@@ -13,19 +13,23 @@ class SimulationResultValidator implements BaseValidator {
   }
 
   String get _status {
+    // TODO: use ?[] when null safety migration is done
     return _operationResult['status'];
   }
 
   String get _kind {
+    // TODO: use ?[] when null safety migration is done
     return simulationResult['kind'];
   }
 
   Map<String, dynamic> get _operationResult {
+    // TODO: use ?[] when null safety migration is done
     return simulationResult['metadata']['operation_result'];
   }
 
   String get _reason {
     // ignore the protocol part of the error
+    // TODO: use ?[] when null safety migration is done
     return _operationResult['errors'].map((el) => el['id'].split('.').last).join(', ');
   }
 
