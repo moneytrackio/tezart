@@ -124,15 +124,24 @@ tezart::run_coverage() {
 	log::info "$USAGE_RUN_COVERAGE :"
 
 	pub get
+	tezart::_run_build_runner
 
-	# Effective test coverage
-	pub run test_coverage
+	tezart::_check_localhost_chain
+	tezart::_init_env_var
 
-	# Generate coverage info
-	genhtml -o coverage coverage/lcov.info 
+	pub run test --coverage ./coverage
+	pub global activate coverage > /dev/null
+	export PATH="$PATH":"$HOME/.pub-cache/bin"
+	format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.packages --report-on=lib
 
-	# Open to see coverage info
-	open coverage/index.html
+	if [[ $CI != true ]]
+	then
+		# Generate coverage info
+		genhtml -o coverage coverage/lcov.info
+
+		# Open to see coverage info
+		open coverage/index.html
+	fi
 }
 
 tezart::run_doctor() {
