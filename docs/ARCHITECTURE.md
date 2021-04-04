@@ -2,7 +2,7 @@
 
 ### Tezart is a Dart package
 
-One of the most important choices made while creating this project , was to provide **tezart** as **dart** [library package](https://dart.dev/tools/pub/glossary#library-package). That means **Tezart** is a pakcage that other packages or applications can depend on. 
+One of the most important choices made while creating this project , was to provide **tezart** as **dart** [library package](https://dart.dev/tools/pub/glossary#library-package). That means **Tezart** is a package that other packages or applications can depend on. 
 To clarify the purpose, you need to use **tezart** in a Flutter application or dart application which are an entrypoint ( usually with a `.dart` file that contains `main()` )
 
 ### Implementation choices 
@@ -45,3 +45,10 @@ export 'src/file_feature_2.dart'
 ...
 export 'src/file_feature_n.dart'
 ```
+
+### Calling RPCs
+
+To interact with the blockchain, we have decided to clearly list the RCPs calls that we will be interacting with in `lib/src/core/rpc/impl/rpc_interface_paths.dart`.
+
+For better library maintenance, **please declare the RPCS interfaces you use in that file.**
+
