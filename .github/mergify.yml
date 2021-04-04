@@ -1,28 +1,15 @@
 queue_rules:
-  - name: urgent
+  - name: default
     conditions:
       # https://docs.mergify.io/conditions.html#github-actions
       - check-success=Run tests
-  - name: default
-    conditions:
-      - check-success=Run tests
 
 pull_request_rules:
-  - name: move to urgent queue when 2 reviews and label urgent
-    conditions:
-      - base=main
-      - "#approved-reviews-by>=2"
-      - label=urgent
-    actions:
-      queue:
-        name: urgent
 
   - name: merge using the merge queue
     conditions:
       - base=main
-      - "#approved-reviews-by>=1"
       - check-success=Run tests
-      - label!=urgent
     actions:
       queue:
         name: default
