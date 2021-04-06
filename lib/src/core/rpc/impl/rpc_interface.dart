@@ -86,7 +86,13 @@ class RpcInterface {
       'chain_id': await chainId()
     };
 
-    var response = await httpClient.post(paths.runOperations(chain: chain, level: level), data: content);
+    var response = await httpClient.post(
+      paths.runOperations(
+        chain: chain,
+        level: level,
+      ),
+      data: content,
+    );
 
     return response.data['contents'];
   }

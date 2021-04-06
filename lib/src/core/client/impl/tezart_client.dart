@@ -45,7 +45,10 @@ class TezartClient {
     return _catchHttpError<OperationsList>(() async {
       log.info('request transfer $amount µtz from $source.address to the destination $destination');
 
-      final operationsList = OperationsList(source: source, rpcInterface: rpcInterface);
+      final operationsList = OperationsList(
+        source: source,
+        rpcInterface: rpcInterface,
+      );
       if (reveal) await _prependRevealIfNotRevealed(operationsList, source);
 
       operationsList.addOperation(TransactionOperation(
@@ -65,9 +68,10 @@ class TezartClient {
   OperationsList revealKeyOperation(Keystore source) {
     log.info('request to revealKey');
     final operation = RevealOperation();
-    final operationsList = OperationsList(source: source, rpcInterface: rpcInterface)..addOperation(operation);
-
-    return operationsList;
+    return OperationsList(
+      source: source,
+      rpcInterface: rpcInterface,
+    )..addOperation(operation);
   }
 
   /// Returns `true` if the public key of [address] is revealed.
@@ -93,7 +97,11 @@ class TezartClient {
   /// await client.monitorOperation(operationId);
   /// ```
   Future<String> monitorOperation(String operationId) {
-    return _catchHttpError<String>(() => rpcInterface.monitorOperation(operationId: operationId));
+    return _catchHttpError<String>(() async {
+      log.info('monitoring the operation $operationId');
+
+      return rpcInterface.monitorOperation(operationId: operationId);
+    });
   }
 
   Future<OperationsList> originateContractOperation({
@@ -107,7 +115,10 @@ class TezartClient {
     return _catchHttpError<OperationsList>(() async {
       log.info('request to originateContract');
 
-      var operationsList = OperationsList(source: source, rpcInterface: rpcInterface);
+      var operationsList = OperationsList(
+        source: source,
+        rpcInterface: rpcInterface,
+      );
       if (reveal) await _prependRevealIfNotRevealed(operationsList, source);
 
       operationsList.addOperation(OriginationOperation(
