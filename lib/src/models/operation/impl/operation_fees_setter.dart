@@ -3,7 +3,6 @@ import 'operation.dart';
 class OperationFeesSetter {
   final Operation operation;
 
-  // TODO: check that these values equal baker default config
   static const _baseOperationMinimalFee = 100;
   static const _gasBuffer = 100;
   static const _minimalFeePerByte = 1;
@@ -29,7 +28,6 @@ class OperationFeesSetter {
   }
 
   int get operationFee {
-    // TODO: ceil? floor? round?
     return ((operation.gasLimit + _gasBuffer) * _minimalFeePerGas + operationSize * _minimalFeePerByte).ceil();
   }
 

@@ -17,7 +17,7 @@ class OriginationOperation extends Operation {
         );
   String get contractAddress {
     // TODO: use ?. when null safety migration is done
-    // TODO: handle the case of multiple originated contracts ?!
+    // TODO: why does the node return a list of originated contracts ?
     return operationsList
         .operations.first.simulationResult['metadata']['operation_result']['originated_contracts'].first;
   }

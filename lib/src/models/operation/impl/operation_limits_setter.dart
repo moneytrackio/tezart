@@ -12,12 +12,16 @@ class OperationLimitsSetter {
     operation.gasLimit = simulationConsumedGas;
     operation.storageLimit = simulationStorageSize;
 
-    if (operation.kind == Kinds.origination ||
-        operation.simulationResult['metadata']['operation_result']['allocated_destination_contract'] == true) {
+    if (operation.kind == Kinds.origination || _isDestinationContractAllocated) {
       operation.storageLimit += await originationDefaultSize;
     } else {
       operation.storageLimit = simulationStorageSize;
     }
+  }
+
+  // returns true if the operation is a transfer to an address unknown by the chain
+  bool get _isDestinationContractAllocated {
+    return operation.simulationResult['metadata']['operation_result']['allocated_destination_contract'] == true;
   }
 
   int get simulationStorageSize {
