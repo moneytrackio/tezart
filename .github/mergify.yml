@@ -1,0 +1,31 @@
+queue_rules:
+  - name: default
+    conditions:
+      # https://docs.mergify.io/conditions.html#github-actions
+      - check-success=Run tests
+
+pull_request_rules:
+
+  - name: merge using the merge queue
+    conditions:
+      - base=main
+      - check-success=Run tests
+    actions:
+      queue:
+        name: default
+        
+  - name: say hi on new contribution
+    conditions:
+      - author!=@moneytrackio/regularcontributors
+    actions:
+        comment:
+          message: |
+              Welcome to our great project Tezart!
+              We're delighted to have you onboard <3
+
+  - name: ask to resolve conflict
+    conditions:
+      - conflict
+    actions:
+        comment:
+          message: This pull request is now in conflicts. Could you fix it @{{author}}? 🙏
