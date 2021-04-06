@@ -3,7 +3,6 @@ import 'package:meta/meta.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:tezart/src/common/utils/enum_util.dart';
 import 'package:tezart/src/common/validators/simulation_result_validator.dart';
-import 'package:tezart/src/core/rpc/impl/rpc_interface.dart';
 import 'package:tezart/src/keystore/keystore.dart';
 import 'package:tezart/src/models/operation/impl/operation_fees_setter.dart';
 import 'package:tezart/src/models/operation/impl/operation_high_limits.dart';
@@ -89,11 +88,8 @@ class Operation {
   @JsonKey(ignore: true)
   Map<String, dynamic> get simulationResult => _simulationResult;
 
-  @JsonKey(ignore: true)
-  RpcInterface get _rpcInterface => operationsList.rpcInterface;
-
   Future<void> setHighLimits() async {
-    final highLimits = OperationHighLimits(_rpcInterface);
+    final highLimits = OperationHighLimits(this);
     storageLimit = await highLimits.storage;
     gasLimit = await highLimits.gas;
   }

@@ -77,6 +77,38 @@ class OperationsList {
     });
   }
 
+  Future<void> executeAndMonitor() async {
+    await execute();
+    await monitor();
+  }
+
+  Future<void> execute() async {
+    await _retryOnCounterError<void>(() async {
+      await estimate();
+      await forge();
+      sign();
+      await inject();
+    });
+  }
+
+  Future<void> estimate() async {
+    await computeCounters();
+    await computeLimits();
+    await computeFees();
+  }
+
+  Future<void> computeLimits() async {
+    await setHighLimits();
+    await simulate();
+    await setLimits();
+  }
+
+  Future<void> simulate() async {
+    await forge();
+    sign();
+    await preapply();
+  }
+
   // TODO: use expirable cache based on time between blocks so that we can
   // call this method before forge, sign, preapply and run
   Future<void> computeCounters() async {
@@ -90,33 +122,6 @@ class OperationsList {
     });
   }
 
-  Future<void> execute() async {
-    await _retryOnCounterError<void>(() async {
-      await computeFees();
-      await forge();
-      sign();
-      await inject();
-    });
-  }
-
-  Future<void> executeAndMonitor() async {
-    await execute();
-    await monitor();
-  }
-
-  Future<void> computeLimits() async {
-    await setHighLimits();
-    await simulate();
-    await setLimits();
-  }
-
-  Future<void> simulate() async {
-    await computeCounters();
-    await forge();
-    sign();
-    await preapply();
-  }
-
   Future<void> setHighLimits() async {
     await Future.wait(operations.map((operation) async {
       await operation.setHighLimits();
@@ -128,13 +133,11 @@ class OperationsList {
       await operation.setLimits();
     }));
 
-    // simulate twice to check that limit computation is valid
+    // resimulate to check that limit computation is valid. Remove this in a stable version ??
     await simulate();
   }
 
   Future<void> computeFees() async {
-    await computeLimits();
-
     await Future.wait(operations.map((operation) async {
       await operation.setFees();
     }));
