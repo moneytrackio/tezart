@@ -11,6 +11,7 @@ enum Prefixes {
   sppk,
   p2pk,
   edsk,
+  edesk,
   edsig,
   spsig1,
   p2sig,

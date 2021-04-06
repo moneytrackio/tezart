@@ -147,6 +147,51 @@ void main() {
     });
   });
 
+  group('.fromEncryptedSecretKey', () {
+    final encryptedSecretKey =
+        'edesk1RxJkKzwYCcSz4hFy7FiQTPFB6otnmedkjU5REc3bYcpJ3fK6QpaJ1q8Dc8WnWpRKdoaoUjSJ4D4Aa8kLCp';
+    final decryptedSecretKey =
+        'edskRczqu5WF9zZ2Pm1zAx7s5tfoBBW8t4S8BHRhixggUzSptxAaURSdiNmsE9UMEierbzSPSBshKc7XP4N8eHTaamPrPoq4dz';
+    final passphrase = 'passphrase';
+
+    group('when encryptedSecretKey and passphrase are valid', () {
+      test('sets secretKey correctly', () {
+        final subject = () => Keystore.fromEncryptedSecretKey(encryptedSecretKey, passphrase);
+
+        final keystore = subject();
+
+        expect(keystore.secretKey, decryptedSecretKey);
+      });
+    });
+
+    group('when encryptedSecretKey length is invalid', () {
+      test('throws encryptedSecretKeyLengthError error', () {
+        final truncatedEncryptedSecretKey = encryptedSecretKey.substring(0, encryptedSecretKey.length - 1);
+        final subject = () => Keystore.fromEncryptedSecretKey(truncatedEncryptedSecretKey, passphrase);
+
+        expect(() => subject(),
+            throwsA(predicate((e) => e is CryptoError && e.type == CryptoErrorTypes.encryptedSecretKeyLengthError)));
+      });
+    });
+
+    group('when passphrase is invalid', () {
+      test('throws CryptoError of type unhandled', () {
+        final truncatedPassphrase = passphrase.substring(0, passphrase.length - 1);
+        final subject = () => Keystore.fromEncryptedSecretKey(encryptedSecretKey, truncatedPassphrase);
+
+        expect(() => subject(), throwsA(predicate((e) => e is CryptoError && e.type == CryptoErrorTypes.unhandled)));
+      });
+
+      test('throws CryptoError with the correct errorMessage', () {
+        final truncatedPassphrase = passphrase.substring(0, passphrase.length - 1);
+        final errorMessage = 'Unhandled error: The message is forged or malformed or the shared secret is invalid';
+        final subject = () => Keystore.fromEncryptedSecretKey(encryptedSecretKey, truncatedPassphrase);
+
+        expect(() => subject(), throwsA(predicate((e) => e is CryptoError && e.message == errorMessage)));
+      });
+    });
+  });
+
   group('compare keystore', () {
     test('is equals', () {
       final secretKey =
