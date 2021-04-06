@@ -26,10 +26,10 @@ void main() {
           'status': 'failed',
           'errors': [
             {
-              'id': 'proto.error1',
+              'id': 'proto.123.error1',
             },
             {
-              'id': 'proto.error2',
+              'id': 'proto.123.error2',
             },
           ],
         },

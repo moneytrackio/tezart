@@ -29,6 +29,9 @@ void main() {
         parameters: parameters,
       )
         ..operationsList = operationsList
+        ..gasLimit = gasLimit
+        ..storageLimit = storageLimit
+        ..fee = fee
         ..counter = counter;
 
       final expectedResult = {
@@ -39,8 +42,8 @@ void main() {
         'balance': balance.toString(),
         'amount': amount.toString(),
         'counter': counter.toString(),
-        'gas_limit': gasLimit.toString(),
         'fee': fee.toString(),
+        'gas_limit': gasLimit.toString(),
         'storage_limit': storageLimit.toString(),
         'parameters': parameters
       };

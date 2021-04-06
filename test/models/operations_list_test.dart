@@ -114,7 +114,6 @@ void main() {
 
     group('OriginationOperation', () {
       final balanceAmount = 1;
-      final storageLimit = 2570;
       final subject = ({
         @required List<Map<String, dynamic>> code,
         @required Map<String, dynamic> storage,
@@ -124,7 +123,6 @@ void main() {
           balance: balanceAmount,
           code: code,
           storage: storage,
-          storageLimit: storageLimit,
         );
         await operationsList.executeAndMonitor();
 
@@ -158,7 +156,7 @@ void main() {
                 predicate((e) =>
                     e is TezartNodeError &&
                     e.message ==
-                        'The simulation of the operation: "origination" failed with error(s) : ill_typed_contract, invalid_expression_kind'),
+                        'The simulation of the operation: "origination" failed with error(s) : michelson_v1.ill_typed_contract, michelson_v1.invalid_expression_kind'),
               ));
         });
       });

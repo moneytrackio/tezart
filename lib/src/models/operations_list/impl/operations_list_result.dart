@@ -1,6 +1,8 @@
+import 'package:tezart/src/signature/signature.dart';
+
 class OperationsListResult {
   String forgedOperation;
-  String signature;
+  Signature signature;
   String id;
   String blockHash;
 }

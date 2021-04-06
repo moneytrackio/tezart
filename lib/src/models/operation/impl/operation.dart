@@ -5,6 +5,7 @@ import 'package:tezart/src/common/utils/enum_util.dart';
 import 'package:tezart/src/common/validators/simulation_result_validator.dart';
 import 'package:tezart/src/core/rpc/impl/rpc_interface.dart';
 import 'package:tezart/src/keystore/keystore.dart';
+import 'package:tezart/src/models/operation/impl/operation_fees_setter.dart';
 import 'package:tezart/src/models/operation/impl/operation_high_limits.dart';
 import 'package:tezart/src/models/operations_list/operations_list.dart';
 import 'package:tezart/tezart.dart';
@@ -66,7 +67,7 @@ class Operation {
     this.destination,
     this.parameters,
     this.script,
-  }) : fee = 73740;
+  }) : fee = 0;
 
   @JsonKey(toJson: _keystoreToAddress)
   Keystore get source => operationsList.source;
@@ -99,5 +100,9 @@ class Operation {
 
   Future<void> setLimits() async {
     await OperationLimitsSetter(this).execute();
+  }
+
+  Future<void> setFees() async {
+    await OperationFeesSetter(this).execute();
   }
 }

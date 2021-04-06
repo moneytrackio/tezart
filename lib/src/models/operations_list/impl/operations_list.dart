@@ -34,7 +34,7 @@ class OperationsList {
 
       final simulationResults = await rpcInterface.preapplyOperations(
         operationsList: this,
-        signature: result.signature,
+        signature: result.signature.edsig,
       );
 
       for (var i = 0; i < simulationResults.length; i++) {
@@ -66,14 +66,14 @@ class OperationsList {
       data: result.forgedOperation,
       keystore: source,
       watermark: Watermarks.generic,
-    ).hexIncludingPayload;
+    );
   }
 
   Future<void> inject() async {
     await _catchHttpError<void>(() async {
       if (result.signature == null) throw ArgumentError.notNull('result.signature');
 
-      result.id = await rpcInterface.injectOperation(result.signature);
+      result.id = await rpcInterface.injectOperation(result.signature.hexIncludingPayload);
     });
   }
 
@@ -92,7 +92,7 @@ class OperationsList {
 
   Future<void> execute() async {
     await _retryOnCounterError<void>(() async {
-      await computeLimits();
+      await computeFees();
       await forge();
       sign();
       await inject();
@@ -105,12 +105,12 @@ class OperationsList {
   }
 
   Future<void> computeLimits() async {
+    await setHighLimits();
     await simulate();
     await setLimits();
   }
 
   Future<void> simulate() async {
-    await setHighLimits();
     await computeCounters();
     await forge();
     sign();
@@ -118,15 +118,26 @@ class OperationsList {
   }
 
   Future<void> setHighLimits() async {
-    operations.forEach((operation) async {
+    await Future.wait(operations.map((operation) async {
       await operation.setHighLimits();
-    });
+    }));
   }
 
   Future<void> setLimits() async {
-    operations.forEach((operation) async {
+    await Future.wait(operations.map((operation) async {
       await operation.setLimits();
-    });
+    }));
+
+    // simulate twice to check that limit computation is valid
+    await simulate();
+  }
+
+  Future<void> computeFees() async {
+    await computeLimits();
+
+    await Future.wait(operations.map((operation) async {
+      await operation.setFees();
+    }));
   }
 
   Future<void> monitor() async {

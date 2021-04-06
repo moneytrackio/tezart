@@ -105,7 +105,6 @@ class TezartClient {
     @required List<Map<String, dynamic>> code,
     @required Map<String, dynamic> storage,
     @required int balance,
-    int storageLimit, // TODO: remove this line because it must be computed via a dry run call
     bool reveal = true,
   }) async {
     return _catchHttpError<OperationsList>(() async {

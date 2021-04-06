@@ -77,14 +77,14 @@ class RpcInterface {
     level = 'head',
   }) async {
     log.info('request for preapplyOperations [ chain:$chain, level:$level]');
-    var content = {
-      'operation': {
+    var content = [
+      {
         'branch': await branch(),
         'contents': operationsList.operations.map((operation) => operation.toJson()).toList(),
-        'signature': randomSignature
-      },
-      'chain_id': await chainId()
-    };
+        'signature': signature,
+        'protocol': await protocol(chain, level),
+      }
+    ];
 
     var response = await httpClient.post(
       paths.runOperations(
@@ -94,7 +94,8 @@ class RpcInterface {
       data: content,
     );
 
-    return response.data['contents'];
+    // TODO: understand why array ? difference with run ??
+    return response.data.first['contents'];
   }
 
   Future<List<dynamic>> runOperations(OperationsList operationsList, [chain = 'main', level = 'head']) async {

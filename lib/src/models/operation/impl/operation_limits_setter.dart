@@ -10,16 +10,18 @@ class OperationLimitsSetter {
 
   Future<void> execute() async {
     operation.gasLimit = simulationConsumedGas;
+    operation.storageLimit = simulationStorageSize;
 
-    if (operation.kind == Kinds.origination) {
-      operation.storageLimit = simulationStorageSize + await originationDefaultSize;
+    if (operation.kind == Kinds.origination ||
+        operation.simulationResult['metadata']['operation_result']['allocated_destination_contract'] == true) {
+      operation.storageLimit += await originationDefaultSize;
     } else {
       operation.storageLimit = simulationStorageSize;
     }
   }
 
   int get simulationStorageSize {
-    return int.parse(operation.simulationResult['metadata']['operation_result']['paid_storage_size_diff'] as String);
+    return int.parse(operation.simulationResult['metadata']['operation_result']['paid_storage_size_diff'] ?? '0');
   }
 
   int get simulationConsumedGas {
