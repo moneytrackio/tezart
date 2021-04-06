@@ -52,7 +52,6 @@ class TezartClient {
       if (reveal) await _prependRevealIfNotRevealed(operationsList, source);
 
       operationsList.appendOperation(TransactionOperation(
-        operationsList: operationsList,
         amount: amount,
         destination: destination,
       ));
@@ -67,11 +66,8 @@ class TezartClient {
   /// can verify the signature for the operation and any future operations.
   OperationsList revealKeyOperation(Keystore source) {
     log.info('request to revealKey');
-    final operation = RevealOperation();
-    return OperationsList(
-      source: source,
-      rpcInterface: rpcInterface,
-    )..appendOperation(operation);
+
+    return OperationsList(source: source, rpcInterface: rpcInterface)..appendOperation(RevealOperation());
   }
 
   /// Returns `true` if the public key of [address] is revealed.
@@ -118,15 +114,14 @@ class TezartClient {
       var operationsList = OperationsList(
         source: source,
         rpcInterface: rpcInterface,
-      );
+      )..appendOperation(
+          OriginationOperation(
+            balance: balance,
+            code: code,
+            storage: storage,
+          ),
+        );
       if (reveal) await _prependRevealIfNotRevealed(operationsList, source);
-
-      operationsList.appendOperation(OriginationOperation(
-        balance: balance,
-        code: code,
-        storage: storage,
-        storageLimit: storageLimit,
-      ));
 
       return operationsList;
     });

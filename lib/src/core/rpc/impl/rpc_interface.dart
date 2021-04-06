@@ -155,4 +155,13 @@ class RpcInterface {
 
     return response.data;
   }
+
+  Future<Map<String, dynamic>> constants([chain = 'main', level = 'head']) async {
+    return memo2<String, String, Future<Map<String, dynamic>>>((String chain, String level) async {
+      log.info('request to constants');
+      final response = await httpClient.get(paths.constants(chain: chain, level: level));
+
+      return response.data;
+    })(chain, level);
+  }
 }

@@ -126,19 +126,17 @@ void main() {
           storage: storage,
           storageLimit: storageLimit,
         );
-        await operationsList.execute();
+        await operationsList.executeAndMonitor();
 
         return operationsList;
       };
 
       group('when all inputs are valid', () {
         test('doesnt throw any error', () async {
-          expect(
-            () async => subject(
-              code: testContractScript['code'],
-              storage: testContractScript['storage'],
-            ),
-            returnsNormally,
+          // expect(()=> subject(), returnsNormally) fails silently
+          await subject(
+            code: testContractScript['code'],
+            storage: testContractScript['storage'],
           );
         });
 

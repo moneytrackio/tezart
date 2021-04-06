@@ -7,7 +7,6 @@ class OriginationOperation extends Operation {
     @required int balance,
     @required List<Map<String, dynamic>> code,
     @required Map<String, dynamic> storage,
-    int storageLimit,
   }) : super(
           kind: Kinds.origination,
           balance: balance,
@@ -15,7 +14,6 @@ class OriginationOperation extends Operation {
             'code': code,
             'storage': storage,
           },
-          storageLimit: storageLimit,
         );
   String get contractAddress {
     // TODO: use ?. when null safety migration is done

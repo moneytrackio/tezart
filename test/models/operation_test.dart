@@ -26,9 +26,6 @@ void main() {
         destination: destination,
         balance: balance,
         amount: amount,
-        fee: fee,
-        gasLimit: gasLimit,
-        storageLimit: storageLimit,
         parameters: parameters,
       )
         ..operationsList = operationsList
@@ -56,9 +53,6 @@ void main() {
         kind: kind,
         destination: destination,
         amount: amount,
-        fee: fee,
-        gasLimit: gasLimit,
-        storageLimit: storageLimit,
         parameters: parameters,
       )
         ..operationsList = operationsList
@@ -71,9 +65,6 @@ void main() {
       final operation = Operation(
         kind: kind,
         destination: destination,
-        fee: fee,
-        gasLimit: gasLimit,
-        storageLimit: storageLimit,
         parameters: parameters,
       )
         ..operationsList = operationsList
@@ -87,9 +78,6 @@ void main() {
         kind: kind,
         destination: destination,
         amount: amount,
-        fee: fee,
-        gasLimit: gasLimit,
-        storageLimit: storageLimit,
       )
         ..operationsList = operationsList
         ..counter = counter;
@@ -104,9 +92,6 @@ void main() {
         kind: kind,
         destination: destination,
         amount: amount,
-        fee: fee,
-        gasLimit: gasLimit,
-        storageLimit: storageLimit,
         parameters: parameters,
       )
         ..operationsList = operationsList

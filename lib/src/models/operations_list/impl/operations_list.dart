@@ -92,7 +92,9 @@ class OperationsList {
 
   Future<void> execute() async {
     await _retryOnCounterError<void>(() async {
-      await simulate();
+      await computeLimits();
+      await forge();
+      sign();
       await inject();
     });
   }
@@ -102,11 +104,29 @@ class OperationsList {
     await monitor();
   }
 
+  Future<void> computeLimits() async {
+    await simulate();
+    await setLimits();
+  }
+
   Future<void> simulate() async {
+    await setHighLimits();
     await computeCounters();
     await forge();
     sign();
     await preapply();
+  }
+
+  Future<void> setHighLimits() async {
+    operations.forEach((operation) async {
+      await operation.setHighLimits();
+    });
+  }
+
+  Future<void> setLimits() async {
+    operations.forEach((operation) async {
+      await operation.setLimits();
+    });
   }
 
   Future<void> monitor() async {
