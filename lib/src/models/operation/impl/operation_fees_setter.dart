@@ -11,7 +11,7 @@ class OperationFeesSetter {
   OperationFeesSetter(this.operation);
 
   Future<void> execute() async {
-    operation.fee = await _totalCost;
+    operation.fee = operation.customFee ?? await _totalCost;
   }
 
   Future<int> get _burnFee async {

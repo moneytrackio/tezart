@@ -56,6 +56,8 @@ class Operation {
   int gasLimit;
   @JsonKey(toJson: _toString)
   int fee;
+  @JsonKey(ignore: true)
+  final customFee;
   @JsonKey(name: 'storage_limit', toJson: _toString)
   int storageLimit;
 
@@ -66,6 +68,7 @@ class Operation {
     this.destination,
     this.parameters,
     this.script,
+    this.customFee,
   }) : fee = 0;
 
   @JsonKey(toJson: _keystoreToAddress)

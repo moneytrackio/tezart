@@ -40,21 +40,21 @@ class TezartClient {
     @required Keystore source,
     @required String destination,
     @required int amount,
+    int customFee,
     bool reveal = true,
   }) async {
     return _catchHttpError<OperationsList>(() async {
       log.info('request transfer $amount µtz from $source.address to the destination $destination');
 
-      final operationsList = OperationsList(
-        source: source,
-        rpcInterface: rpcInterface,
-      );
+      final operationsList = OperationsList(source: source, rpcInterface: rpcInterface)
+        ..appendOperation(
+          TransactionOperation(
+            amount: amount,
+            destination: destination,
+            customFee: customFee,
+          ),
+        );
       if (reveal) await _prependRevealIfNotRevealed(operationsList, source);
-
-      operationsList.appendOperation(TransactionOperation(
-        amount: amount,
-        destination: destination,
-      ));
 
       return operationsList;
     });
@@ -105,6 +105,7 @@ class TezartClient {
     @required List<Map<String, dynamic>> code,
     @required Map<String, dynamic> storage,
     @required int balance,
+    int customFee,
     bool reveal = true,
   }) async {
     return _catchHttpError<OperationsList>(() async {
@@ -118,6 +119,7 @@ class TezartClient {
             balance: balance,
             code: code,
             storage: storage,
+            customFee: customFee,
           ),
         );
       if (reveal) await _prependRevealIfNotRevealed(operationsList, source);
