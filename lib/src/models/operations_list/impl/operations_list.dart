@@ -85,10 +85,14 @@ class OperationsList {
   Future<void> execute() async {
     await _retryOnCounterError<void>(() async {
       await estimate();
-      await forge();
-      sign();
-      await inject();
+      await broadcast();
     });
+  }
+
+  Future<void> broadcast() async {
+    await forge();
+    sign();
+    await inject();
   }
 
   Future<void> estimate() async {

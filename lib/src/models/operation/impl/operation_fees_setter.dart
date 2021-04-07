@@ -11,8 +11,7 @@ class OperationFeesSetter {
   OperationFeesSetter(this.operation);
 
   Future<void> execute() async {
-    final ttc = await totalCost;
-    operation.fee = ttc;
+    operation.fee = await totalCost;
   }
 
   Future<int> get burnFee async {
@@ -31,7 +30,7 @@ class OperationFeesSetter {
     return ((operation.gasLimit + _gasBuffer) * _minimalFeePerGas + operationSize * _minimalFeePerByte).ceil();
   }
 
-  // TODO: compute this using forge result : forge.length / 2
+  // TODO: Why divide by two ?
   int get operationSize {
     final operationsList = operation.operationsList;
 
