@@ -22,6 +22,9 @@ class OperationHighLimits {
   }
 
   RpcInterface get _rpcInterface {
-    return operation.operationsList.rpcInterface;
+    final operationsList = operation.operationsList;
+    if (operationsList == null) throw ArgumentError.notNull('operationsList');
+
+    return operationsList.rpcInterface;
   }
 }
