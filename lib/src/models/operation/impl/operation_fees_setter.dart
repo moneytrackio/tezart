@@ -11,33 +11,33 @@ class OperationFeesSetter {
   OperationFeesSetter(this.operation);
 
   Future<void> execute() async {
-    operation.fee = await totalCost;
+    operation.fee = await _totalCost;
   }
 
-  Future<int> get burnFee async {
-    return (operation.storageLimit * await costPerBytes).ceil();
+  Future<int> get _burnFee async {
+    return (operation.storageLimit * await _costPerBytes).ceil();
   }
 
-  Future<int> get costPerBytes async {
+  Future<int> get _costPerBytes async {
     return int.parse((await operation.operationsList.rpcInterface.constants())['cost_per_byte']);
   }
 
-  int get minimalFee {
-    return (_baseOperationMinimalFee + operationFee).ceil();
+  int get _minimalFee {
+    return (_baseOperationMinimalFee + _operationFee).ceil();
   }
 
-  int get operationFee {
-    return ((operation.gasLimit + _gasBuffer) * _minimalFeePerGas + operationSize * _minimalFeePerByte).ceil();
+  int get _operationFee {
+    return ((operation.gasLimit + _gasBuffer) * _minimalFeePerGas + _operationSize * _minimalFeePerByte).ceil();
   }
 
   // TODO: Why divide by two ?
-  int get operationSize {
+  int get _operationSize {
     final operationsList = operation.operationsList;
 
     return (operationsList.result.forgedOperation.length / 2 / operationsList.operations.length).ceil();
   }
 
-  Future<int> get totalCost async {
-    return (await burnFee) + minimalFee;
+  Future<int> get _totalCost async {
+    return (await _burnFee) + _minimalFee;
   }
 }
