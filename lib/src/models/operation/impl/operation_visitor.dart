@@ -1,5 +1,5 @@
 import 'operation.dart';
 
 abstract class OperationVisitor {
-  void visit(Operation operation);
+  Future<void> visit(Operation operation);
 }

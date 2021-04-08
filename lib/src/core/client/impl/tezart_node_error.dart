@@ -1,5 +1,3 @@
-import 'package:meta/meta.dart';
-
 import 'package:tezart/src/common/exceptions/common_exception.dart';
 import 'package:tezart/src/common/utils/enum_util.dart';
 import 'package:tezart/src/common/utils/map_extension.dart';
@@ -43,9 +41,9 @@ enum TezartNodeErrorTypes {
 ///   print(e.key); // 'alreadyRevealedKey'
 /// }
 class TezartNodeError extends CommonException {
-  final TezartHttpError cause;
-  final TezartNodeErrorTypes _inputType;
-  final String _inputMessage;
+  final TezartHttpError? cause;
+  final TezartNodeErrorTypes? _inputType;
+  final String? _inputMessage;
   final Map<String, String> metadata;
 
   final staticErrorsMessages = {
@@ -67,16 +65,17 @@ class TezartNodeError extends CommonException {
   ///     If not, it will use `staticErrorMessages[type]` or `dynamicErrorMessages[type]` (in this priority order).
   /// - [metadata] is optional and must include metadata used to compute the message.
   ///     example: `{ 'operationId': 'opId' }` for monitoring time out errors.
-  TezartNodeError({@required TezartNodeErrorTypes type, String message, this.metadata})
+  TezartNodeError({required TezartNodeErrorTypes type, String? message, metadata})
       : _inputType = type,
         _inputMessage = message,
+        metadata = metadata ?? {},
         cause = null;
 
   /// Named constructor to construct [TezartNodeError] by passing a [TezartHttpError] object.
   TezartNodeError.fromHttpError(this.cause)
       : _inputType = null,
         _inputMessage = null,
-        metadata = null;
+        metadata = {};
 
   /// Type of this.
   TezartNodeErrorTypes get type => _inputType ?? _computedType;
@@ -107,22 +106,16 @@ class TezartNodeError extends CommonException {
 
   String get _computedMessage {
     if (staticErrorsMessages.containsKey(type)) {
-      return staticErrorsMessages[type];
+      return staticErrorsMessages[type]!;
     }
 
     switch (type) {
       case TezartNodeErrorTypes.monitoringTimedOut:
-        return dynamicErrorMessages[type](metadata.fetch<String>('operationId'));
-
-        break;
+        return dynamicErrorMessages[type]!(metadata.fetch<String>('operationId'));
       case TezartNodeErrorTypes.simulationFailed:
-        return dynamicErrorMessages[type](metadata.fetch<String>('operationKind'), metadata.fetch<String>('reason'));
-
-        break;
+        return dynamicErrorMessages[type]!(metadata.fetch<String>('operationKind'), metadata.fetch<String>('reason'));
       default:
         throw UnimplementedError('Unimplemented error type $type');
-
-        break;
     }
   }
 
@@ -130,5 +123,5 @@ class TezartNodeError extends CommonException {
   ///
   /// It represents the error that caused this.
   @override
-  TezartHttpError get originalException => cause;
+  TezartHttpError? get originalException => cause;
 }

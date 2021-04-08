@@ -1,5 +1,4 @@
 import 'package:logging/logging.dart';
-import 'package:meta/meta.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:tezart/src/common/utils/enum_util.dart';
 import 'package:tezart/src/common/validators/simulation_result_validator.dart';
@@ -22,44 +21,44 @@ enum Kinds {
 @JsonSerializable(includeIfNull: false, createFactory: false)
 class Operation {
   @JsonKey(ignore: true)
-  Map<String, dynamic> _simulationResult;
+  Map<String, dynamic>? _simulationResult;
   @JsonKey(ignore: true)
-  OperationsList operationsList;
+  OperationsList? operationsList;
   @JsonKey(ignore: true)
   final log = Logger('Operation');
 
   @JsonKey(toJson: _kindToString)
   final Kinds kind;
 
-  @JsonKey(nullable: true)
-  final String destination;
-
-  @JsonKey(nullable: true, toJson: _toString)
-  final int amount;
-
-  @JsonKey(nullable: true, toJson: _toString)
-  final int balance;
+  @JsonKey()
+  final String? destination;
 
   @JsonKey(toJson: _toString)
-  int counter;
+  final int? amount;
 
-  @JsonKey(nullable: true)
-  Map<String, dynamic> parameters;
+  @JsonKey(toJson: _toString)
+  final int? balance;
 
-  @JsonKey(nullable: true)
-  Map<String, dynamic> script;
+  @JsonKey(toJson: _toString)
+  int? counter;
+
+  @JsonKey()
+  Map<String, dynamic>? parameters;
+
+  @JsonKey()
+  Map<String, dynamic>? script;
 
   @JsonKey(name: 'gas_limit', toJson: _toString)
-  int gasLimit;
+  int? gasLimit;
   @JsonKey(toJson: _toString)
   int fee;
   @JsonKey(ignore: true)
-  final customFee;
+  final int? customFee;
   @JsonKey(name: 'storage_limit', toJson: _toString)
-  int storageLimit;
+  int? storageLimit;
 
   Operation({
-    @required this.kind,
+    required this.kind,
     this.amount,
     this.balance,
     this.destination,
@@ -69,24 +68,30 @@ class Operation {
   }) : fee = 0;
 
   @JsonKey(toJson: _keystoreToAddress)
-  Keystore get source => operationsList.source;
+  Keystore get source {
+    if (operationsList == null) throw ArgumentError.notNull('operationsList');
 
-  @JsonKey(name: 'public_key', nullable: true)
-  String get publicKey => kind == Kinds.reveal ? source.publicKey : null;
+    return operationsList!.source;
+  }
+
+  @JsonKey(name: 'public_key')
+  String? get publicKey => kind == Kinds.reveal ? source.publicKey : null;
 
   Map<String, dynamic> toJson() => _$OperationToJson(this);
 
-  static String _toString(int integer) => integer == null ? null : integer.toString();
+  static String? _toString(int? integer) => integer == null ? null : integer.toString();
   static String _kindToString(Kinds kind) => EnumUtil.enumToString(kind);
   static String _keystoreToAddress(Keystore keystore) => keystore.address;
 
-  set simulationResult(Map<String, dynamic> value) {
+  set simulationResult(Map<String, dynamic>? value) {
+    if (value == null) throw ArgumentError.notNull('simulationResult');
+
     _simulationResult = value;
-    SimulationResultValidator(_simulationResult).validate();
+    SimulationResultValidator(_simulationResult!).validate();
   }
 
   @JsonKey(ignore: true)
-  Map<String, dynamic> get simulationResult => _simulationResult;
+  Map<String, dynamic>? get simulationResult => _simulationResult;
 
   Future<void> setLimits(OperationVisitor visitor) async {
     await visitor.visit(this);

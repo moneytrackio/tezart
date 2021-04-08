@@ -7,7 +7,7 @@ pre-commit:
   parallel: true
   commands:
     dartanalyzer:
-      files: &staged_files git status --short | grep '^\w.' | xargs ls -1 2>/dev/null | grep .dart$
+      files: &staged_files git status --short | grep '^\w.' | xargs ls -1 2>/dev/null | grep .dart$ | grep -v .mocks.dart$
       run: dartanalyzer --fatal-infos --fatal-warnings {files}
 
     dartfmt:

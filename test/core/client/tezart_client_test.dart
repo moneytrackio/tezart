@@ -31,7 +31,7 @@ void main() {
     });
 
     group('when the key is not revealed', () {
-      Keystore source;
+      late Keystore source;
 
       setUp(() async {
         source = Keystore.random();
@@ -102,7 +102,7 @@ void main() {
           amount: amount,
         );
         await operationsList.execute();
-        await subject(operationsList.result.id);
+        await subject(operationsList.result.id!);
         final balanceAfterMonitoring = await getBalance();
 
         expect(balanceAfterMonitoring, lessThan(balanceBeforeTransfer));

@@ -1,5 +1,4 @@
 @Timeout(Duration(seconds: 60))
-import 'package:meta/meta.dart';
 import 'package:test/test.dart';
 import 'package:tezart/tezart.dart';
 
@@ -30,7 +29,7 @@ void main() {
           final afterTransferBalance = await tezart.getBalance(address: destination);
 
           expect(afterTransferBalance - beforeTransferBalance, equals(amount));
-          expect(RegExp(r'^o\w+$').hasMatch(operationsList.result.id), true);
+          expect(RegExp(r'^o\w+$').hasMatch(operationsList.result.id!), true);
         });
 
         test('it doesnt add a reveal operation', () async {
@@ -55,7 +54,7 @@ void main() {
       });
 
       group('when the key is not revealed', () {
-        Keystore source;
+        late Keystore source;
 
         setUp(() async {
           source = Keystore.random();
@@ -69,7 +68,7 @@ void main() {
           final operationsList = await subject(source, destination, amount);
           final afterTransferBalance = await tezart.getBalance(address: destination);
           expect(afterTransferBalance - beforeTransferBalance, equals(amount));
-          expect(RegExp(r'^o\w+$').hasMatch(operationsList.result.id), true);
+          expect(RegExp(r'^o\w+$').hasMatch(operationsList.result.id!), true);
         });
 
         test('it reveals the key', () async {
@@ -112,7 +111,8 @@ void main() {
       };
 
       group('when the key is not revealed', () {
-        Keystore keystore;
+        late Keystore keystore;
+
         setUp(() {
           keystore = Keystore.random();
         });
@@ -154,8 +154,8 @@ void main() {
     group('OriginationOperation', () {
       final balanceAmount = 1;
       final subject = ({
-        @required List<Map<String, dynamic>> code,
-        @required Map<String, dynamic> storage,
+        required List<Map<String, dynamic>> code,
+        required Map<String, dynamic> storage,
       }) async {
         final operationsList = await tezart.originateContractOperation(
           source: originatorKeystore,

@@ -1,13 +1,12 @@
 import 'dart:typed_data';
 
-import 'package:meta/meta.dart';
-import 'package:pinenacl/secret.dart' show SecretBox;
+import 'package:pinenacl/x25519.dart';
 import 'package:tezart/src/crypto/crypto.dart' as crypto hide Prefixes;
 import 'package:tezart/src/crypto/crypto.dart' show Prefixes;
 
 String encryptedSecretKeyToSeed({
-  @required String encryptedSecretKey,
-  @required String passphrase,
+  required String encryptedSecretKey,
+  required String passphrase,
 }) {
   final bytes = crypto.decodeWithoutPrefix(encryptedSecretKey);
   final salt = bytes.sublist(0, 8);

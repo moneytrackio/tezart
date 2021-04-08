@@ -14,11 +14,15 @@ class OperationFeesSetterVisitor implements OperationVisitor {
   }
 
   Future<int> _burnFee(Operation operation) async {
-    return (operation.storageLimit * await _costPerBytes(operation)).ceil();
+    if (operation.storageLimit == null) throw ArgumentError.notNull('operation.storageLimit');
+
+    return (operation.storageLimit! * await _costPerBytes(operation)).ceil();
   }
 
   Future<int> _costPerBytes(Operation operation) async {
-    return int.parse((await operation.operationsList.rpcInterface.constants())['cost_per_byte']);
+    if (operation.operationsList == null) throw ArgumentError.notNull('operation.operationsList');
+
+    return int.parse((await operation.operationsList!.rpcInterface.constants())['cost_per_byte']);
   }
 
   int _minimalFee(Operation operation) {
@@ -26,15 +30,23 @@ class OperationFeesSetterVisitor implements OperationVisitor {
   }
 
   int _operationFee(Operation operation) {
-    return ((operation.gasLimit + _gasBuffer) * _minimalFeePerGas + _operationSize(operation) * _minimalFeePerByte)
+    if (operation.gasLimit == null) throw ArgumentError.notNull('operation.gasLimit');
+
+    return ((operation.gasLimit! + _gasBuffer) * _minimalFeePerGas + _operationSize(operation) * _minimalFeePerByte)
         .ceil();
   }
 
   // TODO: Why divide by two ?
   int _operationSize(Operation operation) {
     final operationsList = operation.operationsList;
+    if (operationsList == null) throw ArgumentError.notNull('operation.operationsList');
 
-    return (operationsList.result.forgedOperation.length / 2 / operationsList.operations.length).ceil();
+    final operationsListResult = operationsList.result;
+    if (operationsListResult.forgedOperation == null) {
+      throw ArgumentError.notNull('operation.operationsList.result.forgedOperation');
+    }
+
+    return (operationsList.result.forgedOperation!.length / 2 / operationsList.operations.length).ceil();
   }
 
   Future<int> _totalCost(Operation operation) async {

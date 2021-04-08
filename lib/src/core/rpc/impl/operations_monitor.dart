@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:meta/meta.dart';
 import 'package:tezart/src/core/client/impl/tezart_node_error.dart';
 import 'package:tezart/src/core/rpc/impl/rpc_interface.dart';
 
@@ -12,9 +11,9 @@ class OperationsMonitor {
   OperationsMonitor(this.rpcInterface);
 
   Future<String> monitor({
-    @required String chain,
-    @required String level,
-    @required String operationId,
+    required String chain,
+    required String level,
+    required String operationId,
   }) async {
     // TODO: compute timeout based on time between blocks (problem in the CI when the blockchain just started)
     const timeoutBetweenChunks = Duration(minutes: 3);
@@ -28,7 +27,7 @@ class OperationsMonitor {
     if (isOpIdIncludedInPredBlock) return predHash;
 
     final rs = await rpcInterface.httpClient.getStream(paths.monitor(chain));
-    await for (var value in rs.data.stream.timeout(timeoutBetweenChunks).take(nbOfBlocksToWait)) {
+    await for (var value in rs.data?.stream.timeout(timeoutBetweenChunks).take(nbOfBlocksToWait) ?? Stream.empty()) {
       final decodedValue = json.decode(String.fromCharCodes(value));
       final headBlockHash = decodedValue['hash'];
       final isOpIdIncludedInBlock = await _isOperationIdIncludedInBlock(
@@ -45,13 +44,13 @@ class OperationsMonitor {
     );
   }
 
-  Future<String> _predecessorHash({@required String chain, @required String level}) async {
+  Future<String> _predecessorHash({required String chain, required String level}) async {
     final block = await rpcInterface.block(chain: chain, level: level);
 
     return block['header']['predecessor'] as String;
   }
 
-  Future<bool> _isOperationIdIncludedInBlock({@required String blockHash, @required String operationId}) async {
+  Future<bool> _isOperationIdIncludedInBlock({required String blockHash, required String operationId}) async {
     final operationHashesList = await rpcInterface.transactionsOperationHashes(level: blockHash);
 
     return operationHashesList.contains(operationId);

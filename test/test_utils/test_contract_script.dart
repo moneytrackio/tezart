@@ -1,4 +1,4 @@
-final testContractScript = {
+final Map<String, dynamic> testContractScript = {
   'code': [
     {
       'prim': 'storage',

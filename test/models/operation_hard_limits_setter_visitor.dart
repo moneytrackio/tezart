@@ -9,7 +9,7 @@ void main() {
   final tezart = TezartClient(Env.tezosNodeUrl);
   final originatorKeystore = Keystore.fromSecretKey(Env.originatorSk);
   final rpcInterface = tezart.rpcInterface;
-  Operation operation;
+  late Operation operation;
 
   setUp(() {
     operation = Operation(kind: Kinds.generic);

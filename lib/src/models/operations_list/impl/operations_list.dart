@@ -1,5 +1,4 @@
 import 'package:logging/logging.dart';
-import 'package:meta/meta.dart';
 import 'package:retry/retry.dart';
 import 'package:tezart/src/core/client/tezart_client.dart';
 import 'package:tezart/src/core/rpc/rpc_interface.dart';
@@ -19,7 +18,7 @@ class OperationsList {
   final Keystore source;
   final RpcInterface rpcInterface;
 
-  OperationsList({@required this.source, @required this.rpcInterface});
+  OperationsList({required this.source, required this.rpcInterface});
 
   void prependOperation(Operation op) {
     op.operationsList = this;
@@ -37,7 +36,7 @@ class OperationsList {
 
       final simulationResults = await rpcInterface.preapplyOperations(
         operationsList: this,
-        signature: result.signature.edsig,
+        signature: result.signature!.edsig,
       );
 
       for (var i = 0; i < simulationResults.length; i++) {
@@ -66,7 +65,7 @@ class OperationsList {
     if (result.forgedOperation == null) throw ArgumentError.notNull('result.forgedOperation');
 
     result.signature = Signature.fromHex(
-      data: result.forgedOperation,
+      data: result.forgedOperation!,
       keystore: source,
       watermark: Watermarks.generic,
     );
@@ -76,7 +75,7 @@ class OperationsList {
     await _catchHttpError<void>(() async {
       if (result.signature == null) throw ArgumentError.notNull('result.signature');
 
-      result.id = await rpcInterface.injectOperation(result.signature.hexIncludingPayload);
+      result.id = await rpcInterface.injectOperation(result.signature!.hexIncludingPayload);
     });
   }
 
@@ -124,7 +123,7 @@ class OperationsList {
       firstOperation.counter = await rpcInterface.counter(source.address) + 1;
 
       for (var i = 1; i < operations.length; i++) {
-        operations[i].counter = operations[i - 1].counter + 1;
+        operations[i].counter = operations[i - 1].counter! + 1;
       }
     });
   }
@@ -154,7 +153,7 @@ class OperationsList {
     if (result.id == null) throw ArgumentError.notNull('result.id');
 
     log.info('request to monitorOperation ${result.id}');
-    final blockHash = await rpcInterface.monitorOperation(operationId: result.id);
+    final blockHash = await rpcInterface.monitorOperation(operationId: result.id!);
     result.blockHash = blockHash;
   }
 
