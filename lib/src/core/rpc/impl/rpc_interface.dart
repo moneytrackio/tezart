@@ -87,7 +87,7 @@ class RpcInterface {
     ];
 
     var response = await httpClient.post(
-      paths.runOperations(
+      paths.preapplyOperations(
         chain: chain,
         level: level,
       ),

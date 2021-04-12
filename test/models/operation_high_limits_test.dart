@@ -21,7 +21,7 @@ void main() {
       OperationsList(
         source: originatorKeystore,
         rpcInterface: rpcInterface,
-      ).addOperation(operation);
+      ).appendOperation(operation);
     });
 
     test('it returns the hard_gas_limit_per_operation node constant', () async {
@@ -37,7 +37,7 @@ void main() {
         OperationsList(
           source: originatorKeystore,
           rpcInterface: rpcInterface,
-        ).addOperation(operation);
+        ).appendOperation(operation);
       });
 
       test('it returns the hard storage limitation per operation', () async {
@@ -60,7 +60,7 @@ void main() {
         OperationsList(
           source: destination,
           rpcInterface: rpcInterface,
-        ).addOperation(operation);
+        ).appendOperation(operation);
       });
 
       test('it returns the balance storage limitation', () async {
