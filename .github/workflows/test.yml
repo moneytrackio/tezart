@@ -11,6 +11,10 @@ jobs:
   unit_tests:
     name: Unit tests
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        sdk: [2.12.0]
 
     services:
       flextesa:
@@ -27,10 +31,9 @@ jobs:
     - name: Git checkout
       uses: actions/checkout@v2
 
-    - uses: cedx/setup-dart@v2
+    - uses: dart-lang/setup-dart@v1.0
       with:
-        version: 2.12.0
-        release-channel: beta
+        sdk: ${{ matrix.sdk }}
 
     - name: Dart pub get
       run: dart pub get
