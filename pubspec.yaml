@@ -32,4 +32,3 @@ dev_dependencies:
   test: ^1.9.0
   envify: ^2.0.0 # .env files management
   envify_generator: ^1.0.6 # code generation for envify
-  test_coverage: ^0.5.0

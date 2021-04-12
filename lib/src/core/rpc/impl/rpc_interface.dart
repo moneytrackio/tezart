@@ -4,7 +4,7 @@ import 'package:logging/logging.dart';
 import 'package:memoize/memoize.dart';
 import 'package:meta/meta.dart';
 import 'package:tezart/src/core/rpc/impl/operations_monitor.dart';
-import 'package:tezart/src/models/operation/operation.dart';
+import 'package:tezart/src/models/operations_list/operations_list.dart';
 
 import 'tezart_http_client.dart';
 import 'rpc_interface_paths.dart' as paths;
@@ -59,23 +59,50 @@ class RpcInterface {
     return response.data;
   }
 
-  Future<String> forgeOperations(List<Operation> operations, [chain = 'main', level = 'head']) async {
+  Future<String> forgeOperations(OperationsList operationsList, [chain = 'main', level = 'head']) async {
     log.info('request for forgeOperations [ chain:$chain, level:$level]');
     var content = {
       'branch': await branch(),
-      'contents': operations.map((operation) => operation.toJson()).toList(),
+      'contents': operationsList.operations.map((operation) => operation.toJson()).toList(),
     };
     var response = await httpClient.post(paths.forgeOperations(chain: chain, level: level), data: content);
 
     return response.data;
   }
 
-  Future<List<dynamic>> runOperations(List<Operation> operations, [chain = 'main', level = 'head']) async {
+  Future<List<dynamic>> preapplyOperations({
+    OperationsList operationsList,
+    String signature,
+    chain = 'main',
+    level = 'head',
+  }) async {
+    log.info('request for preapplyOperations [ chain:$chain, level:$level]');
+    var content = {
+      'operation': {
+        'branch': await branch(),
+        'contents': operationsList.operations.map((operation) => operation.toJson()).toList(),
+        'signature': randomSignature
+      },
+      'chain_id': await chainId()
+    };
+
+    var response = await httpClient.post(
+      paths.runOperations(
+        chain: chain,
+        level: level,
+      ),
+      data: content,
+    );
+
+    return response.data['contents'];
+  }
+
+  Future<List<dynamic>> runOperations(OperationsList operationsList, [chain = 'main', level = 'head']) async {
     log.info('request for runOperations [ chain:$chain, level:$level]');
     var content = {
       'operation': {
         'branch': await branch(),
-        'contents': operations.map((operation) => operation.toJson()).toList(),
+        'contents': operationsList.operations.map((operation) => operation.toJson()).toList(),
         'signature': randomSignature
       },
       'chain_id': await chainId()

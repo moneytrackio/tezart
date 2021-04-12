@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart' as http_client;
 import 'package:tezart/src/common/exceptions/common_exception.dart';
 import 'package:tezart/src/common/utils/enum_util.dart';
+import 'package:tezart/src/core/client/tezart_client.dart';
 
 enum TezartHttpErrorTypes {
   connectTimeout,
@@ -43,4 +44,13 @@ class TezartHttpError extends CommonException {
   String get message => _response?.statusMessage ?? staticErrorsMessages[type];
   @override
   http_client.DioError get originalException => clientError;
+}
+
+Future<T> catchHttpError<T>(Future<T> Function() func, {void Function(TezartHttpError) onError}) async {
+  try {
+    return await func();
+  } on TezartHttpError catch (e) {
+    onError(e);
+    throw TezartNodeError.fromHttpError(e);
+  }
 }
