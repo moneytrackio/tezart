@@ -80,7 +80,7 @@ class TezartClient {
       log.info('request to find if isKeyRevealed');
       final managerKey = await rpcInterface.managerKey(address);
 
-      return managerKey == null ? false : true;
+      return managerKey != null;
     })(address);
   }
 
