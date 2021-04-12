@@ -9,7 +9,7 @@ class SimulationResultValidator implements BaseValidator {
 
   @override
   bool get isValid {
-    return _status == 'applied' ? true : false;
+    return _status == 'applied';
   }
 
   String get _status {
