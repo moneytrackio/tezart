@@ -51,7 +51,7 @@ class TezartClient {
       );
       if (reveal) await _prependRevealIfNotRevealed(operationsList, source);
 
-      operationsList.addOperation(TransactionOperation(
+      operationsList.appendOperation(TransactionOperation(
         operationsList: operationsList,
         amount: amount,
         destination: destination,
@@ -71,7 +71,7 @@ class TezartClient {
     return OperationsList(
       source: source,
       rpcInterface: rpcInterface,
-    )..addOperation(operation);
+    )..appendOperation(operation);
   }
 
   /// Returns `true` if the public key of [address] is revealed.
@@ -121,7 +121,7 @@ class TezartClient {
       );
       if (reveal) await _prependRevealIfNotRevealed(operationsList, source);
 
-      operationsList.addOperation(OriginationOperation(
+      operationsList.appendOperation(OriginationOperation(
         balance: balance,
         code: code,
         storage: storage,

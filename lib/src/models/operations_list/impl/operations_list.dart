@@ -23,7 +23,7 @@ class OperationsList {
     operations.insert(0, op);
   }
 
-  void addOperation(Operation op) {
+  void appendOperation(Operation op) {
     op.operationsList = this;
     operations.add(op);
   }
