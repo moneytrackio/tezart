@@ -49,7 +49,7 @@ void main() {
           expect(operation.gasLimit, 1427);
           expect(operation.storageLimit, 0);
           // can't test equality because there might be a difference of ~= 5 µtz because of the forged operation size difference
-          expect(operation.fee, lessThan(338));
+          expect(operation.fee, lessThan(340));
         });
       });
 
@@ -84,12 +84,12 @@ void main() {
           expect(revealOperation.gasLimit, 1000);
           expect(revealOperation.storageLimit, 0);
           // can't test equality because there might be a difference of ~= 5 µtz because of the forged operation size difference
-          expect(revealOperation.fee, lessThan(285));
+          expect(revealOperation.fee, lessThan(290));
 
           expect(transactionOperation.gasLimit, 1427);
           expect(transactionOperation.storageLimit, 0);
           // can't test equality because there might be a difference of ~= 5 µtz because of the forged operation size difference
-          expect(transactionOperation.fee, lessThan(327));
+          expect(transactionOperation.fee, lessThan(330));
         });
       });
     });
@@ -183,7 +183,9 @@ void main() {
             storage: testContractScript['storage'],
           );
 
-          expect((operationsList.operations.first as OriginationOperation).contractAddress.startsWith('KT'), true);
+          final contractAddress = await (operationsList.operations.first as OriginationOperation).contractAddress;
+
+          expect(contractAddress.startsWith('KT'), true);
         });
 
         test('it sets limits correctly', () async {
@@ -193,7 +195,7 @@ void main() {
           );
           final originationOperation = result.operations.first;
 
-          expect(originationOperation.gasLimit, 1590);
+          expect(originationOperation.gasLimit, 1564);
           expect(originationOperation.storageLimit, 295);
           // can't test equality because there might be a difference of ~= 5 µtz because of the forged operation size difference
           expect(originationOperation.fee, lessThan(74125));
