@@ -127,6 +127,26 @@ class RpcInterface {
     return int.parse(response.data['balance']);
   }
 
+  Future<Map<String, dynamic>> getContract(String address, [chain = 'main', level = 'head']) async {
+    log.info('request for contract : $address');
+
+    var response = await httpClient.get(paths.contract(chain: chain, level: level, contractAddress: address));
+
+    return response.data;
+  }
+
+  Future<Map<String, dynamic>> getContractEntrypoints(String address, [chain = 'main', level = 'head']) async {
+    log.info('request for contract entrypoints : $address');
+
+    var response = await httpClient.get(paths.contractEntrypoints(
+      chain: chain,
+      level: level,
+      contractAddress: address,
+    ));
+
+    return response.data['entrypoints'];
+  }
+
   Future<List<String>> transactionsOperationHashes({
     required String level,
     chain = 'main',

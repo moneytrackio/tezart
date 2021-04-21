@@ -37,5 +37,19 @@ final operationHashes = ({
 final constants =
     ({required String chain, required String level}) => '${_levelPath(chain: chain, level: level)}/context/constants';
 
+final contract = ({
+  required String chain,
+  required String level,
+  required String contractAddress,
+}) =>
+    '${_levelPath(chain: chain, level: level)}/context/contracts/$contractAddress';
+
+final contractEntrypoints = ({
+  required String chain,
+  required String level,
+  required String contractAddress,
+}) =>
+    '${contract(chain: chain, level: level, contractAddress: contractAddress)}/entrypoints';
+
 final _chainPath = (String chain) => 'chains/$chain';
 final _levelPath = ({required String level, required String chain}) => '${_chainPath(chain)}/blocks/$level';
