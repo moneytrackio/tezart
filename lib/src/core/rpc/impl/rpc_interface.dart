@@ -76,7 +76,7 @@ class RpcInterface {
     level = 'head',
   }) async {
     log.info('request for preapplyOperations [ chain:$chain, level:$level]');
-    var content = [
+    final content = [
       {
         'branch': await branch(),
         'contents': operationsList.operations.map((operation) => operation.toJson()).toList(),
