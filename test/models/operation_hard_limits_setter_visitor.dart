@@ -1,6 +1,6 @@
 @Timeout(Duration(seconds: 60))
 import 'package:test/test.dart';
-import 'package:tezart/src/models/operation/impl/operation_high_limits.dart';
+import 'package:tezart/src/models/operation/impl/operation_hard_limits_setter_visitor.dart';
 import 'package:tezart/tezart.dart';
 
 import '../env/env.dart';
@@ -15,8 +15,12 @@ void main() {
     operation = Operation(kind: Kinds.generic);
   });
 
-  group('#gas', () {
-    final subject = () async => OperationHighLimits(operation).gas;
+  group('gas', () {
+    final subject = () async {
+      await OperationHardLimitsSetterVisitor().visit(operation);
+      return operation.gasLimit;
+    };
+
     setUp(() {
       OperationsList(
         source: originatorKeystore,
@@ -29,8 +33,12 @@ void main() {
     });
   });
 
-  group('#storage', () {
-    final subject = () async => OperationHighLimits(operation).storage;
+  group('storage', () {
+    final subject = () async {
+      await OperationHardLimitsSetterVisitor().visit(operation);
+
+      return operation.storageLimit;
+    };
 
     group('when the source balance storage limitation is greater than the hard storage limitation per operation', () {
       setUp(() {

@@ -4,6 +4,9 @@ import 'package:retry/retry.dart';
 import 'package:tezart/src/core/client/tezart_client.dart';
 import 'package:tezart/src/core/rpc/rpc_interface.dart';
 import 'package:tezart/src/keystore/keystore.dart';
+import 'package:tezart/src/models/operation/impl/operation_fees_setter_visitor.dart';
+import 'package:tezart/src/models/operation/impl/operation_hard_limits_setter_visitor.dart';
+import 'package:tezart/src/models/operation/impl/operation_limits_setter_visitor.dart';
 import 'package:tezart/src/models/operation/operation.dart';
 import 'package:tezart/src/signature/signature.dart';
 
@@ -128,13 +131,13 @@ class OperationsList {
 
   Future<void> setHighLimits() async {
     await Future.wait(operations.map((operation) async {
-      await operation.setHighLimits();
+      await operation.setLimits(OperationHardLimitsSetterVisitor());
     }));
   }
 
   Future<void> setLimits() async {
     await Future.wait(operations.map((operation) async {
-      await operation.setLimits();
+      await operation.setLimits(OperationLimitsSetterVisitor());
     }));
 
     // resimulate to check that limit computation is valid. Remove this in a stable version ??
@@ -143,7 +146,7 @@ class OperationsList {
 
   Future<void> computeFees() async {
     await Future.wait(operations.map((operation) async {
-      await operation.setFees();
+      await operation.setLimits(OperationFeesSetterVisitor());
     }));
   }
 

@@ -1,6 +1,6 @@
 @Timeout(Duration(seconds: 60))
 import 'package:test/test.dart';
-import 'package:tezart/src/models/operation/impl/operation_fees_setter.dart';
+import 'package:tezart/src/models/operation/impl/operation_fees_setter_visitor.dart';
 import 'package:tezart/tezart.dart';
 
 import '../env/env.dart';
@@ -12,7 +12,7 @@ void main() {
 
   group('when the operation customFee is set', () {
     const customFee = 1234;
-    final subject = () => OperationFeesSetter(operation).execute();
+    final subject = () => OperationFeesSetterVisitor().visit(operation);
 
     setUp(() {
       operation = Operation(kind: Kinds.generic, customFee: customFee);
@@ -25,7 +25,7 @@ void main() {
   });
 
   group('when the operation customFee is not set', () {
-    final subject = () => OperationFeesSetter(operation).execute();
+    final subject = () => OperationFeesSetterVisitor().visit(operation);
 
     setUp(() async {
       final destination = Keystore.random();
