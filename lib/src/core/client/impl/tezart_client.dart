@@ -40,22 +40,21 @@ class TezartClient {
     @required Keystore source,
     @required String destination,
     @required int amount,
+    int customFee,
     bool reveal = true,
   }) async {
     return _catchHttpError<OperationsList>(() async {
       log.info('request transfer $amount µtz from $source.address to the destination $destination');
 
-      final operationsList = OperationsList(
-        source: source,
-        rpcInterface: rpcInterface,
-      );
+      final operationsList = OperationsList(source: source, rpcInterface: rpcInterface)
+        ..appendOperation(
+          TransactionOperation(
+            amount: amount,
+            destination: destination,
+            customFee: customFee,
+          ),
+        );
       if (reveal) await _prependRevealIfNotRevealed(operationsList, source);
-
-      operationsList.appendOperation(TransactionOperation(
-        operationsList: operationsList,
-        amount: amount,
-        destination: destination,
-      ));
 
       return operationsList;
     });
@@ -67,11 +66,8 @@ class TezartClient {
   /// can verify the signature for the operation and any future operations.
   OperationsList revealKeyOperation(Keystore source) {
     log.info('request to revealKey');
-    final operation = RevealOperation();
-    return OperationsList(
-      source: source,
-      rpcInterface: rpcInterface,
-    )..appendOperation(operation);
+
+    return OperationsList(source: source, rpcInterface: rpcInterface)..appendOperation(RevealOperation());
   }
 
   /// Returns `true` if the public key of [address] is revealed.
@@ -109,7 +105,7 @@ class TezartClient {
     @required List<Map<String, dynamic>> code,
     @required Map<String, dynamic> storage,
     @required int balance,
-    int storageLimit, // TODO: remove this line because it must be computed via a dry run call
+    int customFee,
     bool reveal = true,
   }) async {
     return _catchHttpError<OperationsList>(() async {
@@ -118,15 +114,15 @@ class TezartClient {
       var operationsList = OperationsList(
         source: source,
         rpcInterface: rpcInterface,
-      );
+      )..appendOperation(
+          OriginationOperation(
+            balance: balance,
+            code: code,
+            storage: storage,
+            customFee: customFee,
+          ),
+        );
       if (reveal) await _prependRevealIfNotRevealed(operationsList, source);
-
-      operationsList.appendOperation(OriginationOperation(
-        balance: balance,
-        code: code,
-        storage: storage,
-        storageLimit: storageLimit,
-      ));
 
       return operationsList;
     });

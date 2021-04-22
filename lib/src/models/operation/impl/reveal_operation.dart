@@ -1,3 +1,5 @@
+import 'package:tezart/tezart.dart';
+
 import 'operation.dart';
 
 class RevealOperation extends Operation {

@@ -122,13 +122,11 @@ void main() {
 
   group('#originateContract', () {
     final balanceAmount = 1;
-    final storageLimit = 2570;
     final subject = (Keystore source) => tezart.originateContractOperation(
           source: source,
           balance: balanceAmount,
           code: testContractScript['code'],
           storage: testContractScript['storage'],
-          storageLimit: storageLimit,
         );
 
     group('when the source key is already revealed', () {

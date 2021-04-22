@@ -4,6 +4,9 @@ import 'package:retry/retry.dart';
 import 'package:tezart/src/core/client/tezart_client.dart';
 import 'package:tezart/src/core/rpc/rpc_interface.dart';
 import 'package:tezart/src/keystore/keystore.dart';
+import 'package:tezart/src/models/operation/impl/operation_fees_setter_visitor.dart';
+import 'package:tezart/src/models/operation/impl/operation_hard_limits_setter_visitor.dart';
+import 'package:tezart/src/models/operation/impl/operation_limits_setter_visitor.dart';
 import 'package:tezart/src/models/operation/operation.dart';
 import 'package:tezart/src/signature/signature.dart';
 
@@ -34,7 +37,7 @@ class OperationsList {
 
       final simulationResults = await rpcInterface.preapplyOperations(
         operationsList: this,
-        signature: result.signature,
+        signature: result.signature.edsig,
       );
 
       for (var i = 0; i < simulationResults.length; i++) {
@@ -66,15 +69,51 @@ class OperationsList {
       data: result.forgedOperation,
       keystore: source,
       watermark: Watermarks.generic,
-    ).hexIncludingPayload;
+    );
   }
 
   Future<void> inject() async {
     await _catchHttpError<void>(() async {
       if (result.signature == null) throw ArgumentError.notNull('result.signature');
 
-      result.id = await rpcInterface.injectOperation(result.signature);
+      result.id = await rpcInterface.injectOperation(result.signature.hexIncludingPayload);
     });
+  }
+
+  Future<void> executeAndMonitor() async {
+    await execute();
+    await monitor();
+  }
+
+  Future<void> execute() async {
+    await _retryOnCounterError<void>(() async {
+      await estimate();
+      await broadcast();
+    });
+  }
+
+  Future<void> broadcast() async {
+    await forge();
+    sign();
+    await inject();
+  }
+
+  Future<void> estimate() async {
+    await computeCounters();
+    await computeLimits();
+    await computeFees();
+  }
+
+  Future<void> computeLimits() async {
+    await setHighLimits();
+    await simulate();
+    await setLimits();
+  }
+
+  Future<void> simulate() async {
+    await forge();
+    sign();
+    await preapply();
   }
 
   // TODO: use expirable cache based on time between blocks so that we can
@@ -90,23 +129,25 @@ class OperationsList {
     });
   }
 
-  Future<void> execute() async {
-    await _retryOnCounterError<void>(() async {
-      await simulate();
-      await inject();
-    });
+  Future<void> setHighLimits() async {
+    await Future.wait(operations.map((operation) async {
+      await operation.setLimits(OperationHardLimitsSetterVisitor());
+    }));
   }
 
-  Future<void> executeAndMonitor() async {
-    await execute();
-    await monitor();
+  Future<void> setLimits() async {
+    await Future.wait(operations.map((operation) async {
+      await operation.setLimits(OperationLimitsSetterVisitor());
+    }));
+
+    // resimulate to check that limit computation is valid. Remove this in a stable version ??
+    await simulate();
   }
 
-  Future<void> simulate() async {
-    await computeCounters();
-    await forge();
-    sign();
-    await preapply();
+  Future<void> computeFees() async {
+    await Future.wait(operations.map((operation) async {
+      await operation.setLimits(OperationFeesSetterVisitor());
+    }));
   }
 
   Future<void> monitor() async {

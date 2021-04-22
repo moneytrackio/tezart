@@ -26,12 +26,12 @@ void main() {
         destination: destination,
         balance: balance,
         amount: amount,
-        fee: fee,
-        gasLimit: gasLimit,
-        storageLimit: storageLimit,
         parameters: parameters,
       )
         ..operationsList = operationsList
+        ..gasLimit = gasLimit
+        ..storageLimit = storageLimit
+        ..fee = fee
         ..counter = counter;
 
       final expectedResult = {
@@ -42,8 +42,8 @@ void main() {
         'balance': balance.toString(),
         'amount': amount.toString(),
         'counter': counter.toString(),
-        'gas_limit': gasLimit.toString(),
         'fee': fee.toString(),
+        'gas_limit': gasLimit.toString(),
         'storage_limit': storageLimit.toString(),
         'parameters': parameters
       };
@@ -56,9 +56,6 @@ void main() {
         kind: kind,
         destination: destination,
         amount: amount,
-        fee: fee,
-        gasLimit: gasLimit,
-        storageLimit: storageLimit,
         parameters: parameters,
       )
         ..operationsList = operationsList
@@ -71,9 +68,6 @@ void main() {
       final operation = Operation(
         kind: kind,
         destination: destination,
-        fee: fee,
-        gasLimit: gasLimit,
-        storageLimit: storageLimit,
         parameters: parameters,
       )
         ..operationsList = operationsList
@@ -87,9 +81,6 @@ void main() {
         kind: kind,
         destination: destination,
         amount: amount,
-        fee: fee,
-        gasLimit: gasLimit,
-        storageLimit: storageLimit,
       )
         ..operationsList = operationsList
         ..counter = counter;
@@ -104,9 +95,6 @@ void main() {
         kind: kind,
         destination: destination,
         amount: amount,
-        fee: fee,
-        gasLimit: gasLimit,
-        storageLimit: storageLimit,
         parameters: parameters,
       )
         ..operationsList = operationsList

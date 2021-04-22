@@ -4,10 +4,9 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:tezart/src/common/utils/enum_util.dart';
 import 'package:tezart/src/common/validators/simulation_result_validator.dart';
 import 'package:tezart/src/keystore/keystore.dart';
+import 'package:tezart/src/models/operation/impl/operation_visitor.dart';
 import 'package:tezart/src/models/operations_list/operations_list.dart';
 import 'package:tezart/tezart.dart';
-
-import 'constants.dart';
 
 part 'operation.g.dart';
 
@@ -51,11 +50,13 @@ class Operation {
   Map<String, dynamic> script;
 
   @JsonKey(name: 'gas_limit', toJson: _toString)
-  final int gasLimit;
+  int gasLimit;
   @JsonKey(toJson: _toString)
-  final int fee;
+  int fee;
+  @JsonKey(ignore: true)
+  final customFee;
   @JsonKey(name: 'storage_limit', toJson: _toString)
-  final int storageLimit;
+  int storageLimit;
 
   Operation({
     @required this.kind,
@@ -64,12 +65,8 @@ class Operation {
     this.destination,
     this.parameters,
     this.script,
-    int gasLimit,
-    int fee,
-    int storageLimit,
-  })  : gasLimit = gasLimit ?? defaultGasLimit[kind],
-        fee = fee ?? defaultFee[kind],
-        storageLimit = storageLimit ?? defaultStorageLimit[kind];
+    this.customFee,
+  }) : fee = 0;
 
   @JsonKey(toJson: _keystoreToAddress)
   Keystore get source => operationsList.source;
@@ -90,4 +87,8 @@ class Operation {
 
   @JsonKey(ignore: true)
   Map<String, dynamic> get simulationResult => _simulationResult;
+
+  Future<void> setLimits(OperationVisitor visitor) async {
+    await visitor.visit(this);
+  }
 }

@@ -77,24 +77,25 @@ class RpcInterface {
     level = 'head',
   }) async {
     log.info('request for preapplyOperations [ chain:$chain, level:$level]');
-    var content = {
-      'operation': {
+    var content = [
+      {
         'branch': await branch(),
         'contents': operationsList.operations.map((operation) => operation.toJson()).toList(),
-        'signature': randomSignature
-      },
-      'chain_id': await chainId()
-    };
+        'signature': signature,
+        'protocol': await protocol(chain, level),
+      }
+    ];
 
     var response = await httpClient.post(
-      paths.runOperations(
+      paths.preapplyOperations(
         chain: chain,
         level: level,
       ),
       data: content,
     );
 
-    return response.data['contents'];
+    // TODO: understand why array ? difference with run ??
+    return response.data.first['contents'];
   }
 
   Future<List<dynamic>> runOperations(OperationsList operationsList, [chain = 'main', level = 'head']) async {
@@ -154,5 +155,14 @@ class RpcInterface {
     final response = await httpClient.get(paths.block(chain: chain, level: level));
 
     return response.data;
+  }
+
+  Future<Map<String, dynamic>> constants([chain = 'main', level = 'head']) async {
+    return memo2<String, String, Future<Map<String, dynamic>>>((String chain, String level) async {
+      log.info('request to constants');
+      final response = await httpClient.get(paths.constants(chain: chain, level: level));
+
+      return response.data;
+    })(chain, level);
   }
 }

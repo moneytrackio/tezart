@@ -28,9 +28,9 @@ class SimulationResultValidator implements BaseValidator {
   }
 
   String get _reason {
-    // ignore the protocol part of the error
+    // ignore the protocol part of the error ("proto.007-PsDELPH1" part)
     // TODO: use ?[] when null safety migration is done
-    return _operationResult['errors'].map((el) => el['id'].split('.').last).join(', ');
+    return _operationResult['errors'].map((el) => (el['id'] as String).split('.').sublist(2).join('.')).join(', ');
   }
 
   @override

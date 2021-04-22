@@ -42,6 +42,16 @@ void main() {
           final result = await subject(source, destination, amount);
           expect(result.operations.first.simulationResult, isNotNull);
         });
+
+        test('it sets limits correctly', () async {
+          final result = await subject(source, destination, amount);
+          final operation = result.operations.first;
+
+          expect(operation.gasLimit, 1427);
+          expect(operation.storageLimit, 0);
+          // can't test equality because there might be a difference of ~= 5 µtz because of the forged operation size difference
+          expect(operation.fee, lessThan(338));
+        });
       });
 
       group('when the key is not revealed', () {
@@ -66,6 +76,22 @@ void main() {
           await subject(source, destination, amount);
           expect(await tezart.isKeyRevealed(source.address), true);
         });
+
+        test('it sets limits correctly', () async {
+          final result = await subject(source, destination, amount);
+          final revealOperation = result.operations.first;
+          final transactionOperation = result.operations[1];
+
+          expect(revealOperation.gasLimit, 1000);
+          expect(revealOperation.storageLimit, 0);
+          // can't test equality because there might be a difference of ~= 5 µtz because of the forged operation size difference
+          expect(revealOperation.fee, lessThan(285));
+
+          expect(transactionOperation.gasLimit, 1427);
+          expect(transactionOperation.storageLimit, 0);
+          // can't test equality because there might be a difference of ~= 5 µtz because of the forged operation size difference
+          expect(transactionOperation.fee, lessThan(327));
+        });
       });
     });
 
@@ -86,7 +112,10 @@ void main() {
       };
 
       group('when the key is not revealed', () {
-        final keystore = Keystore.random();
+        Keystore keystore;
+        setUp(() {
+          keystore = Keystore.random();
+        });
 
         setUp(() async {
           await transferToDest(keystore);
@@ -97,6 +126,16 @@ void main() {
           final isKeyRevealed = await tezart.isKeyRevealed(keystore.address);
 
           expect(isKeyRevealed, isTrue);
+        });
+
+        test('it sets limits correctly', () async {
+          final result = await subject(keystore);
+          final revealOperation = result.operations.first;
+
+          expect(revealOperation.gasLimit, 1000);
+          expect(revealOperation.storageLimit, 0);
+          // can't test equality because there might be a difference of ~= 5 µtz because of the forged operation size difference
+          expect(revealOperation.fee, lessThan(305));
         });
       });
 
@@ -114,7 +153,6 @@ void main() {
 
     group('OriginationOperation', () {
       final balanceAmount = 1;
-      final storageLimit = 2570;
       final subject = ({
         @required List<Map<String, dynamic>> code,
         @required Map<String, dynamic> storage,
@@ -124,21 +162,18 @@ void main() {
           balance: balanceAmount,
           code: code,
           storage: storage,
-          storageLimit: storageLimit,
         );
-        await operationsList.execute();
+        await operationsList.executeAndMonitor();
 
         return operationsList;
       };
 
       group('when all inputs are valid', () {
         test('doesnt throw any error', () async {
-          expect(
-            () async => subject(
-              code: testContractScript['code'],
-              storage: testContractScript['storage'],
-            ),
-            returnsNormally,
+          // expect(()=> subject(), returnsNormally) fails silently
+          await subject(
+            code: testContractScript['code'],
+            storage: testContractScript['storage'],
           );
         });
 
@@ -150,6 +185,19 @@ void main() {
 
           expect((operationsList.operations.first as OriginationOperation).contractAddress.startsWith('KT'), true);
         });
+
+        test('it sets limits correctly', () async {
+          final result = await subject(
+            code: testContractScript['code'],
+            storage: testContractScript['storage'],
+          );
+          final originationOperation = result.operations.first;
+
+          expect(originationOperation.gasLimit, 1590);
+          expect(originationOperation.storageLimit, 295);
+          // can't test equality because there might be a difference of ~= 5 µtz because of the forged operation size difference
+          expect(originationOperation.fee, lessThan(74125));
+        });
       });
 
       group('when code and storage are invalid', () {
@@ -160,7 +208,7 @@ void main() {
                 predicate((e) =>
                     e is TezartNodeError &&
                     e.message ==
-                        'The simulation of the operation: "origination" failed with error(s) : ill_typed_contract, invalid_expression_kind'),
+                        'The simulation of the operation: "origination" failed with error(s) : michelson_v1.ill_typed_contract, michelson_v1.invalid_expression_kind'),
               ));
         });
       });
