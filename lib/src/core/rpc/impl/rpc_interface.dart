@@ -64,9 +64,11 @@ class RpcInterface {
       'branch': await branch(),
       'contents': operationsList.operations.map((operation) => operation.toJson()).toList(),
     };
-    var response = await httpClient.post(paths.forgeOperations(chain: chain, level: level), data: content);
 
-    return response.data;
+    return memo1<Map<String, Object>, Future<String>>((Map<String, Object> content) async {
+      final response = await httpClient.post(paths.forgeOperations(chain: chain, level: level), data: content);
+      return response.data;
+    })(content);
   }
 
   Future<List<dynamic>> preapplyOperations({

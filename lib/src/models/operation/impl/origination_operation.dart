@@ -21,17 +21,11 @@ class OriginationOperation extends Operation {
   Future<String> get contractAddress async {
     // TODO: fix and use simulation result instead
     return memo0<Future<String>>(() async {
-      final blockHash = operationsList?.result.blockHash;
-      if (blockHash == null) throw ArgumentError.notNull('blockHash');
+      if (operationsList == null) throw ArgumentError.notNull('operation.operationsList');
 
-      final block = await operationsList!.rpcInterface.block(chain: 'main', level: blockHash);
-      final appliedOperations = block['operations'][3];
-      final operationsGroup = appliedOperations.firstWhere((element) => element['hash'] == operationsList!.result.id!);
-      // TODO: what to do when there is multiple origination in the same group?
-      final Map<String, dynamic> originationOperationContent =
-          operationsGroup['contents'].firstWhere((element) => element['kind'] == 'origination');
-
-      return originationOperationContent['metadata']['operation_result']['originated_contracts'].first;
+      // TODO: why does the node return a list of originated contracts ?
+      return operationsList!
+          .operations.first.simulationResult?['metadata']['operation_result']['originated_contracts'].first;
     })();
   }
 }
