@@ -42,8 +42,11 @@ class Operation {
   @JsonKey(toJson: _toString)
   int? counter;
 
-  @JsonKey()
-  Map<String, dynamic>? parameters;
+  @JsonKey(ignore: true)
+  Map<String, dynamic>? params;
+
+  @JsonKey(ignore: true)
+  String? entrypoint;
 
   @JsonKey()
   Map<String, dynamic>? script;
@@ -62,9 +65,10 @@ class Operation {
     this.amount,
     this.balance,
     this.destination,
-    this.parameters,
+    this.params,
     this.script,
     this.customFee,
+    this.entrypoint,
   }) : fee = 0;
 
   @JsonKey(toJson: _keystoreToAddress)
@@ -72,6 +76,15 @@ class Operation {
     if (operationsList == null) throw ArgumentError.notNull('operationsList');
 
     return operationsList!.source;
+  }
+
+  @JsonKey()
+  Map<String, dynamic>? get parameters {
+    var result = <String, dynamic>{};
+    if (entrypoint != null) result['entrypoint'] = entrypoint;
+    if (params != null) result['value'] = params;
+
+    return result.keys.isEmpty ? null : result;
   }
 
   @JsonKey(name: 'public_key')

@@ -20,12 +20,12 @@ Map<String, dynamic> _$OperationToJson(Operation instance) {
   writeNotNull('amount', Operation._toString(instance.amount));
   writeNotNull('balance', Operation._toString(instance.balance));
   writeNotNull('counter', Operation._toString(instance.counter));
-  writeNotNull('parameters', instance.parameters);
   writeNotNull('script', instance.script);
   writeNotNull('gas_limit', Operation._toString(instance.gasLimit));
   writeNotNull('fee', Operation._toString(instance.fee));
   writeNotNull('storage_limit', Operation._toString(instance.storageLimit));
   writeNotNull('source', Operation._keystoreToAddress(instance.source));
+  writeNotNull('parameters', instance.parameters);
   writeNotNull('public_key', instance.publicKey);
   return val;
 }

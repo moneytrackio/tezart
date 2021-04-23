@@ -26,7 +26,7 @@ void main() {
         destination: destination,
         balance: balance,
         amount: amount,
-        parameters: parameters,
+        params: parameters,
       )
         ..operationsList = operationsList
         ..gasLimit = gasLimit
@@ -45,7 +45,7 @@ void main() {
         'fee': fee.toString(),
         'gas_limit': gasLimit.toString(),
         'storage_limit': storageLimit.toString(),
-        'parameters': parameters
+        'parameters': {'value': parameters},
       };
 
       expect(operation.toJson(), equals(expectedResult));
@@ -56,7 +56,7 @@ void main() {
         kind: kind,
         destination: destination,
         amount: amount,
-        parameters: parameters,
+        params: parameters,
       )
         ..operationsList = operationsList
         ..counter = counter;
@@ -68,7 +68,7 @@ void main() {
       final operation = Operation(
         kind: kind,
         destination: destination,
-        parameters: parameters,
+        params: parameters,
       )
         ..operationsList = operationsList
         ..counter = counter;
@@ -95,7 +95,7 @@ void main() {
         kind: kind,
         destination: destination,
         amount: amount,
-        parameters: parameters,
+        params: parameters,
       )
         ..operationsList = operationsList
         ..counter = counter;
