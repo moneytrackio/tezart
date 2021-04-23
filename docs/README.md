@@ -145,7 +145,7 @@ You can install **Dart SDK**, by following the [official dart documentation](htt
 docker run --rm \
     --name my-sandbox \
     --detach -p 20000:20000 \
-    tqtezos/flextesa:20201214 delphibox start
+    tqtezos/flextesa:20210316 edobox start
 ```
 
 ### Use this package in a small dart app
