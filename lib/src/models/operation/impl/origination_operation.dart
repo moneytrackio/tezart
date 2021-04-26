@@ -19,7 +19,6 @@ class OriginationOperation extends Operation {
         );
 
   Future<String> get contractAddress async {
-    // TODO: fix and use simulation result instead
     return memo0<Future<String>>(() async {
       if (operationsList == null) throw ArgumentError.notNull('operation.operationsList');
 
