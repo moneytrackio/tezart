@@ -8,7 +8,7 @@ import '../env/env.dart';
 void main() {
   final tezart = TezartClient(Env.tezosNodeUrl);
   final originatorKeystore = Keystore.fromSecretKey(Env.originatorSk);
-  Operation operation;
+  late Operation operation;
 
   group('when the operation customFee is set', () {
     const customFee = 1234;

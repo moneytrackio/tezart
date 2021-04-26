@@ -59,7 +59,7 @@ Uint8List prefixBytes(Prefixes prefix) {
     throw CryptoError(type: CryptoErrorTypes.prefixNotFound);
   }
 
-  return _prefixesToBytes[prefix];
+  return _prefixesToBytes[prefix]!;
 }
 
 @visibleForTesting
@@ -74,7 +74,7 @@ Uint8List ignorePrefix(Uint8List bytes) {
   throw CryptoError(type: CryptoErrorTypes.prefixNotFound);
 }
 
-String encodeWithPrefix({@required Prefixes prefix, @required Uint8List bytes}) {
+String encodeWithPrefix({required Prefixes prefix, required Uint8List bytes}) {
   final prefixed = Uint8List.fromList(prefixBytes(prefix) + bytes);
 
   return _encodeBase58(prefixed);

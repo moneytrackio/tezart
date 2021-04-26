@@ -211,7 +211,8 @@ void main() {
   });
 
   group('getters', () {
-    Keystore keystore;
+    late Keystore keystore;
+
     setUp(() {
       const secretKey =
           'edskRpwW3bAgx7GsbyTrbb5NUP7b1tz34AvfV2Vm4En5LgEzeUmg3Ys815UDYNNFG6JvrrGqA9CNU2h8hsLVVLfuEQPkZNtkap';

@@ -1,6 +1,5 @@
 import 'package:logging/logging.dart';
 import 'package:memoize/memoize.dart';
-import 'package:meta/meta.dart';
 import 'package:tezart/src/core/rpc/rpc_interface.dart';
 import 'package:tezart/src/keystore/keystore.dart';
 import 'package:tezart/src/models/operation/operation.dart';
@@ -37,10 +36,10 @@ class TezartClient {
   ///
   /// Retries 3 times if a counter error occurs ([TezartNodeErrorTypes.counterError]).
   Future<OperationsList> transferOperation({
-    @required Keystore source,
-    @required String destination,
-    @required int amount,
-    int customFee,
+    required Keystore source,
+    required String destination,
+    required int amount,
+    int? customFee,
     bool reveal = true,
   }) async {
     return _catchHttpError<OperationsList>(() async {
@@ -81,7 +80,7 @@ class TezartClient {
   }
 
   /// Returns the balance in µtz of `address`.
-  Future<int> getBalance({@required String address}) {
+  Future<int> getBalance({required String address}) {
     log.info('request to getBalance');
     return _catchHttpError<int>(() => rpcInterface.balance(address));
   }
@@ -101,11 +100,11 @@ class TezartClient {
   }
 
   Future<OperationsList> originateContractOperation({
-    @required Keystore source,
-    @required List<Map<String, dynamic>> code,
-    @required Map<String, dynamic> storage,
-    @required int balance,
-    int customFee,
+    required Keystore source,
+    required List<Map<String, dynamic>> code,
+    required Map<String, dynamic> storage,
+    required int balance,
+    int? customFee,
     bool reveal = true,
   }) async {
     return _catchHttpError<OperationsList>(() async {

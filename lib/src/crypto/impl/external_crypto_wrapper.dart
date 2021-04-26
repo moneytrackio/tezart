@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:bip39/bip39.dart' as bip39;
 import 'package:meta/meta.dart';
 import 'package:pinenacl/api.dart';
+import 'package:pinenacl/ed25519.dart';
 import 'package:tezart/tezart.dart';
 
 import 'crypto_error.dart';
@@ -23,9 +24,9 @@ Uint8List secretKeyBytesFromSeedBytes(Uint8List seed) => signingKeyFromSeedBytes
 Uint8List publicKeyBytesFromSeedBytes(Uint8List seed) => signingKeyFromSeedBytes(seed).verifyKey;
 
 @visibleForTesting
-SigningKey signingKeyFromSeedBytes(Uint8List seed) => SigningKey.fromSeed(seed);
+SigningKey signingKeyFromSeedBytes(Uint8List seed) => SigningKey(seed: seed);
 
-Uint8List signDetached({@required Uint8List bytes, @required Uint8List secretKey}) {
+Uint8List signDetached({required Uint8List bytes, required Uint8List secretKey}) {
   final seed = secretKey.sublist(0, 32); // the seed is the first 32 bytes of the secret key
 
   return SigningKey(seed: seed).sign(bytes).sublist(0, 64);

@@ -12,6 +12,7 @@ import 'package:tezart/src/core/rpc/impl/tezart_http_client.dart';
 import 'package:tezart/src/core/rpc/rpc_interface.dart';
 import 'package:tezart/tezart.dart';
 
+import '../../../env/env.dart';
 import 'operations_monitor_test.mocks.dart';
 
 @GenerateMocks([RpcInterface, TezartHttpClient])
@@ -46,6 +47,7 @@ void main() {
           ),
           200,
         ),
+        requestOptions: RequestOptions(path: Env.tezosNodeUrl),
       );
     });
   });

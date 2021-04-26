@@ -6,29 +6,28 @@ repository: https://github.com/moneytrackio/tezart
 issue_tracker: https://github.com/moneytrackio/tezart/issues
 
 environment:
-  sdk: ">=2.11.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
-  bs58check: ^1.0.1 # implementation of base58check
-  bip39: ^1.0.4 # Mnemonic code for generating deterministic keys
-  pointycastle: ^2.0.1 # a library that implements popular crypto algorithms
-  convert: ^2.1.1 # Encoders and decoders for converting between different data representations
-  dio: ^3.0.10 # http client
+  bs58check: ^1.0.2 # implementation of base58check
+  bip39: ^1.0.6 # Mnemonic code for generating deterministic keys
+  pointycastle: ^3.0.1 # a library that implements popular crypto algorithms
+  convert: ^3.0.0 # Encoders and decoders for converting between different data representations
+  dio: ^4.0.0 # http client
   equatable: ^2.0.0
-  pinenacl: ^0.1.5 # Dart implementation of TweetNacl
-  json_serializable: ^3.5.1 # code generation for toJson and fromJson methods
-  json_annotation: ^3.1.1 # Classes and helper functions that support JSON code generation via the `json_serializable` package.
-  retry: ^3.0.1 # retry a function if an error happens
-  memoize: ^2.0.0 # memoize method calls
-  logging: ^0.11.4 # official dart team : Provides APIs for debugging and error logging.
-  ansicolor: ^1.0.2 # Use AnsiPen to add ANSI color codes to your log messages.
-  meta: ^1.3.0 # annotations that can be used by the tools that are shipped with the Dart SDK
+  pinenacl: ^0.2.0 # Dart implementation of TweetNacl
+  json_serializable: ^4.1.0 # code generation for toJson and fromJson methods
+  json_annotation: ^4.0.1 # Classes and helper functions that support JSON code generation via the `json_serializable` package.
+  retry: ^3.1.0 # retry a function if an error happens
+  memoize: ^3.0.0 # memoize method calls
+  logging: ^1.0.1 # official dart team : Provides APIs for debugging and error logging.
+  ansicolor: ^2.0.1 # Use AnsiPen to add ANSI color codes to your log messages.
   collection: ^1.15.0 # Collections and utilities functions and classes related to collections
 
 dev_dependencies:
-  pedantic: ^1.9.0 # linter
-  build_runner: ^1.10.0
-  mockito: ^4.1.4 # mocks
-  test: ^1.9.0
+  pedantic: ^1.11.0 # linter
+  build_runner: ^2.0.0
+  mockito: ^5.0.3 # mocks
+  test: ^1.16.8
   envify: ^2.0.0 # .env files management
-  envify_generator: ^1.0.6 # code generation for envify
+  envify_generator: ^2.0.0 # code generation for envify

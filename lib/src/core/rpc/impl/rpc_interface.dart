@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:logging/logging.dart';
 import 'package:memoize/memoize.dart';
-import 'package:meta/meta.dart';
 import 'package:tezart/src/core/rpc/impl/operations_monitor.dart';
 import 'package:tezart/src/models/operations_list/operations_list.dart';
 
@@ -71,13 +70,13 @@ class RpcInterface {
   }
 
   Future<List<dynamic>> preapplyOperations({
-    OperationsList operationsList,
-    String signature,
+    required OperationsList operationsList,
+    required String signature,
     chain = 'main',
     level = 'head',
   }) async {
     log.info('request for preapplyOperations [ chain:$chain, level:$level]');
-    var content = [
+    final content = [
       {
         'branch': await branch(),
         'contents': operationsList.operations.map((operation) => operation.toJson()).toList(),
@@ -114,7 +113,7 @@ class RpcInterface {
     return response.data['contents'];
   }
 
-  Future<String> managerKey(String address, [chain = 'main', level = 'head']) async {
+  Future<String?> managerKey(String address, [chain = 'main', level = 'head']) async {
     log.info('request for managerKey [ chain:$chain, level:$level]');
     var response = await httpClient.get(paths.managerKey(address: address, chain: chain, level: level));
 
@@ -129,7 +128,7 @@ class RpcInterface {
   }
 
   Future<List<String>> transactionsOperationHashes({
-    @required String level,
+    required String level,
     chain = 'main',
   }) async {
     final response = await httpClient.get(paths.operationHashes(
@@ -142,7 +141,7 @@ class RpcInterface {
 
   // TODO: wait for multiple blocks
   Future<String> monitorOperation({
-    @required String operationId,
+    required String operationId,
     chain = 'main',
     level = 'head',
   }) async {
@@ -151,7 +150,7 @@ class RpcInterface {
 
   OperationsMonitor get operationsMonitor => memo0(() => OperationsMonitor(this))();
 
-  Future<Map<String, dynamic>> block({@required String chain, @required String level}) async {
+  Future<Map<String, dynamic>> block({required String chain, required String level}) async {
     final response = await httpClient.get(paths.block(chain: chain, level: level));
 
     return response.data;

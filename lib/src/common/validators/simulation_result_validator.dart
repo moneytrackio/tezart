@@ -13,24 +13,27 @@ class SimulationResultValidator implements BaseValidator {
   }
 
   String get _status {
-    // TODO: use ?[] when null safety migration is done
     return _operationResult['status'];
   }
 
   String get _kind {
-    // TODO: use ?[] when null safety migration is done
     return simulationResult['kind'];
   }
 
   Map<String, dynamic> get _operationResult {
-    // TODO: use ?[] when null safety migration is done
-    return simulationResult['metadata']['operation_result'];
+    final operationResult = simulationResult['metadata']?['operation_result'];
+    if (operationResult == null) throw ArgumentError.notNull("simulationResult['metadata']?['operation_result']");
+
+    return operationResult;
   }
 
   String get _reason {
+    final errors = _operationResult['errors'];
+
+    if (errors == null) throw ArgumentError.notNull("_operationResult['errors']");
+
     // ignore the protocol part of the error ("proto.007-PsDELPH1" part)
-    // TODO: use ?[] when null safety migration is done
-    return _operationResult['errors'].map((el) => (el['id'] as String).split('.').sublist(2).join('.')).join(', ');
+    return _operationResult['errors'].map((el) => (el['id'] as String?)?.split('.').sublist(2).join('.')).join(', ');
   }
 
   @override

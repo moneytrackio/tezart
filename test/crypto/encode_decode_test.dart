@@ -14,11 +14,6 @@ void main() {
       expect(
           crypto.encodeWithPrefix(prefix: crypto.Prefixes.tz1, bytes: expected_results.decodedAddress), encodedAddress);
     });
-
-    test('encodes throw error', () {
-      expect(() => crypto.encodeWithPrefix(prefix: null, bytes: expected_results.decodedAddress),
-          throwsA(predicate((e) => e is crypto.CryptoError && e.type == crypto.CryptoErrorTypes.prefixNotFound)));
-    });
   });
 
   // Decode

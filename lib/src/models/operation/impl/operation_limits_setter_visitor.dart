@@ -11,7 +11,7 @@ class OperationLimitsSetterVisitor implements OperationVisitor {
     operation.storageLimit = _simulationStorageSize(operation);
 
     if (operation.kind == Kinds.origination || _isDestinationContractAllocated(operation)) {
-      operation.storageLimit += await _originationDefaultSize(operation);
+      operation.storageLimit = operation.storageLimit! + await _originationDefaultSize(operation);
     } else {
       operation.storageLimit = _simulationStorageSize(operation);
     }
@@ -19,20 +19,30 @@ class OperationLimitsSetterVisitor implements OperationVisitor {
 
   // returns true if the operation is a transfer to an address unknown by the chain
   bool _isDestinationContractAllocated(Operation operation) {
-    return operation.simulationResult['metadata']['operation_result']['allocated_destination_contract'] == true;
+    return _simulationResult(operation)['metadata']['operation_result']['allocated_destination_contract'] == true;
   }
 
   int _simulationStorageSize(Operation operation) {
-    return int.parse(operation.simulationResult['metadata']['operation_result']['paid_storage_size_diff'] ?? '0');
+    return int.parse(_simulationResult(operation)['metadata']['operation_result']['paid_storage_size_diff'] ?? '0');
   }
 
   int _simulationConsumedGas(Operation operation) {
-    return int.parse(operation.simulationResult['metadata']['operation_result']['consumed_gas'] as String);
+    return int.parse(_simulationResult(operation)['metadata']['operation_result']['consumed_gas'] as String);
   }
 
   Future<int> _originationDefaultSize(Operation operation) async {
     return (await _rpcInterface(operation).constants())['origination_size'];
   }
 
-  RpcInterface _rpcInterface(Operation operation) => operation.operationsList.rpcInterface;
+  Map<String, dynamic> _simulationResult(Operation operation) {
+    if (operation.simulationResult == null) throw ArgumentError.notNull('operation.simulationResult');
+
+    return operation.simulationResult!;
+  }
+
+  RpcInterface _rpcInterface(Operation operation) {
+    if (operation.operationsList == null) throw ArgumentError.notNull('operation.operationsList');
+
+    return operation.operationsList!.rpcInterface;
+  }
 }
