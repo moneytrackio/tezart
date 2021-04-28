@@ -2,7 +2,8 @@ import 'micheline_encoder.dart';
 
 class PairEncoder implements MichelineEncoder {
   @override
-  final Map<String, dynamic> params;
+  // Might be a Map<String, dynamic> or List<dynamic>
+  final dynamic params;
   @override
   final Map<String, dynamic> schema;
 
@@ -26,13 +27,19 @@ class PairEncoder implements MichelineEncoder {
   }
 
   dynamic get _firstParams {
-    return params;
+    if (params is Map) return params;
+    if (params is List) return params.first;
+
+    throw TypeError();
   }
 
-  dynamic get _secondParams {
-    return params;
-    // if (params.length > 2) return params.skip(1).toList();
+  dynamic? get _secondParams {
+    if (params is Map) return params;
+    if (params is List) {
+      if (params.length > 2) return params.skip(1).toList();
 
-    // return params[1];
+      return params.length == 2 ? params[1] : null;
+    }
+    throw TypeError();
   }
 }

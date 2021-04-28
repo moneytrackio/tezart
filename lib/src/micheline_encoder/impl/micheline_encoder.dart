@@ -23,6 +23,7 @@ class MichelineEncoder {
         encoder = TimestampEncoder(_params);
         break;
       case 'string':
+      // TODO: implement validators of these types
       case 'address':
       case 'contract':
       case 'key':
@@ -51,7 +52,7 @@ class MichelineEncoder {
   }
 
   dynamic get _params {
-    return _isAnonymous ? params : params[_annot];
+    return _isAnonymous ? params : (params as Map<String, dynamic>)[_annot];
   }
 
   String? get _annot {

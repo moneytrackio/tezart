@@ -160,5 +160,44 @@ void main() {
         });
       });
     });
+
+    group('when the params is a List', () {
+      final params = ['1234', 'KT1UDJmqKvMYRcGzP2TSFhQqejS2CKaDsNEx', '4567'];
+      final schema = {
+        'prim': 'pair',
+        'args': [
+          {
+            'prim': 'string',
+          },
+          {
+            'prim': 'pair',
+            'args': [
+              {
+                'prim': 'string',
+              },
+              {
+                'prim': 'string',
+              }
+            ]
+          }
+        ]
+      };
+
+      test('it returns a valid value', () {
+        expect(subject(schema, params), {
+          'args': [
+            {'string': '1234'},
+            {
+              'args': [
+                {'string': 'KT1UDJmqKvMYRcGzP2TSFhQqejS2CKaDsNEx'},
+                {'string': '4567'}
+              ],
+              'prim': 'Pair'
+            }
+          ],
+          'prim': 'Pair',
+        });
+      });
+    });
   });
 }
