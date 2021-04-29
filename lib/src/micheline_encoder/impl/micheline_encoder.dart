@@ -6,6 +6,7 @@ import 'option_encoder.dart';
 import 'pair_encoder.dart';
 import 'string_encoder.dart';
 import 'timestamp_encoder.dart';
+import 'unit_encoder.dart';
 
 class MichelineEncoder {
   final Map<String, dynamic> schema;
@@ -49,6 +50,9 @@ class MichelineEncoder {
       case 'map':
       case 'big_map':
         encoder = MapEncoder(params: _params, schema: schema);
+        break;
+      case 'unit':
+        encoder = UnitEncoder();
         break;
       default:
         throw UnimplementedError('Unknown type : $prim');
