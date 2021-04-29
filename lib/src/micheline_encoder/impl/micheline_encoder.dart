@@ -1,6 +1,7 @@
 import 'bytes_encoder.dart';
 import 'int_encoder.dart';
 import 'list_encoder.dart';
+import 'map_encoder.dart';
 import 'option_encoder.dart';
 import 'pair_encoder.dart';
 import 'string_encoder.dart';
@@ -44,6 +45,10 @@ class MichelineEncoder {
         break;
       case 'list':
         encoder = ListEncoder(params: _params, schema: schema);
+        break;
+      case 'map':
+      case 'big_map':
+        encoder = MapEncoder(params: _params, schema: schema);
         break;
       default:
         throw UnimplementedError('Unknown type : $prim');

@@ -10,6 +10,6 @@ class TimestampEncoder implements MichelineEncoder {
 
   @override
   Map<String, dynamic> encode() {
-    return {'int': params.millisecondsSinceEpoch.toString()};
+    return {'int': (params.millisecondsSinceEpoch ~/ 1000).toString()};
   }
 }

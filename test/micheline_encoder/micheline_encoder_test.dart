@@ -42,7 +42,7 @@ void main() {
         'payload': 'payload',
         'reference': 'reference',
         'id': 'id',
-        'expires_at': DateTime.now(),
+        'expires_at': DateTime(2020, 1, 1),
       };
 
       test('it returns a valid value', () {
@@ -55,7 +55,7 @@ void main() {
                 {
                   'prim': 'Pair',
                   'args': [
-                    {'int': (params['expires_at'] as DateTime).millisecondsSinceEpoch.toString()},
+                    {'int': '1577833200'},
                     {'string': 'id'}
                   ]
                 },
@@ -138,6 +138,101 @@ void main() {
       });
     });
 
+    group('with map type', () {
+      final schema = {
+        'prim': 'pair',
+        'args': [
+          {
+            'prim': 'key',
+            'annots': ['%pub_key']
+          },
+          {
+            'prim': 'map',
+            'args': [
+              {'prim': 'string'},
+              {
+                'prim': 'pair',
+                'args': [
+                  {
+                    'prim': 'pair',
+                    'args': [
+                      {
+                        'prim': 'pair',
+                        'args': [
+                          {
+                            'prim': 'timestamp',
+                            'annots': ['%date']
+                          },
+                          {
+                            'prim': 'nat',
+                            'annots': ['%price']
+                          }
+                        ]
+                      },
+                      {
+                        'prim': 'string',
+                        'annots': ['%reference']
+                      }
+                    ]
+                  },
+                  {
+                    'prim': 'nat',
+                    'annots': ['%amount']
+                  }
+                ]
+              }
+            ],
+            'annots': ['%spendings']
+          }
+        ]
+      };
+
+      final params = {
+        'pub_key': 'edpkvWLnfNsAKhWEDafxHaTmE8qtK19fSDJYAnLfg7J5Qf5jbkKgTW',
+        'spendings': {
+          'Spending--001': {'date': DateTime(2020, 1, 1), 'price': 6000, 'reference': 'EG4WA', 'amount': 1000}
+        },
+      };
+
+      test('it returns a valid value', () {
+        final expectedResult = {
+          'prim': 'Pair',
+          'args': [
+            {'string': 'edpkvWLnfNsAKhWEDafxHaTmE8qtK19fSDJYAnLfg7J5Qf5jbkKgTW'},
+            [
+              {
+                'prim': 'Elt',
+                'args': [
+                  {'string': 'Spending--001'},
+                  {
+                    'prim': 'Pair',
+                    'args': [
+                      {
+                        'prim': 'Pair',
+                        'args': [
+                          {
+                            'prim': 'Pair',
+                            'args': [
+                              {'int': '1577833200'},
+                              {'int': '6000'}
+                            ]
+                          },
+                          {'string': 'EG4WA'}
+                        ]
+                      },
+                      {'int': '1000'}
+                    ]
+                  }
+                ]
+              }
+            ]
+          ]
+        };
+
+        expect(subject(schema, params), expectedResult);
+      });
+    });
+
     group('with option type', () {
       final schema = {
         'prim': 'pair',
@@ -178,7 +273,7 @@ void main() {
 
       group('with some values', () {
         final params = {
-          'valid_until': DateTime.now(),
+          'valid_until': DateTime(2020, 1, 1),
           'signature':
               'edsigtp4wchrxPLWscwNQKyUssJixap4njeS3keCTwphwhx4MkQaFn8GfXkCJtk8vi5uV2ahrdS5YWc3qeC74awqWTGJfngKGrs',
         };
@@ -199,7 +294,7 @@ void main() {
               {
                 'prim': 'Some',
                 'args': [
-                  {'int': (params['valid_until'] as DateTime).millisecondsSinceEpoch.toString()},
+                  {'int': '1577833200'},
                 ]
               }
             ]
