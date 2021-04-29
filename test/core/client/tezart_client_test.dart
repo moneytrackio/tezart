@@ -126,7 +126,7 @@ void main() {
           source: source,
           balance: balanceAmount,
           code: testContractScript['code'],
-          storage: testContractScript['storage'],
+          storage: 12,
         );
 
     group('when the source key is already revealed', () {

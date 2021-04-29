@@ -102,7 +102,7 @@ class TezartClient {
   Future<OperationsList> originateContractOperation({
     required Keystore source,
     required List<Map<String, dynamic>> code,
-    required Map<String, dynamic> storage,
+    required dynamic storage,
     required int balance,
     int? customFee,
     bool reveal = true,

@@ -17,7 +17,7 @@ void main() {
     final operationsList = await tezart.originateContractOperation(
       source: source,
       code: storeValueContract['code'],
-      storage: storeValueContract['storage'],
+      storage: 12,
       balance: balance,
     );
     await operationsList.executeAndMonitor();
