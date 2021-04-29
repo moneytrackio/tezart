@@ -1,5 +1,6 @@
 import 'bytes_encoder.dart';
 import 'int_encoder.dart';
+import 'list_encoder.dart';
 import 'option_encoder.dart';
 import 'pair_encoder.dart';
 import 'string_encoder.dart';
@@ -11,7 +12,8 @@ class MichelineEncoder {
 
   MichelineEncoder({required this.schema, required this.params});
 
-  Map<String, dynamic> encode() {
+  // might be Map<String,dynamic> in the general case but also List in the case of prim == 'list'
+  dynamic encode() {
     final prim = schema['prim'];
     MichelineEncoder encoder;
 
@@ -39,6 +41,9 @@ class MichelineEncoder {
         break;
       case 'option':
         encoder = OptionEncoder(params: _params, schema: schema);
+        break;
+      case 'list':
+        encoder = ListEncoder(params: _params, schema: schema);
         break;
       default:
         throw UnimplementedError('Unknown type : $prim');
