@@ -1,3 +1,5 @@
+import 'package:memoize/memoize.dart';
+
 import 'operation.dart';
 
 class OriginationOperation extends Operation {
@@ -16,11 +18,13 @@ class OriginationOperation extends Operation {
           customFee: customFee,
         );
 
-  String get contractAddress {
-    if (operationsList == null) throw ArgumentError.notNull('operation.operationsList');
+  Future<String> get contractAddress async {
+    return memo0<Future<String>>(() async {
+      if (operationsList == null) throw ArgumentError.notNull('operation.operationsList');
 
-    // TODO: why does the node return a list of originated contracts ?
-    return operationsList!
-        .operations.first.simulationResult?['metadata']['operation_result']['originated_contracts'].first;
+      // TODO: why does the node return a list of originated contracts ?
+      return operationsList!
+          .operations.first.simulationResult?['metadata']['operation_result']['originated_contracts'].first;
+    })();
   }
 }

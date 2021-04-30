@@ -46,11 +46,13 @@ class TezartNodeError extends CommonException {
   final String? _inputMessage;
   final Map<String, String> metadata;
 
-  final staticErrorsMessages = {
-    TezartNodeErrorTypes.alreadyRevealedKey: "You're trying to reveal an already revealed key.",
-    TezartNodeErrorTypes.counterError: 'A counter error occured',
-    TezartNodeErrorTypes.unhandled: 'Unhandled error',
-  };
+  Map<TezartNodeErrorTypes, String> get staticErrorsMessages {
+    return {
+      TezartNodeErrorTypes.alreadyRevealedKey: "You're trying to reveal an already revealed key.",
+      TezartNodeErrorTypes.counterError: 'A counter error occured',
+      TezartNodeErrorTypes.unhandled: 'Unhandled error: ${_errorMsg}',
+    };
+  }
 
   final dynamicErrorMessages = {
     TezartNodeErrorTypes.monitoringTimedOut: (String operationId) => 'Monitoring the operation $operationId timed out',
@@ -85,11 +87,11 @@ class TezartNodeError extends CommonException {
   String get message => _inputMessage ?? _computedMessage;
 
   TezartNodeErrorTypes get _computedType {
-    if (RegExp(r'Counter.*already used.*').hasMatch(_errorMsg)) {
+    if (RegExp(r'Counter.*already used.*').hasMatch(_errorMsg ?? '')) {
       return TezartNodeErrorTypes.counterError;
     }
 
-    if (RegExp(r'previously_revealed_key').hasMatch(_errorId)) {
+    if (RegExp(r'previously_revealed_key').hasMatch(_errorId ?? '')) {
       return TezartNodeErrorTypes.alreadyRevealedKey;
     }
 
@@ -97,8 +99,25 @@ class TezartNodeError extends CommonException {
   }
 
   // TODO: what to do when there is multiple errors ?
-  String get _errorId => cause?.responseBody?.first['id'] ?? '';
-  String get _errorMsg => cause?.responseBody?.first['msg'] ?? '';
+  String? get _errorId {
+    final response = cause?.responseBody;
+
+    try {
+      return response.first['id'];
+    } on NoSuchMethodError {
+      return null;
+    }
+  }
+
+  String? get _errorMsg {
+    final response = cause?.responseBody;
+
+    try {
+      return response.first['msg'];
+    } on NoSuchMethodError {
+      return response;
+    }
+  }
 
   /// String representation of type.
   @override

@@ -87,6 +87,7 @@ class OperationsList {
   Future<void> execute() async {
     await _retryOnCounterError<void>(() async {
       await estimate();
+      await simulate();
       await broadcast();
     });
   }

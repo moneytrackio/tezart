@@ -64,9 +64,11 @@ class RpcInterface {
       'branch': await branch(),
       'contents': operationsList.operations.map((operation) => operation.toJson()).toList(),
     };
-    var response = await httpClient.post(paths.forgeOperations(chain: chain, level: level), data: content);
 
-    return response.data;
+    return memo1<Map<String, Object>, Future<String>>((Map<String, Object> content) async {
+      final response = await httpClient.post(paths.forgeOperations(chain: chain, level: level), data: content);
+      return response.data;
+    })(content);
   }
 
   Future<List<dynamic>> preapplyOperations({
@@ -125,6 +127,26 @@ class RpcInterface {
     var response = await httpClient.get(paths.balance(chain: chain, level: level, address: address));
 
     return int.parse(response.data['balance']);
+  }
+
+  Future<Map<String, dynamic>> getContract(String address, [chain = 'main', level = 'head']) async {
+    log.info('request for contract : $address');
+
+    var response = await httpClient.get(paths.contract(chain: chain, level: level, contractAddress: address));
+
+    return response.data;
+  }
+
+  Future<Map<String, dynamic>> getContractEntrypoints(String address, [chain = 'main', level = 'head']) async {
+    log.info('request for contract entrypoints : $address');
+
+    var response = await httpClient.get(paths.contractEntrypoints(
+      chain: chain,
+      level: level,
+      contractAddress: address,
+    ));
+
+    return response.data['entrypoints'];
   }
 
   Future<List<String>> transactionsOperationHashes({

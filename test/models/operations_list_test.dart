@@ -1,4 +1,5 @@
 @Timeout(Duration(seconds: 60))
+
 import 'package:test/test.dart';
 import 'package:tezart/tezart.dart';
 
@@ -17,10 +18,14 @@ void main() {
         return operationsList;
       };
 
-      final destination = Keystore.random().address;
-      final amount = 1;
+      final amount = 10;
+      late String destination;
 
-      group('when the key is revealed', () {
+      setUp(() {
+        destination = Keystore.random().address;
+      });
+
+      group('when the source key is revealed', () {
         final source = originatorKeystore;
 
         test('it transfers the amount from source to destination', () async {
@@ -47,19 +52,19 @@ void main() {
           final operation = result.operations.first;
 
           expect(operation.gasLimit, 1427);
-          expect(operation.storageLimit, 0);
+          expect(operation.storageLimit, 257);
           // can't test equality because there might be a difference of ~= 5 µtz because of the forged operation size difference
-          expect(operation.fee, lessThan(338));
+          expect(operation.fee, lessThan(64597));
         });
       });
 
-      group('when the key is not revealed', () {
+      group('when the source key is not revealed', () {
         late Keystore source;
 
         setUp(() async {
           source = Keystore.random();
           final operationsList =
-              await tezart.transferOperation(source: originatorKeystore, destination: source.address, amount: 100000);
+              await tezart.transferOperation(source: originatorKeystore, destination: source.address, amount: 1000000);
           await operationsList.executeAndMonitor();
         });
 
@@ -84,12 +89,12 @@ void main() {
           expect(revealOperation.gasLimit, 1000);
           expect(revealOperation.storageLimit, 0);
           // can't test equality because there might be a difference of ~= 5 µtz because of the forged operation size difference
-          expect(revealOperation.fee, lessThan(285));
+          expect(revealOperation.fee, lessThan(290));
 
           expect(transactionOperation.gasLimit, 1427);
-          expect(transactionOperation.storageLimit, 0);
+          expect(transactionOperation.storageLimit, 257);
           // can't test equality because there might be a difference of ~= 5 µtz because of the forged operation size difference
-          expect(transactionOperation.fee, lessThan(327));
+          expect(transactionOperation.fee, lessThan(64580));
         });
       });
     });
@@ -183,7 +188,9 @@ void main() {
             storage: testContractScript['storage'],
           );
 
-          expect((operationsList.operations.first as OriginationOperation).contractAddress.startsWith('KT'), true);
+          final contractAddress = await (operationsList.operations.first as OriginationOperation).contractAddress;
+
+          expect(contractAddress.startsWith('KT'), true);
         });
 
         test('it sets limits correctly', () async {
@@ -193,7 +200,7 @@ void main() {
           );
           final originationOperation = result.operations.first;
 
-          expect(originationOperation.gasLimit, 1590);
+          expect(originationOperation.gasLimit, 1564);
           expect(originationOperation.storageLimit, 295);
           // can't test equality because there might be a difference of ~= 5 µtz because of the forged operation size difference
           expect(originationOperation.fee, lessThan(74125));
