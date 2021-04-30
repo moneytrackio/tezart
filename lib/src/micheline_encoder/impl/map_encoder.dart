@@ -10,10 +10,7 @@ class MapEncoder implements MichelineEncoder {
 
   @override
   List<Map<String, dynamic>> encode() {
-    var sortedKeys = List.from(params.keys);
-    sortedKeys.sort();
-
-    return sortedKeys
+    return params.keys
         .map((key) => {
               'prim': 'Elt',
               'args': [
