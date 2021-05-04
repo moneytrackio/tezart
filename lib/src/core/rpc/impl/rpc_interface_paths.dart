@@ -51,5 +51,13 @@ final contractEntrypoints = ({
 }) =>
     '${contract(chain: chain, level: level, contractAddress: contractAddress)}/entrypoints';
 
+final contractEntrypoint = ({
+  required String chain,
+  required String level,
+  required String contractAddress,
+  required String entrypoint,
+}) =>
+    '${contractEntrypoints(chain: chain, level: level, contractAddress: contractAddress)}/$entrypoint';
+
 final _chainPath = (String chain) => 'chains/$chain';
 final _levelPath = ({required String level, required String chain}) => '${_chainPath(chain)}/blocks/$level';

@@ -1,4 +1,5 @@
 import 'package:memoize/memoize.dart';
+import 'package:tezart/src/micheline_encoder/impl/micheline_encoder.dart';
 
 import 'operation.dart';
 
@@ -6,14 +7,14 @@ class OriginationOperation extends Operation {
   OriginationOperation({
     required int balance,
     required List<Map<String, dynamic>> code,
-    required Map<String, dynamic> storage,
+    required dynamic storage, // Dart objects storage
     int? customFee,
   }) : super(
           kind: Kinds.origination,
           balance: balance,
           script: {
             'code': code,
-            'storage': storage,
+            'storage': _encodedStorage(code, storage),
           },
           customFee: customFee,
         );
@@ -26,5 +27,12 @@ class OriginationOperation extends Operation {
       return operationsList!
           .operations.first.simulationResult?['metadata']['operation_result']['originated_contracts'].first;
     })();
+  }
+
+  static dynamic _encodedStorage(List<Map<String, dynamic>> code, dynamic storage) {
+    final schema = code.first['args']?.first;
+    if (schema == null) throw ArgumentError.notNull('schema');
+
+    return MichelineEncoder(schema: schema, params: storage).encode();
   }
 }

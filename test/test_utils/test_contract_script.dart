@@ -28,7 +28,6 @@ final Map<String, dynamic> testContractScript = {
       ]
     }
   ],
-  'storage': {'int': '12'}
 };
 
 final Map<String, dynamic> storeValueContract = {
@@ -157,7 +156,4 @@ final Map<String, dynamic> storeValueContract = {
       ]
     }
   ],
-  'storage': {
-    'int': '12',
-  },
 };

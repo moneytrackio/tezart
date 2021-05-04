@@ -160,7 +160,7 @@ void main() {
       final balanceAmount = 1;
       final subject = ({
         required List<Map<String, dynamic>> code,
-        required Map<String, dynamic> storage,
+        required dynamic storage,
       }) async {
         final operationsList = await tezart.originateContractOperation(
           source: originatorKeystore,
@@ -178,14 +178,14 @@ void main() {
           // expect(()=> subject(), returnsNormally) fails silently
           await subject(
             code: testContractScript['code'],
-            storage: testContractScript['storage'],
+            storage: 12,
           );
         });
 
         test('it sets contractAddress correctly', () async {
           final operationsList = await subject(
             code: testContractScript['code'],
-            storage: testContractScript['storage'],
+            storage: 12,
           );
 
           final contractAddress = await (operationsList.operations.first as OriginationOperation).contractAddress;
@@ -196,7 +196,7 @@ void main() {
         test('it sets limits correctly', () async {
           final result = await subject(
             code: testContractScript['code'],
-            storage: testContractScript['storage'],
+            storage: 12,
           );
           final originationOperation = result.operations.first;
 
@@ -209,14 +209,7 @@ void main() {
 
       group('when code and storage are invalid', () {
         test('throws an error', () async {
-          expect(
-              subject(code: [{}], storage: {}),
-              throwsA(
-                predicate((e) =>
-                    e is TezartNodeError &&
-                    e.message ==
-                        'The simulation of the operation: "origination" failed with error(s) : michelson_v1.ill_typed_contract, michelson_v1.invalid_expression_kind'),
-              ));
+          expect(subject(code: [{}], storage: {}), throwsA(predicate((e) => e is ArgumentError && e.name == 'schema')));
         });
       });
     });

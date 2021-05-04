@@ -17,7 +17,7 @@ void main() {
     final operationsList = await tezart.originateContractOperation(
       source: source,
       code: storeValueContract['code'],
-      storage: storeValueContract['storage'],
+      storage: 12,
       balance: balance,
     );
     await operationsList.executeAndMonitor();
@@ -117,13 +117,13 @@ void main() {
       contract = Contract(contractAddress: contractAddress, rpcInterface: rpcInterface);
     });
 
-    final subject = (Map<String, dynamic> params, String entrypoint) async {
-      final operationsList = contract.callOperation(source: source, entrypoint: entrypoint, params: params);
+    final subject = (dynamic params, String entrypoint) async {
+      final operationsList = await contract.callOperation(source: source, entrypoint: entrypoint, params: params);
       await operationsList.executeAndMonitor();
     };
 
     group('when the params are valid', () {
-      final params = {'int': '15'};
+      final params = 15;
       final entrypoint = 'replace';
 
       test('it updates the storage value correctly', () async {
@@ -134,48 +134,29 @@ void main() {
     });
 
     group('when the entrypoint doesnt exist', () {
-      final params = {'int': '15'};
+      final params = 15;
       final entrypoint = 'not_found';
 
       test('it throws a simulationFailed error', () async {
         expect(() => subject(params, entrypoint),
-            throwsA(predicate((e) => e is TezartNodeError && e.type == TezartNodeErrorTypes.simulationFailed)));
+            throwsA(predicate((e) => e is TezartHttpError && e.message == 'Not Found')));
       });
     });
 
     group('when the params are invalid', () {
-      group('when the params are invalid micheline', () {
-        final entrypoint = 'replace';
-        final params = {'invalid': 'micheline'};
-
-        test('it throws an unhandled error', () async {
-          expect(
-              () => subject(params, entrypoint),
-              throwsA(predicate((e) =>
-                  e is TezartNodeError &&
-                  RegExp(r'Unhandled error: Failed to parse the request body: No case matched.*')
-                      .hasMatch(e.message))));
-        });
-      });
-
       group('when the params are incompatible with the entrypoint signature', () {
         final entrypoint = 'replace';
         final params = {'string': 'value'};
 
         test('it throws a simulationFailed error', () async {
-          expect(() => subject(params, entrypoint),
-              throwsA(predicate((e) => e is TezartNodeError && e.type == TezartNodeErrorTypes.simulationFailed)));
+          // TODO: throw custom error instead ?
+          expect(() => subject(params, entrypoint), throwsA(predicate((e) => e is TypeError)));
         });
       });
 
-      group('when the params generate a runtime error', () {
+      group('when the params cause a runtime error', () {
         final entrypoint = 'divide';
-        final params = {
-          'prim': 'Left',
-          'args': [
-            {'int': '2'}
-          ]
-        };
+        final params = 2;
 
         test('it throws a simulationFailed error', () async {
           // the error is caused because params.divisor < 5 (c.f contract)

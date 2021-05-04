@@ -135,6 +135,22 @@ class MockRpcInterface extends _i1.Mock implements _i7.RpcInterface {
               Future<Map<String, dynamic>>.value(<String, dynamic>{})) as _i8
           .Future<Map<String, dynamic>>);
   @override
+  _i8.Future<Map<String, dynamic>> getContractEntrypointSchema(
+          {String? address,
+          String? entrypoint,
+          dynamic chain = r'main',
+          dynamic level = r'head'}) =>
+      (super.noSuchMethod(
+              Invocation.method(#getContractEntrypointSchema, [], {
+                #address: address,
+                #entrypoint: entrypoint,
+                #chain: chain,
+                #level: level
+              }),
+              returnValue:
+                  Future<Map<String, dynamic>>.value(<String, dynamic>{}))
+          as _i8.Future<Map<String, dynamic>>);
+  @override
   _i8.Future<List<String>> transactionsOperationHashes(
           {String? level, dynamic chain = r'main'}) =>
       (super.noSuchMethod(
