@@ -23,6 +23,7 @@ dependencies:
   logging: ^1.0.1 # official dart team : Provides APIs for debugging and error logging.
   ansicolor: ^2.0.1 # Use AnsiPen to add ANSI color codes to your log messages.
   collection: ^1.15.0 # Collections and utilities functions and classes related to collections
+  quiver: ^3.0.1 # used to zip two lists
 
 dev_dependencies:
   pedantic: ^1.11.0 # linter
