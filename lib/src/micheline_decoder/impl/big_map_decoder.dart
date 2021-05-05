@@ -1,4 +1,5 @@
-import 'big_map.dart';
+import 'package:tezart/src/contracts/contract.dart';
+
 import 'micheline_decoder.dart';
 
 class BigMapDecoder implements MichelineDecoder {

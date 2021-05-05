@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:tezart/src/micheline_decoder/impl/big_map.dart';
+import 'package:tezart/src/contracts/contract.dart';
 import 'package:tezart/src/micheline_decoder/micheline_decoder.dart';
 
 void main() {
