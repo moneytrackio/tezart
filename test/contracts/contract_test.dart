@@ -65,7 +65,7 @@ void main() {
       });
 
       test('it returns the storage of the contract', () async {
-        expect(await subject(), {'int': '12'});
+        expect(await subject(), 12);
       });
     });
 
@@ -129,7 +129,7 @@ void main() {
       test('it updates the storage value correctly', () async {
         await subject(params, entrypoint);
 
-        expect(await contract.storage, {'int': '15'});
+        expect(await contract.storage, 15);
       });
     });
 
