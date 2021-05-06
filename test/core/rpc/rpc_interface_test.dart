@@ -93,4 +93,16 @@ void main() {
       });
     });
   });
+
+  group('#pack()', () {
+    final subject =
+        ({required dynamic data, required Map<String, dynamic> type}) => rpcInterface.pack(data: data, type: type);
+
+    test('it packs data correctly', () async {
+      final data = {'int': '42'};
+      final type = {'prim': 'int'};
+
+      expect(await subject(data: data, type: type), '05002a');
+    });
+  });
 }
