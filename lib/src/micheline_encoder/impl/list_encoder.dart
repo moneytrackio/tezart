@@ -4,12 +4,12 @@ class ListEncoder implements MichelineEncoder {
   @override
   final List params;
   @override
-  final Map<String, dynamic> schema;
+  final Map<String, dynamic> type;
 
-  ListEncoder({required this.params, required this.schema});
+  ListEncoder({required this.params, required this.type});
 
   @override
   List encode() {
-    return params.map((element) => MichelineEncoder(schema: schema['args'].first, params: element).encode()).toList();
+    return params.map((element) => MichelineEncoder(type: type['args'].first, params: element).encode()).toList();
   }
 }

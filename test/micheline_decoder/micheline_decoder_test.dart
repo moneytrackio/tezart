@@ -2,7 +2,7 @@ import 'package:test/test.dart';
 import 'package:tezart/src/micheline_decoder/micheline_decoder.dart';
 
 void main() {
-  final subject = (Map<String, dynamic> schema, dynamic data) => MichelineDecoder(schema: schema, data: data).decode();
+  final subject = (Map<String, dynamic> type, dynamic data) => MichelineDecoder(type: type, data: data).decode();
 
   group('when the data is annotated', () {
     final data = {
@@ -39,7 +39,7 @@ void main() {
       ]
     };
 
-    final schema = {
+    final type = {
       'prim': 'pair',
       'args': [
         {
@@ -108,7 +108,7 @@ void main() {
           }
         ]
       };
-      final result = subject(schema, data);
+      final result = subject(type, data);
 
       expect(result, expectedResult);
       expect(result['spendings'].first['date'].toUtc(), DateTime.fromMillisecondsSinceEpoch(9876543 * 1000).toUtc());
@@ -117,10 +117,10 @@ void main() {
 
   group('when the data is anonymous', () {
     final data = {'string': '001'};
-    final schema = {'prim': 'string'};
+    final type = {'prim': 'string'};
 
     test('it decodes the data correctly', () {
-      expect(subject(schema, data), '001');
+      expect(subject(type, data), '001');
     });
   });
 }

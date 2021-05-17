@@ -4,7 +4,7 @@ class UnitDecoder implements MichelineDecoder {
   @override
   final data = null;
   @override
-  final schema = {};
+  final type = {};
 
   @override
   Null decode() {

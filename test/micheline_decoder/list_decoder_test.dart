@@ -2,7 +2,7 @@ import 'package:test/test.dart';
 import 'package:tezart/src/micheline_decoder/impl/micheline_decoder.dart';
 
 void main() {
-  final subject = (Map<String, dynamic> schema, dynamic data) => MichelineDecoder(schema: schema, data: data).decode();
+  final subject = (Map<String, dynamic> type, dynamic data) => MichelineDecoder(type: type, data: data).decode();
 
   final data = [
     {
@@ -20,7 +20,7 @@ void main() {
       ]
     }
   ];
-  final schema = {
+  final type = {
     'prim': 'list',
     'args': [
       {
@@ -45,6 +45,6 @@ void main() {
       {'reference': '2', 'id': '002'}
     ];
 
-    expect(subject(schema, data), expectedResult);
+    expect(subject(type, data), expectedResult);
   });
 }

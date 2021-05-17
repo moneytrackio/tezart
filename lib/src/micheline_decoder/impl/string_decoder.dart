@@ -4,7 +4,7 @@ class StringDecoder implements MichelineDecoder {
   @override
   final Map<String, String> data;
   @override
-  final Map<String, dynamic> schema = {};
+  final Map<String, dynamic> type = {};
 
   StringDecoder(this.data);
 

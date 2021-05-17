@@ -2,9 +2,9 @@ import 'package:test/test.dart';
 import 'package:tezart/src/micheline_decoder/impl/micheline_decoder.dart';
 
 void main() {
-  final subject = (Map<String, dynamic> schema, dynamic data) => MichelineDecoder(schema: schema, data: data).decode();
+  final subject = (Map<String, dynamic> type, dynamic data) => MichelineDecoder(type: type, data: data).decode();
 
-  final schema = {
+  final type = {
     'prim': 'pair',
     'args': [
       {
@@ -100,7 +100,7 @@ void main() {
         },
       };
 
-      expect(subject(schema, data), expectedResult);
+      expect(subject(type, data), expectedResult);
     });
   });
 
@@ -119,7 +119,7 @@ void main() {
         'spendings': {},
       };
 
-      expect(subject(schema, data), expectedResult);
+      expect(subject(type, data), expectedResult);
     });
   });
 }

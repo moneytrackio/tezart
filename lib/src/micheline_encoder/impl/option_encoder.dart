@@ -4,9 +4,9 @@ class OptionEncoder implements MichelineEncoder {
   @override
   final dynamic? params;
   @override
-  final Map<String, dynamic> schema;
+  final Map<String, dynamic> type;
 
-  OptionEncoder({required this.params, required this.schema});
+  OptionEncoder({required this.params, required this.type});
 
   @override
   Map<String, dynamic> encode() {
@@ -15,7 +15,7 @@ class OptionEncoder implements MichelineEncoder {
     return {
       'prim': 'Some',
       'args': [
-        MichelineEncoder(schema: schema['args'].first, params: params).encode(),
+        MichelineEncoder(type: type['args'].first, params: params).encode(),
       ]
     };
   }

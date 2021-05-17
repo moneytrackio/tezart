@@ -16,22 +16,22 @@ import 'unit_decoder.dart';
 class MichelineDecoderFactory {
   static MichelineDecoder decoderFor({
     required String prim,
-    required Map<String, dynamic> schema,
+    required Map<String, dynamic> type,
     required dynamic data,
     required String? annot,
   }) {
     switch (prim) {
       case 'pair':
-        return PairDecoder(schema: schema, data: data);
+        return PairDecoder(type: type, data: data);
       case 'string':
         // cast to fix : _TypeError (type '_InternalLinkedHashMap<String, dynamic>' is not a subtype of type 'Map<String, String>')
         return StringDecoder(Map<String, String>.from(data));
       case 'list':
-        return ListDecoder(schema: schema, data: data);
+        return ListDecoder(type: type, data: data);
       case 'map':
-        return MapDecoder(data: data, schema: schema);
+        return MapDecoder(data: data, type: type);
       case 'big_map':
-        return BigMapDecoder(annot: annot, schema: schema, data: data);
+        return BigMapDecoder(annot: annot, type: type, data: data);
       case 'bytes':
         return BytesDecoder(data);
       case 'int':
@@ -44,7 +44,7 @@ class MichelineDecoderFactory {
       case 'address':
         return AddressDecoder(data);
       case 'option':
-        return OptionDecoder(data: data, schema: schema);
+        return OptionDecoder(data: data, type: type);
       case 'signature':
         return SignatureDecoder(data);
       case 'unit':

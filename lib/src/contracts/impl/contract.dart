@@ -15,9 +15,9 @@ class Contract {
   Future<dynamic> get storage async {
     final contractInfo = await _contractInfo;
     final michelineStorage = contractInfo['script']['storage'];
-    final schema = await _storageType;
+    final type = await _storageType;
 
-    return MichelineDecoder(schema: schema, data: michelineStorage).decode();
+    return MichelineDecoder(type: type, data: michelineStorage).decode();
   }
 
   Future<List<String>> get entrypoints async =>
@@ -29,8 +29,8 @@ class Contract {
     required Keystore source,
     int amount = 0,
   }) async {
-    final schema = await _schema(entrypoint);
-    final michelineParams = MichelineEncoder(schema: schema, params: params).encode();
+    final type = await _type(entrypoint);
+    final michelineParams = MichelineEncoder(type: type, params: params).encode();
 
     return OperationsList(
       source: source,
@@ -53,6 +53,6 @@ class Contract {
     })();
   }
 
-  Future<Map<String, dynamic>> _schema(String entrypoint) =>
-      rpcInterface.getContractEntrypointSchema(address: contractAddress, entrypoint: entrypoint);
+  Future<Map<String, dynamic>> _type(String entrypoint) =>
+      rpcInterface.getContractEntrypointType(address: contractAddress, entrypoint: entrypoint);
 }

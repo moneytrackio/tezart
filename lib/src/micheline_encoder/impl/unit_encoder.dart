@@ -4,7 +4,7 @@ class UnitEncoder implements MichelineEncoder {
   @override
   final params = {};
   @override
-  final schema = {};
+  final type = {};
 
   @override
   Map<String, String> encode() {

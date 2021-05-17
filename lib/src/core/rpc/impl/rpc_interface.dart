@@ -151,7 +151,7 @@ class RpcInterface {
     })(address);
   }
 
-  Future<Map<String, dynamic>> getContractEntrypointSchema({
+  Future<Map<String, dynamic>> getContractEntrypointType({
     required String address,
     required String entrypoint,
     chain = 'main',

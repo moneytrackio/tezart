@@ -7,7 +7,7 @@ import 'micheline_decoder.dart';
 
 class AddressDecoder implements MichelineDecoder {
   @override
-  final schema = {};
+  final type = {};
   @override
   final Map<String, dynamic> data;
 

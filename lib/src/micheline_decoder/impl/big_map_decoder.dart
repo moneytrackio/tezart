@@ -4,20 +4,20 @@ import 'micheline_decoder.dart';
 
 class BigMapDecoder implements MichelineDecoder {
   @override
-  final Map<String, dynamic> schema;
+  final Map<String, dynamic> type;
   @override
   final Map<String, dynamic> data;
   final String? annot;
 
-  BigMapDecoder({required this.annot, required this.schema, required this.data});
+  BigMapDecoder({required this.annot, required this.type, required this.data});
 
   @override
   BigMap decode() {
     return BigMap(
       name: annot,
       id: data['int'],
-      keyType: schema['args'].first,
-      valueType: schema['args'][1],
+      keyType: type['args'].first,
+      valueType: type['args'][1],
     );
   }
 }

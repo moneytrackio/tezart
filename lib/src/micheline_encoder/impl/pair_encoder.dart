@@ -5,9 +5,9 @@ class PairEncoder implements MichelineEncoder {
   // Might be a Map<String, dynamic> or List<dynamic>
   final dynamic params;
   @override
-  final Map<String, dynamic> schema;
+  final Map<String, dynamic> type;
 
-  PairEncoder({required this.params, required this.schema});
+  PairEncoder({required this.params, required this.type});
 
   @override
   Map<String, dynamic> encode() {
@@ -15,11 +15,11 @@ class PairEncoder implements MichelineEncoder {
       'prim': 'Pair',
       'args': [
         MichelineEncoder(
-          schema: schema['args'].first,
+          type: type['args'].first,
           params: _firstParams,
         ).encode(),
         MichelineEncoder(
-          schema: schema['args'][1],
+          type: type['args'][1],
           params: _secondParams,
         ).encode(),
       ]

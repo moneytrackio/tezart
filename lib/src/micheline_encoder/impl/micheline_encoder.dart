@@ -9,19 +9,19 @@ import 'timestamp_encoder.dart';
 import 'unit_encoder.dart';
 
 class MichelineEncoder {
-  final Map<String, dynamic> schema;
+  final Map<String, dynamic> type;
   final dynamic params;
 
-  MichelineEncoder({required this.schema, required this.params});
+  MichelineEncoder({required this.type, required this.params});
 
   // might be Map<String,dynamic> in the general case but also List in the case of prim == 'list'
   dynamic encode() {
-    final prim = schema['prim'];
+    final prim = type['prim'];
     MichelineEncoder encoder;
 
     switch (prim) {
       case 'pair':
-        encoder = PairEncoder(params: _params, schema: schema);
+        encoder = PairEncoder(params: _params, type: type);
         break;
       case 'timestamp':
         encoder = TimestampEncoder(_params);
@@ -42,14 +42,14 @@ class MichelineEncoder {
         encoder = IntEncoder(_params);
         break;
       case 'option':
-        encoder = OptionEncoder(params: _params, schema: schema);
+        encoder = OptionEncoder(params: _params, type: type);
         break;
       case 'list':
-        encoder = ListEncoder(params: _params, schema: schema);
+        encoder = ListEncoder(params: _params, type: type);
         break;
       case 'map':
       case 'big_map':
-        encoder = MapEncoder(params: _params, schema: schema);
+        encoder = MapEncoder(params: _params, type: type);
         break;
       case 'unit':
         encoder = UnitEncoder();
@@ -62,7 +62,7 @@ class MichelineEncoder {
   }
 
   bool get _isAnonymous {
-    return !(schema.containsKey('annots') && schema['annots'] != null);
+    return !(type.containsKey('annots') && type['annots'] != null);
   }
 
   dynamic get _params {
@@ -72,6 +72,6 @@ class MichelineEncoder {
   String? get _annot {
     if (_isAnonymous) return null;
 
-    return (schema['annots'].first as String).substring(1);
+    return (type['annots'].first as String).substring(1);
   }
 }

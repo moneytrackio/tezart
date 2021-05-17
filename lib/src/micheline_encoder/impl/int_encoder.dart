@@ -4,7 +4,7 @@ class IntEncoder implements MichelineEncoder {
   @override
   final int params;
   @override
-  final schema = {};
+  final type = {};
 
   IntEncoder(this.params);
 

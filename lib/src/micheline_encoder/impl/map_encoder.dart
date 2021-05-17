@@ -4,9 +4,9 @@ class MapEncoder implements MichelineEncoder {
   @override
   final Map<String, dynamic> params;
   @override
-  final Map<String, dynamic> schema;
+  final Map<String, dynamic> type;
 
-  MapEncoder({required this.params, required this.schema});
+  MapEncoder({required this.params, required this.type});
 
   @override
   List<Map<String, dynamic>> encode() {
@@ -14,13 +14,13 @@ class MapEncoder implements MichelineEncoder {
         .map((key) => {
               'prim': 'Elt',
               'args': [
-                MichelineEncoder(schema: _keySchema, params: key).encode(),
-                MichelineEncoder(schema: _valueSchema, params: params[key]).encode(),
+                MichelineEncoder(type: _keyType, params: key).encode(),
+                MichelineEncoder(type: _valueType, params: params[key]).encode(),
               ],
             })
         .toList();
   }
 
-  Map<String, dynamic> get _keySchema => schema['args'].first;
-  Map<String, dynamic> get _valueSchema => schema['args'][1];
+  Map<String, dynamic> get _keyType => type['args'].first;
+  Map<String, dynamic> get _valueType => type['args'][1];
 }
