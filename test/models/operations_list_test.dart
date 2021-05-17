@@ -177,15 +177,15 @@ void main() {
         test('doesnt throw any error', () async {
           // expect(()=> subject(), returnsNormally) fails silently
           await subject(
-            code: testContractScript['code'],
-            storage: 12,
+            code: testContractScript,
+            storage: {'int': '12'},
           );
         });
 
         test('it sets contractAddress correctly', () async {
           final operationsList = await subject(
-            code: testContractScript['code'],
-            storage: 12,
+            code: testContractScript,
+            storage: {'int': '12'},
           );
 
           final contractAddress = await (operationsList.operations.first as OriginationOperation).contractAddress;
@@ -195,8 +195,8 @@ void main() {
 
         test('it sets limits correctly', () async {
           final result = await subject(
-            code: testContractScript['code'],
-            storage: 12,
+            code: testContractScript,
+            storage: {'int': '12'},
           );
           final originationOperation = result.operations.first;
 
@@ -209,7 +209,11 @@ void main() {
 
       group('when code and storage are invalid', () {
         test('throws an error', () async {
-          expect(subject(code: [{}], storage: {}), throwsA(predicate((e) => e is ArgumentError && e.name == 'schema')));
+          expect(
+              subject(code: [{}], storage: {}),
+              throwsA(predicate((e) =>
+                  e is TezartNodeError &&
+                  RegExp(r'ill_typed_contract.*invalid_expression_kind.*$').hasMatch(e.message))));
         });
       });
     });

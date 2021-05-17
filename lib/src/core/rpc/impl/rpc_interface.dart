@@ -223,4 +223,20 @@ class RpcInterface {
 
     return response.data['packed'];
   }
+
+  Future bigMapValue({
+    required String id,
+    required String encodedScriptExpression,
+    chain = 'main',
+    level = 'head',
+  }) async {
+    final response = await httpClient.get(paths.bigMapValue(
+      level: level,
+      chain: chain,
+      id: id,
+      encodedScriptExpression: encodedScriptExpression,
+    ));
+
+    return response.data;
+  }
 }

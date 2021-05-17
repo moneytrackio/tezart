@@ -13,11 +13,11 @@ void main() {
   const balance = 10;
   late String contractAddress;
 
-  final originateContractSetUp = () async {
+  final originateContractSetUp = (List<Map<String, dynamic>> code, dynamic storage) async {
     final operationsList = await tezart.originateContractOperation(
       source: source,
-      code: storeValueContract['code'],
-      storage: 12,
+      code: code,
+      storage: storage,
       balance: balance,
     );
     await operationsList.executeAndMonitor();
@@ -33,7 +33,7 @@ void main() {
 
     group('when the contract exists', () {
       setUp(() async {
-        await originateContractSetUp();
+        await originateContractSetUp(storeValueContract, {'int': '12'});
       });
 
       test('it returns the balance of the contract', () async {
@@ -48,7 +48,7 @@ void main() {
 
       test('it throws an error', () {
         // TODO: throw TezartNodeError or ContractError ?
-        expect(() => subject(), throwsA(predicate((e) => e is TezartHttpError)));
+        expect(() => subject(), throwsA(predicate((e) => e is TezartHttpError && e.message == 'Not Found')));
       });
     });
   });
@@ -60,12 +60,24 @@ void main() {
         ).storage;
 
     group('when the contract address exists', () {
-      setUp(() async {
-        await originateContractSetUp();
+      group('when the contract has a storage', () {
+        setUp(() async {
+          await originateContractSetUp(storeValueContract, {'int': '12'});
+        });
+
+        test('it returns the storage of the contract', () async {
+          expect(await subject(), 12);
+        });
       });
 
-      test('it returns the storage of the contract', () async {
-        expect(await subject(), 12);
+      group('when the contrat has no storage', () {
+        setUp(() async {
+          await originateContractSetUp(noStorageContract, {'prim': 'Unit'});
+        });
+
+        test('it returns null', () async {
+          expect(await subject(), null);
+        });
       });
     });
 
@@ -89,7 +101,7 @@ void main() {
 
     group('when the contract address exists', () {
       setUp(() async {
-        await originateContractSetUp();
+        await originateContractSetUp(storeValueContract, {'int': '12'});
       });
 
       test('it returns the entrypoints of the contract', () async {
@@ -113,7 +125,7 @@ void main() {
     late Contract contract;
 
     setUp(() async {
-      await originateContractSetUp();
+      await originateContractSetUp(storeValueContract, {'int': '12'});
       contract = Contract(contractAddress: contractAddress, rpcInterface: rpcInterface);
     });
 
