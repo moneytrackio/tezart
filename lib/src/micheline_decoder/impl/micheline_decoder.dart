@@ -1,5 +1,9 @@
 import 'micheline_decoder_factory.dart';
 
+/// A class that converts Micheline to Dart types
+///
+/// [type] is a Map defining the type of the data we want to convert
+/// [data] the Micheline data we want to convert
 class MichelineDecoder {
   final Map<String, dynamic> type;
   final data;

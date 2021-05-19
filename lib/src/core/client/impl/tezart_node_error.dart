@@ -138,7 +138,7 @@ class TezartNodeError extends CommonException {
     }
   }
 
-  /// Cause of this, might be null.
+  /// Cause of this.
   ///
   /// It represents the error that caused this.
   @override

@@ -2,11 +2,15 @@ import 'package:tezart/tezart.dart';
 
 import 'base_validator.dart';
 
+/// A validator that checks whether [simulationResult] is applied
+///
+/// [simulationResult] is supposed to be the result of [rpcInterface.runOperations] of [rpcInterface.preapplyOperations]
 class SimulationResultValidator implements BaseValidator {
   final Map<String, dynamic> simulationResult;
 
   SimulationResultValidator(this.simulationResult);
 
+  /// Returns true if the status of this is 'applied'
   @override
   bool get isValid {
     return _status == 'applied';
@@ -36,6 +40,7 @@ class SimulationResultValidator implements BaseValidator {
     return _operationResult['errors'].map((el) => (el['id'] as String?)?.split('.').sublist(2).join('.')).join(', ');
   }
 
+  /// Throws [TezartNodeError] if [_status] is not 'applied'
   @override
   void validate() {
     if (!isValid) {

@@ -7,6 +7,12 @@
 /// - [TezartClient]
 /// - [TezartNodeError]
 /// - [enableTezartLogger]
+/// - [Contract]
+/// - [MichelineDecoder]
+/// - [MichelineEncoder]
+/// - [RpcInterface]
+/// - [TezartHttpError]
+
 library tezart;
 
 export 'src/models/operation/operation.dart';
@@ -16,3 +22,6 @@ export 'src/signature/signature.dart';
 export 'src/core/client/tezart_client.dart';
 export 'src/common/logger/common_logger.dart';
 export 'src/contracts/contract.dart';
+export 'src/micheline_decoder/micheline_decoder.dart';
+export 'src/micheline_encoder/micheline_encoder.dart';
+export 'src/core/rpc/rpc_interface.dart';

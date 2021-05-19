@@ -1,3 +1,10 @@
+/// A library that handles single operation objects
+///
+/// It exposes:
+/// - [Operation]
+/// - [OriginationOperation]
+/// - [RevealOperation]
+/// - [TransactionOperation]
 library operation;
 
 export 'impl/operation.dart';

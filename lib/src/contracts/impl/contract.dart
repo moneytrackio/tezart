@@ -4,14 +4,25 @@ import 'package:tezart/src/micheline_decoder/impl/micheline_decoder.dart';
 import 'package:tezart/src/micheline_encoder/impl/micheline_encoder.dart';
 import 'package:tezart/tezart.dart';
 
+/// A class that handles Tezos's contracts
+///
+/// - [contractAddress] is the address of this
+///
+/// It allows to :
+/// - fetch the balance, storage, entrypoints of a contract
+/// - compute the [OperationsList] related to a call of an entrypoint of a contract
+///
+/// If [contractAddress] is not found a [TezartHttpError] is thrown while calling a method of this
 class Contract {
   final String contractAddress;
   final RpcInterface rpcInterface;
 
   Contract({required this.contractAddress, required this.rpcInterface});
 
+  /// Returns the balance of this
   Future<int> get balance async => int.parse((await _contractInfo)['balance']);
 
+  /// Returns the storage in Dart Type of this using [MichelineDecoder]
   Future<dynamic> get storage async {
     final contractInfo = await _contractInfo;
     final michelineStorage = contractInfo['script']['storage'];
@@ -20,9 +31,18 @@ class Contract {
     return MichelineDecoder(type: type, data: michelineStorage).decode();
   }
 
+  /// Returns a [List] containing the entrypoints of this
   Future<List<String>> get entrypoints async =>
       memo0(() async => (await rpcInterface.getContractEntrypoints(contractAddress)).keys.toList())();
 
+  /// Returns a [OperationsList] containing a [TransactionOperation] related to a call of an entrypoint of the contract
+  ///
+  /// - [entrypoint] is the entrypoint we want to call. Default value is 'default'
+  /// - [params] is the parameters in Dart Types of the call operation. [MichelineEncoder] is used for conversion to Micheline
+  /// - [source] is the [Keystore] initiating the operation
+  /// - [amount] is the amount of the operation. Default value is 0
+  ///
+  /// - when [params] are incompatible with the entrypoint signature, a [TypeError] is thrown
   Future<OperationsList> callOperation({
     String entrypoint = 'default',
     dynamic? params,
