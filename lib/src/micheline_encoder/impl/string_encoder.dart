@@ -4,7 +4,7 @@ class StringEncoder implements MichelineEncoder {
   @override
   final String params;
   @override
-  final schema = {};
+  final type = {};
 
   StringEncoder(this.params);
 

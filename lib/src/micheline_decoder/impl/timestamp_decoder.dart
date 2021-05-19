@@ -4,7 +4,7 @@ class TimestampDecoder implements MichelineDecoder {
   @override
   final Map<String, dynamic> data;
   @override
-  final schema = {};
+  final type = {};
 
   TimestampDecoder(this.data);
 

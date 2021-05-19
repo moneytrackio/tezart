@@ -4,19 +4,19 @@ class MapDecoder implements MichelineDecoder {
   @override
   final List data;
   @override
-  final Map<String, dynamic> schema;
+  final Map<String, dynamic> type;
 
-  MapDecoder({required this.data, required this.schema});
+  MapDecoder({required this.data, required this.type});
 
   @override
   Map<String, dynamic> decode() {
     return data.fold({}, (previousValue, element) {
       final key = MichelineDecoder(
-        schema: schema['args'].first,
+        type: type['args'].first,
         data: element['args'].first,
       ).decode();
       final value = MichelineDecoder(
-        schema: schema['args'][1],
+        type: type['args'][1],
         data: element['args'][1],
       ).decode();
 

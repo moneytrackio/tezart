@@ -4,7 +4,7 @@ class BytesEncoder implements MichelineEncoder {
   @override
   final String params;
   @override
-  final schema = {};
+  final type = {};
 
   BytesEncoder(this.params);
 

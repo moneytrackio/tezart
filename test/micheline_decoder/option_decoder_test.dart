@@ -2,9 +2,9 @@ import 'package:test/test.dart';
 import 'package:tezart/src/micheline_decoder/micheline_decoder.dart';
 
 void main() {
-  final subject = (Map<String, dynamic> schema, dynamic data) => MichelineDecoder(schema: schema, data: data).decode();
+  final subject = (Map<String, dynamic> type, dynamic data) => MichelineDecoder(type: type, data: data).decode();
 
-  final schema = {
+  final type = {
     'prim': 'pair',
     'args': [
       {
@@ -34,7 +34,7 @@ void main() {
     };
 
     test('it decodes data correctly', () {
-      expect(subject(schema, data), {
+      expect(subject(type, data), {
         'sig': null,
         'time': null,
       });
@@ -68,7 +68,7 @@ void main() {
         'sig': 'edsigtp4wchrxPLWscwNQKyUssJixap4njeS3keCTwphwhx4MkQaFn8GfXkCJtk8vi5uV2ahrdS5YWc3qeC74awqWTGJfngKGrs',
         'time': isA<DateTime>(),
       };
-      final result = subject(schema, data);
+      final result = subject(type, data);
 
       expect(result, expectedResult);
       expect(result['time'].toUtc(), DateTime.fromMillisecondsSinceEpoch(1620143003 * 1000).toUtc());

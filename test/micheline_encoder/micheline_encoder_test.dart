@@ -2,12 +2,11 @@ import 'package:test/test.dart';
 import 'package:tezart/src/micheline_encoder/impl/micheline_encoder.dart';
 
 void main() {
-  final subject =
-      (Map<String, dynamic> schema, dynamic params) => MichelineEncoder(schema: schema, params: params).encode();
+  final subject = (Map<String, dynamic> type, dynamic params) => MichelineEncoder(type: type, params: params).encode();
 
-  group('when schema and params are valid', () {
+  group('when type and params are valid', () {
     group('when there is multiple parameters', () {
-      final schema = {
+      final type = {
         'prim': 'pair',
         'args': [
           {
@@ -46,7 +45,7 @@ void main() {
       };
 
       test('it returns a valid value', () {
-        expect(subject(schema, params), {
+        expect(subject(type, params), {
           'prim': 'Pair',
           'args': [
             {
@@ -69,31 +68,31 @@ void main() {
     });
 
     group('when there is only one parameter', () {
-      final schema = {
+      final type = {
         'prim': 'string',
         'annots': ['%payload']
       };
       final params = {'payload': 'payload'};
 
       test('it returns a valid value', () {
-        expect(subject(schema, params), {'string': 'payload'});
+        expect(subject(type, params), {'string': 'payload'});
       });
     });
 
     group('when the parameter is anonymous', () {
-      final schema = {
+      final type = {
         'prim': 'string',
       };
       final params = 'payload';
 
       test('it returns a valid value', () {
-        expect(subject(schema, params), {'string': 'payload'});
+        expect(subject(type, params), {'string': 'payload'});
       });
     });
 
     group('when the params is a List', () {
       final params = ['1234', 'KT1UDJmqKvMYRcGzP2TSFhQqejS2CKaDsNEx', '4567'];
-      final schema = {
+      final type = {
         'prim': 'pair',
         'args': [
           {
@@ -114,7 +113,7 @@ void main() {
       };
 
       test('it returns a valid value', () {
-        expect(subject(schema, params), {
+        expect(subject(type, params), {
           'args': [
             {'string': '1234'},
             {

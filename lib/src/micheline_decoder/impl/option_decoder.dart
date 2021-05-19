@@ -4,14 +4,14 @@ class OptionDecoder implements MichelineDecoder {
   @override
   final dynamic data;
   @override
-  final Map<String, dynamic> schema;
+  final Map<String, dynamic> type;
 
-  OptionDecoder({required this.data, required this.schema});
+  OptionDecoder({required this.data, required this.type});
 
   @override
   dynamic decode() {
     if (data['prim'] == 'None') return null;
 
-    return MichelineDecoder(schema: schema['args'].first, data: data['args'].first).decode();
+    return MichelineDecoder(type: type['args'].first, data: data['args'].first).decode();
   }
 }

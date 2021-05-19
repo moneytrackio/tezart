@@ -4,21 +4,21 @@ import 'micheline_decoder.dart';
 
 class PairDecoder implements MichelineDecoder {
   @override
-  final Map<String, dynamic> schema;
+  final Map<String, dynamic> type;
   @override
   final dynamic data;
 
-  PairDecoder({required this.schema, required this.data});
+  PairDecoder({required this.type, required this.data});
 
   @override
   Map<String, dynamic> decode() {
     return zip<dynamic>(
-      [data['args'].toList(), schema['args'].toList()],
+      [data['args'].toList(), type['args'].toList()],
     ).map((zippedElement) {
       final currentData = zippedElement.first;
-      final currentSchema = zippedElement[1];
+      final currentType = zippedElement[1];
 
-      return MichelineDecoder(data: currentData, schema: currentSchema).decode();
+      return MichelineDecoder(data: currentData, type: currentType).decode();
     }).fold<Map<String, dynamic>>({}, (previousValue, element) => {...previousValue, ...element});
   }
 }

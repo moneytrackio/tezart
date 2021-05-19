@@ -4,7 +4,7 @@ class TimestampEncoder implements MichelineEncoder {
   @override
   final DateTime params;
   @override
-  final schema = {};
+  final type = {};
 
   TimestampEncoder(this.params);
 

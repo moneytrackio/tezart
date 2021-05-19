@@ -20,7 +20,7 @@ class BigMap {
 
   // key in dart types
   Future<dynamic> fetch({required dynamic key, required RpcInterface rpcInterface}) async {
-    final michelineKey = MichelineEncoder(schema: keyType, params: key).encode();
+    final michelineKey = MichelineEncoder(type: keyType, params: key).encode();
     final encodedScriptExpression = await _encodedScriptExpression(
       decodedKey: michelineKey,
       rpcInterface: rpcInterface,
@@ -28,7 +28,7 @@ class BigMap {
 
     final michelineValue = await rpcInterface.bigMapValue(id: id, encodedScriptExpression: encodedScriptExpression);
 
-    return MichelineDecoder(schema: valueType, data: michelineValue).decode();
+    return MichelineDecoder(type: valueType, data: michelineValue).decode();
   }
 
   Future<String> _encodedScriptExpression({dynamic decodedKey, required RpcInterface rpcInterface}) async {
