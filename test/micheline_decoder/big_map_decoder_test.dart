@@ -73,7 +73,7 @@ void main() {
     final BigMap contractsBigMap = result['contracts'];
     expect(contractsBigMap.id, '70');
     expect(
-      contractsBigMap.value_type,
+      contractsBigMap.valueType,
       {
         'prim': 'pair',
         'args': [
@@ -89,7 +89,7 @@ void main() {
       },
     );
 
-    expect(contractsBigMap.key_type, {'prim': 'string'});
+    expect(contractsBigMap.keyType, {'prim': 'string'});
     expect(contractsBigMap.name, 'contracts');
   });
 }

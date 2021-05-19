@@ -11,6 +11,7 @@ import 'pair_decoder.dart';
 import 'signature_decoder.dart';
 import 'string_decoder.dart';
 import 'timestamp_decoder.dart';
+import 'unit_decoder.dart';
 
 class MichelineDecoderFactory {
   static MichelineDecoder decoderFor({
@@ -23,14 +24,13 @@ class MichelineDecoderFactory {
       case 'pair':
         return PairDecoder(schema: schema, data: data);
       case 'string':
-        return StringDecoder(data);
+        // cast to fix : _TypeError (type '_InternalLinkedHashMap<String, dynamic>' is not a subtype of type 'Map<String, String>')
+        return StringDecoder(Map<String, String>.from(data));
       case 'list':
         return ListDecoder(schema: schema, data: data);
       case 'map':
         return MapDecoder(data: data, schema: schema);
       case 'big_map':
-        if (annot == null) throw ArgumentError.notNull('annot');
-
         return BigMapDecoder(annot: annot, schema: schema, data: data);
       case 'bytes':
         return BytesDecoder(data);
@@ -47,6 +47,8 @@ class MichelineDecoderFactory {
         return OptionDecoder(data: data, schema: schema);
       case 'signature':
         return SignatureDecoder(data);
+      case 'unit':
+        return UnitDecoder();
       default:
         throw UnimplementedError('Unknwon type: $prim');
     }

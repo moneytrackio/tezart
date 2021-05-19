@@ -15,3 +15,4 @@ export 'src/keystore/keystore.dart';
 export 'src/signature/signature.dart';
 export 'src/core/client/tezart_client.dart';
 export 'src/common/logger/common_logger.dart';
+export 'src/contracts/contract.dart';

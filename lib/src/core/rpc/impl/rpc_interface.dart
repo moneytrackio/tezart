@@ -208,4 +208,35 @@ class RpcInterface {
       return response.data;
     })(chain, level);
   }
+
+  Future<String> pack({
+    required dynamic data, // in micheline
+    required Map<String, dynamic> type,
+    chain = 'main',
+    level = 'head',
+  }) async {
+    final content = {
+      'data': data,
+      'type': type,
+    };
+    final response = await httpClient.post(paths.pack(chain: chain, level: level), data: content);
+
+    return response.data['packed'];
+  }
+
+  Future bigMapValue({
+    required String id,
+    required String encodedScriptExpression,
+    chain = 'main',
+    level = 'head',
+  }) async {
+    final response = await httpClient.get(paths.bigMapValue(
+      level: level,
+      chain: chain,
+      id: id,
+      encodedScriptExpression: encodedScriptExpression,
+    ));
+
+    return response.data;
+  }
 }

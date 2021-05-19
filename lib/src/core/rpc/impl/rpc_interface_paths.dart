@@ -59,5 +59,16 @@ final contractEntrypoint = ({
 }) =>
     '${contractEntrypoints(chain: chain, level: level, contractAddress: contractAddress)}/$entrypoint';
 
+final pack = ({required String level, required String chain}) =>
+    '${_levelPath(level: level, chain: chain)}/helpers/scripts/pack_data';
+
+final bigMapValue = ({
+  required String level,
+  required String chain,
+  required String id,
+  required String encodedScriptExpression,
+}) =>
+    '${_levelPath(level: level, chain: chain)}/context/big_maps/$id/$encodedScriptExpression';
+
 final _chainPath = (String chain) => 'chains/$chain';
 final _levelPath = ({required String level, required String chain}) => '${_chainPath(chain)}/blocks/$level';

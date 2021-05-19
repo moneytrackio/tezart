@@ -7,7 +7,7 @@ class BigMapDecoder implements MichelineDecoder {
   final Map<String, dynamic> schema;
   @override
   final Map<String, dynamic> data;
-  final String annot;
+  final String? annot;
 
   BigMapDecoder({required this.annot, required this.schema, required this.data});
 
@@ -16,8 +16,8 @@ class BigMapDecoder implements MichelineDecoder {
     return BigMap(
       name: annot,
       id: data['int'],
-      key_type: schema['args'].first,
-      value_type: schema['args'][1],
+      keyType: schema['args'].first,
+      valueType: schema['args'][1],
     );
   }
 }
