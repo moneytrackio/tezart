@@ -18,6 +18,7 @@ enum Kinds {
   reveal,
 }
 
+/// A class representing a single tezos operation
 @JsonSerializable(includeIfNull: false, createFactory: false)
 class Operation {
   @JsonKey(ignore: true)

@@ -8,6 +8,10 @@ import 'string_encoder.dart';
 import 'timestamp_encoder.dart';
 import 'unit_encoder.dart';
 
+/// A class that converts Dart type object to Micheline
+///
+/// [type] is a Map defining the type of the data we want to convert
+/// [params] the data we want to convert
 class MichelineEncoder {
   final Map<String, dynamic> type;
   final dynamic params;

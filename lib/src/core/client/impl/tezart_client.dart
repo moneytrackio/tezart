@@ -25,13 +25,17 @@ class TezartClient {
   /// Default constructor.
   TezartClient(String url) : rpcInterface = RpcInterface(url);
 
-  /// Transfers [amount] from [source] to [destination] and returns the operation group id.\
+  /// Returns an [OperationsList] containing a [TransactionOperation] that transfers [amount] from [source]
+  /// to [destination] and returns the operation group id.\
+  ///
+  /// - [customFee] if set, will be used instead of the default fees computed by OperationsFeesSetterVisitor
+  /// - [reveal] if set to true, will prepend a [RevealOperation] if [source] is not already revealed
   ///
   /// ```dart
   /// final source = Keystore.fromSecretKey('edskRpm2mUhvoUjHjXgMoDRxMKhtKfww1ixmWiHCWhHuMEEbGzdnz8Ks4vgarKDtxok7HmrEo1JzkXkdkvyw7Rtw6BNtSd7MJ7');
   /// final destination = 'tz1LmRFP1yFg4oTwfThfbrJx2BfZVAK2h7eW';
   /// final amount = 1000;
-  /// await client.transfer(source: source, destination: destionation, amount: amount);
+  /// await client.transferOperation(source: source, destination: destionation, amount: amount);
   /// ```
   ///
   /// Retries 3 times if a counter error occurs ([TezartNodeErrorTypes.counterError]).
@@ -59,10 +63,7 @@ class TezartClient {
     });
   }
 
-  /// Reveals [source.publicKey] and returns the operation group id
-  ///
-  /// It will reveal the public key associated to an address so that everyone
-  /// can verify the signature for the operation and any future operations.
+  /// Returns an [OperationsList] that reveals [source.publicKey]
   OperationsList revealKeyOperation(Keystore source) {
     log.info('request to revealKey');
 
@@ -88,8 +89,9 @@ class TezartClient {
   /// Waits for [operationId] to be included in a block.
   ///
   /// ```dart
-  /// final operationId = await client.revealKey(source);
-  /// await client.monitorOperation(operationId);
+  /// final operationsList = await client.revealKeyOperation(source);
+  /// await operationsList.execute();
+  /// await client.monitorOperation(operationsList.result.id);
   /// ```
   Future<String> monitorOperation(String operationId) {
     return _catchHttpError<String>(() async {
@@ -99,6 +101,15 @@ class TezartClient {
     });
   }
 
+  /// Returns an [OperationsList] that originates a contract initiated by [source]
+  ///
+  /// - [source] is the [Keystore] initiating the operation
+  /// - [code] is the code of the smart contract in Micheline
+  /// - [storage] is the initial storage of the contract in Micheline
+  /// - [balance] is the balance of the originated contract
+  /// - [customFee] if set, will be used instead of the default fees computed by OperationsFeesSetterVisitor
+  /// - [reveal] if set to true, will prepend a [RevealOperation] if [source] is not already revealed
+  ///
   Future<OperationsList> originateContractOperation({
     required Keystore source,
     required List<Map<String, dynamic>> code,
