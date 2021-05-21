@@ -24,7 +24,7 @@ enum Watermarks {
 class Signature extends Equatable {
   final Uint8List bytes;
   final Keystore keystore;
-  final Watermarks watermark;
+  final Watermarks? watermark;
 
   static final _watermarkToHex = {
     Watermarks.block: '01',
@@ -32,12 +32,12 @@ class Signature extends Equatable {
     Watermarks.generic: '03',
   };
 
-  Signature._({@required this.bytes, @required this.keystore, this.watermark});
+  Signature._({required this.bytes, required this.keystore, this.watermark});
 
   /// A factory that computes the signature of [bytes] (prefixed by [watermark]) using [keystore].
   ///
   /// [watermark] is optional and will be ignored if missing.
-  factory Signature.fromBytes({@required Uint8List bytes, @required Keystore keystore, Watermarks watermark}) {
+  factory Signature.fromBytes({required Uint8List bytes, required Keystore keystore, Watermarks? watermark}) {
     return Signature._(bytes: bytes, watermark: watermark, keystore: keystore);
   }
 
@@ -47,7 +47,7 @@ class Signature extends Equatable {
   /// Throws a [CryptoError] if :
   /// - [data] is not hexadecimal
   /// - [data] length is odd (because it must be the hexadecimal of a list of bytes (a single byte represent two hexadecimal digits))
-  factory Signature.fromHex({@required String data, @required Keystore keystore, Watermarks watermark}) {
+  factory Signature.fromHex({required String data, required Keystore keystore, Watermarks? watermark}) {
     return crypto.catchUnhandledErrors(() {
       HexValidator(data).validate();
       // Because two hexadecimal digits correspond to a single byte, this will throw an error if the length of the data is odd
@@ -64,7 +64,7 @@ class Signature extends Equatable {
   Uint8List get signedBytes {
     return crypto.catchUnhandledErrors(() {
       final watermarkedBytes =
-          watermark == null ? bytes : Uint8List.fromList(crypto.hexDecode(_watermarkToHex[watermark]) + bytes);
+          watermark == null ? bytes : Uint8List.fromList(crypto.hexDecode(_watermarkToHex[watermark]!) + bytes);
       var hashedBytes = crypto.hashWithDigestSize(size: 256, bytes: watermarkedBytes);
       var secretKey = keystore.secretKey;
       var secretKeyBytes = crypto.decodeWithoutPrefix(secretKey);

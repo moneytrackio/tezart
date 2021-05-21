@@ -10,29 +10,29 @@ import 'package:tezart/src/core/rpc/rpc_interface.dart';
 
 import 'tezart_http_client_test.mocks.dart';
 
-void testFailingRequest(Function subject, Function callback) {
-  setUp(() {
-    when(callback()).thenAnswer((_) async {
-      throw DioError();
-    });
-  });
-
-  test('it throws a TezartHttpError', () {
-    expect(
-      subject,
-      throwsA(
-        predicate((e) => e is TezartHttpError),
-      ),
-    );
-  });
-}
-
 @GenerateMocks([Dio])
 void main() {
   final client = MockDio();
   final options = BaseOptions();
   const url = 'http://localhost:20000/';
-  TezartHttpClient instance;
+  late TezartHttpClient instance;
+
+  void testFailingRequest(Function subject, Function callback) {
+    setUp(() {
+      when(callback()).thenAnswer((_) async {
+        throw DioError(requestOptions: RequestOptions(path: url));
+      });
+    });
+
+    test('it throws a TezartHttpError', () {
+      expect(
+        subject,
+        throwsA(
+          predicate((e) => e is TezartHttpError),
+        ),
+      );
+    });
+  }
 
   setUp(() {
     when(client.options).thenReturn(options);
@@ -51,7 +51,11 @@ void main() {
     group('when the request succeeds', () {
       setUp(() {
         when(client.post(path, data: data)).thenAnswer((_) async {
-          return Response(data: 'ok', statusCode: 201);
+          return Response(
+            data: 'ok',
+            statusCode: 201,
+            requestOptions: RequestOptions(path: url),
+          );
         });
       });
 
@@ -80,7 +84,11 @@ void main() {
     group('when the request succeeds', () {
       setUp(() {
         when(client.get(path, queryParameters: params)).thenAnswer((_) async {
-          return Response(data: 'ok', statusCode: 200);
+          return Response(
+            data: 'ok',
+            statusCode: 200,
+            requestOptions: RequestOptions(path: url),
+          );
         });
       });
 
@@ -124,6 +132,7 @@ void main() {
               ),
               200,
             ),
+            requestOptions: RequestOptions(path: url),
           );
         });
       });

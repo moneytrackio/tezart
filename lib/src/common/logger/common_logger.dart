@@ -11,10 +11,10 @@ final _red = AnsiPen()..red();
 /// So the trick here is to switch/case and color while printing
 ///
 void _printOutput({
-  DateTime time,
-  String level,
-  String name,
-  String message,
+  required DateTime time,
+  required String level,
+  required String name,
+  required String message,
 }) {
   dynamic levelColored;
   switch (level) {

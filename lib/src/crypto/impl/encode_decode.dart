@@ -20,6 +20,7 @@ final _prefixesToBytes = {
   Prefixes.sppk: Uint8List.fromList([3, 254, 226, 86]),
   Prefixes.p2pk: Uint8List.fromList([3, 178, 139, 127]),
   Prefixes.edsk: Uint8List.fromList([43, 246, 78, 7]),
+  Prefixes.edesk: Uint8List.fromList([7, 90, 60, 179, 41]),
   Prefixes.edsig: Uint8List.fromList([9, 245, 205, 134, 18]),
   Prefixes.spsig1: Uint8List.fromList([13, 115, 101, 19, 63]),
   Prefixes.p2sig: Uint8List.fromList([54, 240, 44, 52]),
@@ -58,7 +59,7 @@ Uint8List prefixBytes(Prefixes prefix) {
     throw CryptoError(type: CryptoErrorTypes.prefixNotFound);
   }
 
-  return _prefixesToBytes[prefix];
+  return _prefixesToBytes[prefix]!;
 }
 
 @visibleForTesting
@@ -73,7 +74,7 @@ Uint8List ignorePrefix(Uint8List bytes) {
   throw CryptoError(type: CryptoErrorTypes.prefixNotFound);
 }
 
-String encodeWithPrefix({@required Prefixes prefix, @required Uint8List bytes}) {
+String encodeWithPrefix({required Prefixes prefix, required Uint8List bytes}) {
   final prefixed = Uint8List.fromList(prefixBytes(prefix) + bytes);
 
   return _encodeBase58(prefixed);

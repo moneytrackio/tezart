@@ -61,7 +61,7 @@ void main() {
   });
 
   group('.signedBytes', () {
-    final subject = (Watermarks watermark) => Signature.fromHex(
+    final subject = (Watermarks? watermark) => Signature.fromHex(
           data: '123abd43',
           keystore: keystore,
           watermark: watermark,

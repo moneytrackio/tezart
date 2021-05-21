@@ -2,6 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:test/test.dart';
 import 'package:tezart/src/core/rpc/impl/tezart_http_error.dart';
 
+import '../../env/env.dart';
+
 void main() {
   const data = 'test';
   const statusCode = 500;
@@ -9,8 +11,10 @@ void main() {
     response: Response(
       data: data,
       statusCode: statusCode,
+      requestOptions: RequestOptions(path: Env.tezosNodeUrl),
     ),
-    type: DioErrorType.CANCEL,
+    type: DioErrorType.cancel,
+    requestOptions: RequestOptions(path: Env.tezosNodeUrl),
   );
   final instance = TezartHttpError(originalException);
 

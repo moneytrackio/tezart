@@ -1,58 +1,51 @@
 @Timeout(Duration(seconds: 60))
-
 import 'package:test/test.dart';
 import 'package:tezart/tezart.dart';
 
 import '../../env/env.dart';
-// TODO: uncomment for originateContract tests
-// import '../../test_utils/test_contract_script.dart';
+import '../../test_utils/test_contract_script.dart';
 
 void main() {
   final tezart = TezartClient(Env.tezosNodeUrl);
   final originatorKeystore = Keystore.fromSecretKey(Env.originatorSk);
 
-  group('#transfer', () {
+  group('#transferOperation', () {
     final subject = (Keystore source, String destination, int amount) =>
-        tezart.transfer(source: source, destination: destination, amount: amount);
+        tezart.transferOperation(source: source, destination: destination, amount: amount);
     final destination = Keystore.random().address;
     final amount = 1;
 
     group('when the key is revealed', () {
       final source = originatorKeystore;
 
-      test('it transfers the amount from source to destination', () async {
-        var beforeTransferBalance = await tezart.getBalance(address: destination);
-        final operationId = await subject(source, destination, amount);
-        await tezart.monitorOperation(operationId);
-        final afterTransferBalance = await tezart.getBalance(address: destination);
+      test('it doesnt prepend the reveal operation', () async {
+        final operationsList = await subject(source, destination, amount);
+        expect(operationsList.operations.whereType<RevealOperation>(), isEmpty);
+      });
 
-        expect(afterTransferBalance - beforeTransferBalance, equals(amount));
-        expect(RegExp(r'^o\w+$').hasMatch(operationId), true);
+      test('it contains a valid transaction operation', () async {
+        final operationsList = await subject(source, destination, amount);
+        expect(operationsList.operations.length, 1);
+        expect(operationsList.operations.first, isA<TransactionOperation>());
       });
     });
 
     group('when the key is not revealed', () {
-      Keystore source;
+      late Keystore source;
 
       setUp(() async {
         source = Keystore.random();
-        final opId = await tezart.transfer(source: originatorKeystore, destination: source.address, amount: 100000);
-        await tezart.monitorOperation(opId);
       });
 
-      test('it transfers the amount from source to destination', () async {
-        var beforeTransferBalance = await tezart.getBalance(address: destination);
-        final operationId = await subject(source, destination, amount);
-        await tezart.monitorOperation(operationId);
-        final afterTransferBalance = await tezart.getBalance(address: destination);
-        expect(afterTransferBalance - beforeTransferBalance, equals(amount));
-        expect(RegExp(r'^o\w+$').hasMatch(operationId), true);
+      test('it prepends the reveal operation', () async {
+        final operationsList = await subject(source, destination, amount);
+        expect(operationsList.operations.first, isA<RevealOperation>());
       });
 
-      test('it reveals the key', () async {
-        final operationId = await subject(source, destination, amount);
-        await tezart.monitorOperation(operationId);
-        expect(await tezart.isKeyRevealed(source.address), true);
+      test('it contains a valid transaction operation', () async {
+        final operationsList = await subject(source, destination, amount);
+        expect(operationsList.operations.length, 2);
+        expect(operationsList.operations[1], isA<TransactionOperation>());
       });
     });
   });
@@ -82,47 +75,20 @@ void main() {
   });
 
   group('#revealKey', () {
-    final subject = (Keystore keystore) => tezart.revealKey(keystore);
-    final transferToDest = (Keystore destinationKeystore) async {
-      final operationId = await tezart.transfer(
-        source: originatorKeystore,
-        destination: destinationKeystore.address,
-        amount: 10000,
-      );
-      await tezart.monitorOperation(operationId);
-    };
+    final subject = (Keystore keystore) => tezart.revealKeyOperation(keystore);
 
-    group('when the key is not revealed', () {
-      final keystore = Keystore.random();
+    final keystore = Keystore.random();
 
-      setUp(() async {
-        await transferToDest(keystore);
-      });
+    test('the operations list contains a reveal operation only', () {
+      final operationsList = subject(keystore);
 
-      test('it reveals the key', () async {
-        final operationId = await subject(keystore);
-
-        await tezart.monitorOperation(operationId);
-        final isKeyRevealed = await tezart.isKeyRevealed(keystore.address);
-
-        expect(isKeyRevealed, isTrue);
-      });
-    });
-
-    group('when the key is already revealed', () {
-      final keystore = originatorKeystore;
-
-      test('throws an error', () async {
-        expect(
-            subject(keystore),
-            throwsA(predicate(
-                (e) => e is TezartNodeError && e.message == "You're trying to reveal an already revealed key.")));
-      });
+      expect(operationsList.operations.length, 1);
+      expect(operationsList.operations.first, isA<RevealOperation>());
     });
   });
 
   group('#monitorOperation', () {
-    final subject = (String operationId) => tezart.monitorOperation(operationId);
+    final subject = (String operationId) async => tezart.monitorOperation(operationId);
 
     group('when the operationId exists', () {
       test('it monitors the operation', () async {
@@ -130,12 +96,13 @@ void main() {
         final destination = Keystore.random();
         final amount = 1;
         final balanceBeforeTransfer = await getBalance();
-        final operationId = await tezart.transfer(
+        final operationsList = await tezart.transferOperation(
           source: originatorKeystore,
           destination: destination.address,
           amount: amount,
         );
-        await subject(operationId);
+        await operationsList.execute();
+        await subject(operationsList.result.id!);
         final balanceAfterMonitoring = await getBalance();
 
         expect(balanceAfterMonitoring, lessThan(balanceBeforeTransfer));
@@ -153,37 +120,34 @@ void main() {
     });
   });
 
-// TODO: uncomment tests once Operation refactor is done
-//   group('#originateContract', () {
-//     final balanceAmount = 1;
-//     final storageLimit = 2570;
+  group('#originateContract', () {
+    final balanceAmount = 1;
+    final subject = (Keystore source) => tezart.originateContractOperation(
+          source: source,
+          balance: balanceAmount,
+          code: testContractScript,
+          storage: {'int': '12'},
+        );
 
-//     group('when all inputs are valid', () {
-//       test('it deploys the contract', () async {
-//         final subject = () => tezart.originateContract(
-//               source: originatorKeystore,
-//               balance: balanceAmount,
-//               code: testContractScript['code'],
-//               storage: testContractScript['storage'],
-//               storageLimit: storageLimit,
-//             );
+    group('when the source key is already revealed', () {
+      test('it returns an operations list containing an OriginationOperation only', () async {
+        final operationsList = await subject(originatorKeystore);
+        expect(operationsList.operations.length, 1);
+        expect(operationsList.operations.first, isA<OriginationOperation>());
+      });
+    });
 
-//         await subject();
-//       });
-//     });
+    group('when the source key is not revealed', () {
+      test('it prepends the operations list with a reveal operation', () async {
+        final operationsList = await subject(Keystore.random());
+        expect(operationsList.operations.first, isA<RevealOperation>());
+      });
 
-//     group('when script values are invalid', () {
-//       test('it fails to deploy the contract', () async {
-//         final subject = () => tezart.originateContract(
-//               source: originatorKeystore,
-//               balance: balanceAmount,
-//               code: [{}],
-//               storage: {},
-//               storageLimit: storageLimit,
-//             );
-
-//         await subject();
-//       });
-//     });
-//   });
+      test('it returns an operations list containing an origination operation in the second place', () async {
+        final operationsList = await subject(Keystore.random());
+        expect(operationsList.operations.length, 2);
+        expect(operationsList.operations[1], isA<OriginationOperation>());
+      });
+    });
+  });
 }

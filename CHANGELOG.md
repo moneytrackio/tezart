@@ -1,3 +1,16 @@
+## [1.0.0]
+
+### Added
+- micheline codec
+- contract call
+- contract origination
+- gas limit, storage limit, fees computation
+
+### Changed
+- BREAKING CHANGE: TezartClient doesn't inject the operations anymore. This responsability moved to OperationsList
+
+### Fixed
+
 ## [0.2.1]
 
 ### Added

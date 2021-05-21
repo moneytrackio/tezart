@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart' as http_client;
 import 'package:tezart/src/common/exceptions/common_exception.dart';
 import 'package:tezart/src/common/utils/enum_util.dart';
+import 'package:tezart/src/core/client/tezart_client.dart';
 
 enum TezartHttpErrorTypes {
   connectTimeout,
@@ -21,26 +22,35 @@ class TezartHttpError extends CommonException {
     TezartHttpErrorTypes.unhandled: 'Network Error',
   };
   final errorTypesMapping = {
-    http_client.DioErrorType.CONNECT_TIMEOUT: TezartHttpErrorTypes.connectTimeout,
-    http_client.DioErrorType.RECEIVE_TIMEOUT: TezartHttpErrorTypes.receiveTimeout,
-    http_client.DioErrorType.RESPONSE: TezartHttpErrorTypes.response,
-    http_client.DioErrorType.CANCEL: TezartHttpErrorTypes.cancel,
+    http_client.DioErrorType.connectTimeout: TezartHttpErrorTypes.connectTimeout,
+    http_client.DioErrorType.receiveTimeout: TezartHttpErrorTypes.receiveTimeout,
+    http_client.DioErrorType.response: TezartHttpErrorTypes.response,
+    http_client.DioErrorType.cancel: TezartHttpErrorTypes.cancel,
   };
 
   TezartHttpError(this.clientError);
 
   dynamic get responseBody => _response?.data;
-  int get statusCode => _response?.statusCode;
+  int? get statusCode => _response?.statusCode;
   TezartHttpErrorTypes get type {
     return errorTypesMapping[clientError.type] ?? TezartHttpErrorTypes.unhandled;
   }
 
-  http_client.Response get _response => clientError.response;
+  http_client.Response? get _response => clientError.response;
 
   @override
   String get key => EnumUtil.enumToString(type);
   @override
-  String get message => _response?.statusMessage ?? staticErrorsMessages[type];
+  String get message => _response?.statusMessage ?? staticErrorsMessages[type]!;
   @override
   http_client.DioError get originalException => clientError;
+}
+
+Future<T> catchHttpError<T>(Future<T> Function() func, {void Function(TezartHttpError)? onError}) async {
+  try {
+    return await func();
+  } on TezartHttpError catch (e) {
+    if (onError != null) onError(e);
+    throw TezartNodeError.fromHttpError(e);
+  }
 }

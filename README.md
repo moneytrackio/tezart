@@ -4,8 +4,6 @@
 [![GitHub Actions](https://github.com/moneytrackio/tezart/workflows/Run%20tests/badge.svg)](https://github.com/moneytrackio/tezart/actions?query=workflow%3A%22Run+tests%22)
 [![Coverage with codecov.io](https://codecov.io/gh/moneytrackio/tezart/branch/main/graph/badge.svg?token=0BOIGV5QCT)](https://codecov.io/gh/moneytrackio/tezart)
 
-*WARNING: Please be aware that this project is a work in progress. There will be breaking changes.*
-
 ## What it is 
 
 [Tezart](https://github.com/moneytrackio/tezart) is a [Dart](https://dart.dev/) library for building decentralized applications on [Tezos](https://tezos.com) blockchain.
@@ -18,6 +16,7 @@ See the [Quick start](https://moneytrackio.github.io/tezart/#/?id=quick-start) g
 
 - [Documentation](https://moneytrackio.github.io/tezart/)
 - [Contribution](https://moneytrackio.github.io/tezart/#/?id=contribute)
+- [Architecture](https://github.com/moneytrackio/tezart/blob/main/docs/ARCHITECTURE.md)
 <!--- - API Reference  API Reference will be available when the package is published to pub.dev --> 
 
 ## Feature requests and bugs 

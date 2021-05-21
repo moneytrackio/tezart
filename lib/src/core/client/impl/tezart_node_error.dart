@@ -1,5 +1,3 @@
-import 'package:meta/meta.dart';
-
 import 'package:tezart/src/common/exceptions/common_exception.dart';
 import 'package:tezart/src/common/utils/enum_util.dart';
 import 'package:tezart/src/common/utils/map_extension.dart';
@@ -24,6 +22,9 @@ enum TezartNodeErrorTypes {
   /// Happens when the counter of an operation has already been used.
   counterError,
 
+  /// Simulation status is != applied
+  simulationFailed,
+
   /// Unhandled error.
   unhandled,
 }
@@ -40,19 +41,23 @@ enum TezartNodeErrorTypes {
 ///   print(e.key); // 'alreadyRevealedKey'
 /// }
 class TezartNodeError extends CommonException {
-  final TezartHttpError cause;
-  final TezartNodeErrorTypes _inputType;
-  final String _inputMessage;
+  final TezartHttpError? cause;
+  final TezartNodeErrorTypes? _inputType;
+  final String? _inputMessage;
   final Map<String, String> metadata;
 
-  final staticErrorsMessages = {
-    TezartNodeErrorTypes.alreadyRevealedKey: "You're trying to reveal an already revealed key.",
-    TezartNodeErrorTypes.counterError: 'A counter error occured',
-    TezartNodeErrorTypes.unhandled: 'Unhandled error',
-  };
+  Map<TezartNodeErrorTypes, String> get staticErrorsMessages {
+    return {
+      TezartNodeErrorTypes.alreadyRevealedKey: "You're trying to reveal an already revealed key.",
+      TezartNodeErrorTypes.counterError: 'A counter error occured',
+      TezartNodeErrorTypes.unhandled: 'Unhandled error: ${_errorMsg}',
+    };
+  }
 
   final dynamicErrorMessages = {
     TezartNodeErrorTypes.monitoringTimedOut: (String operationId) => 'Monitoring the operation $operationId timed out',
+    TezartNodeErrorTypes.simulationFailed: (String operationKind, String reason) =>
+        'The simulation of the operation: "$operationKind" failed with error(s) : $reason',
   };
 
   /// Default constructor.
@@ -62,16 +67,17 @@ class TezartNodeError extends CommonException {
   ///     If not, it will use `staticErrorMessages[type]` or `dynamicErrorMessages[type]` (in this priority order).
   /// - [metadata] is optional and must include metadata used to compute the message.
   ///     example: `{ 'operationId': 'opId' }` for monitoring time out errors.
-  TezartNodeError({@required TezartNodeErrorTypes type, String message, this.metadata})
+  TezartNodeError({required TezartNodeErrorTypes type, String? message, metadata})
       : _inputType = type,
         _inputMessage = message,
+        metadata = metadata ?? {},
         cause = null;
 
   /// Named constructor to construct [TezartNodeError] by passing a [TezartHttpError] object.
   TezartNodeError.fromHttpError(this.cause)
       : _inputType = null,
         _inputMessage = null,
-        metadata = null;
+        metadata = {};
 
   /// Type of this.
   TezartNodeErrorTypes get type => _inputType ?? _computedType;
@@ -81,11 +87,11 @@ class TezartNodeError extends CommonException {
   String get message => _inputMessage ?? _computedMessage;
 
   TezartNodeErrorTypes get _computedType {
-    if (RegExp(r'Counter.*already used.*').hasMatch(_errorMsg)) {
+    if (RegExp(r'Counter.*already used.*').hasMatch(_errorMsg ?? '')) {
       return TezartNodeErrorTypes.counterError;
     }
 
-    if (RegExp(r'previously_revealed_key').hasMatch(_errorId)) {
+    if (RegExp(r'previously_revealed_key').hasMatch(_errorId ?? '')) {
       return TezartNodeErrorTypes.alreadyRevealedKey;
     }
 
@@ -93,8 +99,25 @@ class TezartNodeError extends CommonException {
   }
 
   // TODO: what to do when there is multiple errors ?
-  String get _errorId => cause?.responseBody?.first['id'] ?? '';
-  String get _errorMsg => cause?.responseBody?.first['msg'] ?? '';
+  String? get _errorId {
+    final response = cause?.responseBody;
+
+    try {
+      return response.first['id'];
+    } on NoSuchMethodError {
+      return null;
+    }
+  }
+
+  String? get _errorMsg {
+    final response = cause?.responseBody;
+
+    try {
+      return response.first['msg'];
+    } on NoSuchMethodError {
+      return response;
+    }
+  }
 
   /// String representation of type.
   @override
@@ -102,26 +125,22 @@ class TezartNodeError extends CommonException {
 
   String get _computedMessage {
     if (staticErrorsMessages.containsKey(type)) {
-      return staticErrorsMessages[type];
+      return staticErrorsMessages[type]!;
     }
 
     switch (type) {
       case TezartNodeErrorTypes.monitoringTimedOut:
-        {
-          return dynamicErrorMessages[type](metadata.fetch<String>('operationId'));
-        }
-        break;
+        return dynamicErrorMessages[type]!(metadata.fetch<String>('operationId'));
+      case TezartNodeErrorTypes.simulationFailed:
+        return dynamicErrorMessages[type]!(metadata.fetch<String>('operationKind'), metadata.fetch<String>('reason'));
       default:
-        {
-          throw UnimplementedError('Unimplemented error type $type');
-        }
-        break;
+        throw UnimplementedError('Unimplemented error type $type');
     }
   }
 
-  /// Cause of this, might be null.
+  /// Cause of this.
   ///
   /// It represents the error that caused this.
   @override
-  TezartHttpError get originalException => cause;
+  TezartHttpError? get originalException => cause;
 }

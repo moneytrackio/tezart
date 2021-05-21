@@ -68,12 +68,12 @@ Future<void> main() async {
   final destinationKeystore = Keystore.random();
   final client = TezartClient('http://localhost:20000');
   final amount = 10000;
-  final operationId = await client.transfer(
+  final operationsList = await client.transferOperation(
     source: sourceKeystore,
     destination: destinationKeystore.address,
     amount: amount,
   );
-  await client.monitorOperation(operationId);
+  await operationsList.executeAndMonitor();
   print(await client.getBalance(address: destinationKeystore.address));
   // => 10000
 }

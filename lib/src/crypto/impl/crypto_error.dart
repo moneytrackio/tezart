@@ -1,4 +1,3 @@
-import 'package:meta/meta.dart';
 import 'package:tezart/src/common/exceptions/common_exception.dart';
 import 'package:tezart/src/common/utils/enum_util.dart';
 
@@ -25,6 +24,11 @@ enum CryptoErrorTypes {
   ///
   /// Happens when the secret key length is != 98.
   secretKeyLengthError,
+
+  /// Invalid (string) encrypted secret key length.
+  ///
+  /// Happens when the encrypted secret key length is != 88.
+  encryptedSecretKeyLengthError,
 
   /// Invalid mnemonic.
   ///
@@ -67,7 +71,7 @@ enum CryptoErrorTypes {
 /// }
 class CryptoError extends CommonException {
   final CryptoErrorTypes _inputType;
-  final String _inputMessage;
+  final String? _inputMessage;
   final dynamic cause;
 
   final staticErrorsMessages = {
@@ -90,7 +94,7 @@ class CryptoError extends CommonException {
   /// - [message] is optional. If provided, it will be used.
   ///     If not, it will use `staticErrorMessages[type]` or `dynamicErrorMessages[type]` (in this priority order).
   /// - [cause] is optional, it represents the error that caused this.
-  CryptoError({@required CryptoErrorTypes type, String message, this.cause})
+  CryptoError({required CryptoErrorTypes type, String? message, this.cause})
       : _inputType = type,
         _inputMessage = message;
 
@@ -103,18 +107,14 @@ class CryptoError extends CommonException {
 
   String get _computedMessage {
     if (staticErrorsMessages.containsKey(type)) {
-      return staticErrorsMessages[type];
+      return staticErrorsMessages[type]!;
     }
 
     switch (type) {
       case CryptoErrorTypes.unhandled:
-        return dynamicErrorMessages[type](cause);
-
-        break;
+        return dynamicErrorMessages[type]!(cause);
       default:
         throw UnimplementedError('Unimplemented error type $type');
-
-        break;
     }
   }
 
