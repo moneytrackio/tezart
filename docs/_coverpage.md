@@ -1,4 +1,6 @@
-# Tezart <small>0.2.1</small>
+<img src="img/logo.png?raw=true" style="width: 100px;"></img>
+
+# Tezart <small>1.0.0</small>
 
 > A magic way to interact with the Tezos blockchain using [dart](https://dart.dev/).
 
