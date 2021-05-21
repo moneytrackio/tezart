@@ -63,7 +63,7 @@ class TezartClient {
     });
   }
 
-  /// Returns an [OperationsList] that reveals [source.publicKey]
+  // /// Returns an [OperationsList] that reveals [source.publicKey]
   OperationsList revealKeyOperation(Keystore source) {
     log.info('request to revealKey');
 

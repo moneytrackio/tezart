@@ -1,9 +1,6 @@
 name: Publish package to pub.dev
 on:
-  # Trigger the workflow on push or pull request on publish branch
-  push:
-    branches:   
-      - publish
+  # Trigger the workflow on pull requests on publish branch
   pull_request:
     branches:   
       - publish
