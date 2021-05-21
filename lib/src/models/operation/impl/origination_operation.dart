@@ -15,8 +15,8 @@ class OriginationOperation extends Operation {
           customFee: customFee,
         );
 
-  Future<String> get contractAddress async {
-    return memo0<Future<String>>(() async {
+  String get contractAddress {
+    return memo0<String>(() {
       if (operationsList == null) throw ArgumentError.notNull('operation.operationsList');
 
       // TODO: why does the node return a list of originated contracts ?
