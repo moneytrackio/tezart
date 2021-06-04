@@ -12,7 +12,7 @@ import 'package:tezart/tezart.dart';
 
 final source = Keystore.fromSeed('edsk3RR5U7JsUJ8ctjsuymUPayxMm4LHXaB7VJSfeyMb8fAvbJUnsa');
 final client = TezartClient('http://localhost:20000/');
-final rpcInterface = client.rpcInteface;
+final rpcInterface = client.rpcInterface;
 ```
 
 ### Enable logging
@@ -31,15 +31,17 @@ enableTezartLogger();
 
 We implemented 3 types of operations:
 
-- `TransactionOperation`: is the operation defined by the kind `transaction`. It is used to make transfers and smart contracts calls
-- `OriginationOperation`: is the operation defined by the kind `origination`. It is used to originate smart contracts
-- `RevealOperation`: is the operation defined by the kind `reveal`. It is the first operation that need to be sent from a new address. This will reveal the public key associated to an address so that everyone can verify the signature for the operation and any future operations.
+- [`TransactionOperation`](https://pub.dev/documentation/tezart/latest/tezart/TransactionOperation-class.html): is the operation defined by the kind `transaction`. It is used to make transfers and smart contracts calls
+- [`OriginationOperation`](https://pub.dev/documentation/tezart/latest/tezart/OriginationOperation-class.html): is the operation defined by the kind `origination`. It is used to originate smart contracts
+- [`RevealOperation`](https://pub.dev/documentation/tezart/latest/tezart/RevealOperation-class.html): is the operation defined by the kind `reveal`. It is the first operation that need to be sent from a new address. This will reveal the public key associated to an address so that everyone can verify the signature for the operation and any future operations.
 
 In order to inject an operation, you have to include it in an [OperationsList](#operationslist) object
 
 #### OperationsList
 
 `OperationsList` is the central class that allows you to execute, simulate, estimate and monitor a group of operations.
+
+> The source of the operations is always stored in `OperationsList`, because the operations of the same group must have the same source in Tezos.
 
 ##### Add Operation objects
 
@@ -100,14 +102,13 @@ final operationsList = await client.transferOperation({
 
 #### Contract
 
-In order to generate an `OperationsList` that makes a contract call, you have to:
+##### Origination
+
+In order to generate an `OperationsList` that makes a contract origination, you have to:
 
 - originate the contract `OperationsList` using `originateContractOperation`'s `TezartClient` method
 - `executeAndMonitor` the `OperationsList` object
 - retrieve the originated contract's address using the `OriginationOperation`'s `contractAddress` method
-- construct a `Contract` object using this address
-- use `callOperation`'s `Contract` method to generate the `OperationsList` object
-
 
 ```dart
 final code = [ { 'prim': 'storage', 'args': [ {'prim': 'nat'} ] }, { 'prim': 'parameter', 'args': [ { 'prim': 'or', 'args': [ { 'prim': 'nat', 'annots': ['%divide'] }, { 'prim': 'or', 'args': [ { 'prim': 'unit', 'annots': ['%double'] }, { 'prim': 'nat', 'annots': ['%replace'] } ] } ] } ] }, { 'prim': 'code', 'args': [ [ {'prim': 'UNPAIR'}, { 'prim': 'IF_LEFT', 'args': [ [ {'prim': 'DUP'}, { 'prim': 'PUSH', 'args': [ {'prim': 'nat'}, {'int': '5'} ] }, {'prim': 'COMPARE'}, {'prim': 'LT'}, { 'prim': 'IF', 'args': [ [], [ { 'prim': 'PUSH', 'args': [ {'prim': 'string'}, {'string': 'WrongCondition: params.divisor > 5'} ] }, {'prim': 'FAILWITH'} ] ] }, {'prim': 'SWAP'}, {'prim': 'EDIV'}, { 'prim': 'IF_NONE', 'args': [ [ { 'prim': 'PUSH', 'args': [ {'prim': 'int'}, {'int': '20'} ] }, {'prim': 'FAILWITH'} ], [ {'prim': 'CAR'} ] ] } ], [ { 'prim': 'IF_LEFT', 'args': [ [ {'prim': 'DROP'}, { 'prim': 'PUSH', 'args': [ {'prim': 'nat'}, {'int': '2'} ] }, {'prim': 'MUL'} ], [ {'prim': 'SWAP'}, {'prim': 'DROP'} ] ] } ] ] }, { 'prim': 'NIL', 'args': [ {'prim': 'operation'} ] }, {'prim': 'PAIR'} ] ] } ];
@@ -122,10 +123,46 @@ final originationOperationsList = await client.originateContractOperation(
 await originationOperationsList.executeAndMonitor();
 final originationOperation = originationOperationsList.operations.firstWhere((operation) => operation is OriginationOperation);
 final contractAddress = originationOperation.contractAddress;
+```
+
+##### Call
+
+In order to make a contract call to an entrypoint, you have to:
+
+- construct a `Contract` object using the contract address
+- use `callOperation`'s `Contract` method to generate the `OperationsList` object
+- `executeAndMonitor` the `OperationsList` object
+
+```dart
 final contract = Contract(contractAddress: contractAddress, rpcInterface: rpcInterface);
 final callContractOperationsList = await contract.callOperation(
     entrypoint: 'divide',
     params: 42,
     source: source,
 );
+await callContractOperationsList.executeAndMonitor();
+```
+
+##### Storage
+
+You can fetch the storage of a contract using `storage` getter of `Contract` class. The storage is converted from Micheline to Dart basic objects.
+
+```dart
+final contract = Contract(contractAddress: contractAddress, rpcInterface: rpcInteface);
+await contract.storage;
+```
+
+##### Introspection
+
+You can fetch the list of the entrypoints of a contract using `entrypoints` getter.
+
+```dart
+final contract = Contract(contractAddress: contractAddress, rpcInterface: rpcInterface);
+await contract.entrypoints;
+```
+
+If you want the types in Micheline of these entrypoints you can use `getContractEntrypoints`'s `RpcInterface`. This will return a `Map` that maps the entrypoints names to its types in Micheline.
+
+```dart
+await rpcInterface.getContractEntrypoints(contractAddress);
 ```

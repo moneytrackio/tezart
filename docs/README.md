@@ -10,4 +10,6 @@
 
 [filename](parts/_api_overview_and_examples.md ':include')
 
+[filename](parts/_api_reference.md ':include')
+
 [filename](parts/_contribute.md ':include')

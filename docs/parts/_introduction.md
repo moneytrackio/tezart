@@ -15,7 +15,7 @@ See the [Quick start](#quick-start) guide for more details.
 1. [Install Dart](#install-dart) and [run a Tezos sandbox locally](#run-a-tezos-sandbox-locally-optional)
 2. Clone the project:
 ```bash
-git clone git@github.com:moneytrackio/tezart.git
+git clone https://github.com/moneytrackio/tezart.git
 ```
 3. run pub get:
 ```bash
@@ -24,7 +24,7 @@ pub get
 ```
 4. Execute the example:
 ```bash
-dart tezart/example/example.dart
+dart example/example.dart
 ```
 
 > tezart/example/example.dart
