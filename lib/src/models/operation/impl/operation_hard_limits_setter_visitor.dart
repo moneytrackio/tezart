@@ -8,8 +8,8 @@ import 'operation.dart';
 class OperationHardLimitsSetterVisitor implements OperationVisitor {
   @override
   Future<void> visit(Operation operation) async {
-    operation.storageLimit = await _storage(operation);
-    operation.gasLimit = await _gas(operation);
+    operation.storageLimit ??= await _storage(operation);
+    operation.gasLimit ??= await _gas(operation);
   }
 
   Future<int> _storage(Operation operation) async {

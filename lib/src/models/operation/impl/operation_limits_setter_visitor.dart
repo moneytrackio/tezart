@@ -7,13 +7,13 @@ import 'operation.dart';
 class OperationLimitsSetterVisitor implements OperationVisitor {
   @override
   Future<void> visit(Operation operation) async {
-    operation.gasLimit = _simulationConsumedGas(operation);
-    operation.storageLimit = _simulationStorageSize(operation);
+    operation.gasLimit ??= _simulationConsumedGas(operation);
+    operation.storageLimit ??= _simulationStorageSize(operation);
 
     if (operation.kind == Kinds.origination || _isDestinationContractAllocated(operation)) {
-      operation.storageLimit = operation.storageLimit! + await _originationDefaultSize(operation);
+      operation.storageLimit ??= operation.storageLimit! + await _originationDefaultSize(operation);
     } else {
-      operation.storageLimit = _simulationStorageSize(operation);
+      operation.storageLimit ??= _simulationStorageSize(operation);
     }
   }
 
