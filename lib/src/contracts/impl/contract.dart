@@ -60,6 +60,7 @@ class Contract {
         destination: contractAddress,
         params: michelineParams,
         entrypoint: entrypoint,
+        customFee: 0
       ));
   }
 

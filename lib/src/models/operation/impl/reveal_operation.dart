@@ -6,5 +6,6 @@ class RevealOperation extends Operation {
   RevealOperation()
       : super(
           kind: Kinds.reveal,
+          customFee: 0,
         );
 }
