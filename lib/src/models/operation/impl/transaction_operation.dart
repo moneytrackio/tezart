@@ -7,6 +7,8 @@ class TransactionOperation extends Operation {
     Map<String, dynamic>? params,
     String? entrypoint,
     int? customFee,
+    int? gasLimit,
+    int? storageLimit,
   }) : super(
           kind: Kinds.transaction,
           destination: destination,
@@ -14,5 +16,7 @@ class TransactionOperation extends Operation {
           amount: amount,
           entrypoint: entrypoint,
           customFee: customFee,
+          gasLimit: gasLimit,
+          storageLimit: storageLimit,
         );
 }

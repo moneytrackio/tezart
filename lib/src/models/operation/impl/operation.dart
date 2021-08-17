@@ -70,6 +70,8 @@ class Operation {
     this.script,
     this.customFee,
     this.entrypoint,
+    this.storageLimit,
+    this.gasLimit,
   }) : fee = 0;
 
   @JsonKey(toJson: _keystoreToAddress)

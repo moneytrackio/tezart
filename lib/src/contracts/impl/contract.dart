@@ -48,6 +48,9 @@ class Contract {
     dynamic? params,
     required Keystore source,
     int amount = 0,
+    int? customFee,
+    int? gasLimit,
+    int? storageLimit,
   }) async {
     final type = await _type(entrypoint);
     final michelineParams = MichelineEncoder(type: type, params: params).encode();
@@ -60,7 +63,9 @@ class Contract {
         destination: contractAddress,
         params: michelineParams,
         entrypoint: entrypoint,
-        customFee: 0
+        customFee: customFee,
+        gasLimit: gasLimit,
+        storageLimit: storageLimit,
       ));
   }
 

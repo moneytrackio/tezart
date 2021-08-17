@@ -44,6 +44,8 @@ class TezartClient {
     required String destination,
     required int amount,
     int? customFee,
+    int? gasLimit,
+    int? storageLimit,
     bool reveal = true,
   }) async {
     return _catchHttpError<OperationsList>(() async {
@@ -55,19 +57,34 @@ class TezartClient {
             amount: amount,
             destination: destination,
             customFee: customFee,
+            gasLimit: gasLimit,
+            storageLimit: storageLimit,
           ),
         );
-      if (reveal) await _prependRevealIfNotRevealed(operationsList, source);
+      if (reveal) {
+        await _prependRevealIfNotRevealed(
+          operationsList,
+          source,
+          customFee,
+          gasLimit,
+          storageLimit,
+        );
+      }
 
       return operationsList;
     });
   }
 
   /// Returns an [OperationsList] that reveals [source.publicKey]
-  OperationsList revealKeyOperation(Keystore source) {
+  OperationsList revealKeyOperation(Keystore source, [int? customFee, int? gasLimit, int? storageLimit]) {
     log.info('request to revealKey');
 
-    return OperationsList(source: source, rpcInterface: rpcInterface)..appendOperation(RevealOperation());
+    return OperationsList(source: source, rpcInterface: rpcInterface)
+      ..appendOperation(RevealOperation(
+        customFee: customFee,
+        gasLimit: gasLimit,
+        storageLimit: storageLimit,
+      ));
   }
 
   /// Returns `true` if the public key of [address] is revealed.
@@ -116,6 +133,8 @@ class TezartClient {
     required dynamic storage,
     required int balance,
     int? customFee,
+    int? gasLimit,
+    int? storageLimit,
     bool reveal = true,
   }) async {
     return _catchHttpError<OperationsList>(() async {
@@ -130,9 +149,19 @@ class TezartClient {
             code: code,
             storage: storage,
             customFee: customFee,
+            gasLimit: gasLimit,
+            storageLimit: storageLimit,
           ),
         );
-      if (reveal) await _prependRevealIfNotRevealed(operationsList, source);
+      if (reveal) {
+        await _prependRevealIfNotRevealed(
+          operationsList,
+          source,
+          customFee,
+          gasLimit,
+          storageLimit,
+        );
+      }
 
       return operationsList;
     });
@@ -144,6 +173,13 @@ class TezartClient {
     });
   }
 
-  Future<void> _prependRevealIfNotRevealed(OperationsList list, Keystore source) async =>
-      await isKeyRevealed(source.address) ? null : list.prependOperation(RevealOperation());
+  Future<void> _prependRevealIfNotRevealed(OperationsList list, Keystore source,
+          [int? customFee, int? gasLimit, int? storageLimit]) async =>
+      await isKeyRevealed(source.address)
+          ? null
+          : list.prependOperation(RevealOperation(
+              customFee: customFee,
+              gasLimit: gasLimit,
+              storageLimit: storageLimit,
+            ));
 }
