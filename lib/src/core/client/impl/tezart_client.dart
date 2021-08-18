@@ -28,7 +28,9 @@ class TezartClient {
   /// Returns an [OperationsList] containing a [TransactionOperation] that transfers [amount] from [source]
   /// to [destination] and returns the operation group id.\
   ///
-  /// - [customFee] if set, will be used instead of the default fees computed by OperationsFeesSetterVisitor
+  /// - [customFee] if set, will be used instead of the default fees computed by OperationFeesSetterVisitor
+  /// - [gasLimit] if set, will be used instead of the default gasLimit computed by OperationFeesSetterVisitor
+  /// - [storageLimit] if set, will be used instead of the default storageLimit computed by OperationFeesSetterVisitor
   /// - [reveal] if set to true, will prepend a [RevealOperation] if [source] is not already revealed
   ///
   /// ```dart
@@ -75,7 +77,7 @@ class TezartClient {
     });
   }
 
-  /// Returns an [OperationsList] that reveals [source.publicKey]
+  /// Returns an [OperationsList] that reveals [source.publicKey].
   OperationsList revealKeyOperation(Keystore source, [int? customFee, int? gasLimit, int? storageLimit]) {
     log.info('request to revealKey');
 
@@ -124,7 +126,9 @@ class TezartClient {
   /// - [code] is the code of the smart contract in Micheline
   /// - [storage] is the initial storage of the contract in Micheline
   /// - [balance] is the balance of the originated contract
-  /// - [customFee] if set, will be used instead of the default fees computed by OperationsFeesSetterVisitor
+  /// - [customFee] if set, will be used instead of the default fees computed by OperationFeesSetterVisitor
+  /// - [gasLimit] if set, will be used instead of the default gasLimit computed by OperationFeesSetterVisitor
+  /// - [storageLimit] if set, will be used instead of the default storageLimit computed by OperationFeesSetterVisitor
   /// - [reveal] if set to true, will prepend a [RevealOperation] if [source] is not already revealed
   ///
   Future<OperationsList> originateContractOperation({
