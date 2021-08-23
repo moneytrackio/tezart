@@ -176,7 +176,7 @@ tezart::run_docs() {
 tezart::run_pana() {
 	log::info "$USAGE_RUN_PANA :"
 
-	pub global activate pana 0.15.3 > /dev/null 
+	pub global activate pana 0.20.1 > /dev/null 
 	export PATH="$PATH":"$HOME/.pub-cache/bin"
 	pub global run pana -j > pana_output.json 
 	
