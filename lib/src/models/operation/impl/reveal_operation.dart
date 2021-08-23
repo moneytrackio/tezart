@@ -5,12 +5,12 @@ import 'operation.dart';
 class RevealOperation extends Operation {
   RevealOperation({
     int? customFee,
-    int? gasLimit,
-    int? storageLimit,
+    int? customGasLimit,
+    int? customStorageLimit,
   }) : super(
           kind: Kinds.reveal,
           customFee: customFee,
-          gasLimit: gasLimit,
-          storageLimit: storageLimit,
+          customGasLimit: customGasLimit,
+          customStorageLimit: customStorageLimit,
         );
 }

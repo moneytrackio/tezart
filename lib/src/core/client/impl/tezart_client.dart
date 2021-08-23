@@ -29,8 +29,8 @@ class TezartClient {
   /// to [destination] and returns the operation group id.\
   ///
   /// - [customFee] if set, will be used instead of the default fees computed by OperationFeesSetterVisitor
-  /// - [gasLimit] if set, will be used instead of the default gasLimit computed by OperationFeesSetterVisitor
-  /// - [storageLimit] if set, will be used instead of the default storageLimit computed by OperationFeesSetterVisitor
+  /// - [customGasLimit] if set, will be used instead of the default gasLimit computed by OperationFeesSetterVisitor
+  /// - [customStorageLimit] if set, will be used instead of the default storageLimit computed by OperationFeesSetterVisitor
   /// - [reveal] if set to true, will prepend a [RevealOperation] if [source] is not already revealed
   ///
   /// ```dart
@@ -46,30 +46,32 @@ class TezartClient {
     required String destination,
     required int amount,
     int? customFee,
-    int? gasLimit,
-    int? storageLimit,
+    int? customGasLimit,
+    int? customStorageLimit,
     bool reveal = true,
   }) async {
     return _catchHttpError<OperationsList>(() async {
-      log.info('request transfer $amount µtz from $source.address to the destination $destination');
+      log.info(
+          'request transfer $amount µtz from $source.address to the destination $destination');
 
-      final operationsList = OperationsList(source: source, rpcInterface: rpcInterface)
-        ..appendOperation(
-          TransactionOperation(
-            amount: amount,
-            destination: destination,
-            customFee: customFee,
-            gasLimit: gasLimit,
-            storageLimit: storageLimit,
-          ),
-        );
+      final operationsList =
+          OperationsList(source: source, rpcInterface: rpcInterface)
+            ..appendOperation(
+              TransactionOperation(
+                amount: amount,
+                destination: destination,
+                customFee: customFee,
+                customGasLimit: customGasLimit,
+                customStorageLimit: customStorageLimit,
+              ),
+            );
       if (reveal) {
         await _prependRevealIfNotRevealed(
           operationsList,
           source,
-          customFee,
-          gasLimit,
-          storageLimit,
+          customFee: customFee,
+          customGasLimit: customGasLimit,
+          customStorageLimit: customStorageLimit,
         );
       }
 
@@ -77,15 +79,20 @@ class TezartClient {
     });
   }
 
-  /// Returns an [OperationsList] that reveals [source] public key.
-  OperationsList revealKeyOperation(Keystore source, [int? customFee, int? gasLimit, int? storageLimit]) {
+  /// Returns an [OperationsList] that reveals [source] publicKey.
+  OperationsList revealKeyOperation(
+    Keystore source, {
+    int? customFee,
+    int? customGasLimit,
+    int? customStorageLimit,
+  }) {
     log.info('request to revealKey');
 
     return OperationsList(source: source, rpcInterface: rpcInterface)
       ..appendOperation(RevealOperation(
         customFee: customFee,
-        gasLimit: gasLimit,
-        storageLimit: storageLimit,
+        customGasLimit: customGasLimit,
+        customStorageLimit: customStorageLimit,
       ));
   }
 
@@ -127,8 +134,8 @@ class TezartClient {
   /// - [storage] is the initial storage of the contract in Micheline
   /// - [balance] is the balance of the originated contract
   /// - [customFee] if set, will be used instead of the default fees computed by OperationFeesSetterVisitor
-  /// - [gasLimit] if set, will be used instead of the default gasLimit computed by OperationFeesSetterVisitor
-  /// - [storageLimit] if set, will be used instead of the default storageLimit computed by OperationFeesSetterVisitor
+  /// - [customGasLimit] if set, will be used instead of the default gasLimit computed by OperationFeesSetterVisitor
+  /// - [customStorageLimit] if set, will be used instead of the default storageLimit computed by OperationFeesSetterVisitor
   /// - [reveal] if set to true, will prepend a [RevealOperation] if [source] is not already revealed
   ///
   Future<OperationsList> originateContractOperation({
@@ -137,8 +144,8 @@ class TezartClient {
     required dynamic storage,
     required int balance,
     int? customFee,
-    int? gasLimit,
-    int? storageLimit,
+    int? customGasLimit,
+    int? customStorageLimit,
     bool reveal = true,
   }) async {
     return _catchHttpError<OperationsList>(() async {
@@ -153,17 +160,17 @@ class TezartClient {
             code: code,
             storage: storage,
             customFee: customFee,
-            gasLimit: gasLimit,
-            storageLimit: storageLimit,
+            customGasLimit: customGasLimit,
+            customStorageLimit: customStorageLimit,
           ),
         );
       if (reveal) {
         await _prependRevealIfNotRevealed(
           operationsList,
           source,
-          customFee,
-          gasLimit,
-          storageLimit,
+          customFee: customFee,
+          customGasLimit: customGasLimit,
+          customStorageLimit: customStorageLimit,
         );
       }
 
@@ -177,13 +184,18 @@ class TezartClient {
     });
   }
 
-  Future<void> _prependRevealIfNotRevealed(OperationsList list, Keystore source,
-          [int? customFee, int? gasLimit, int? storageLimit]) async =>
+  Future<void> _prependRevealIfNotRevealed(
+    OperationsList list,
+    Keystore source, {
+    int? customFee,
+    int? customGasLimit,
+    int? customStorageLimit,
+  }) async =>
       await isKeyRevealed(source.address)
           ? null
           : list.prependOperation(RevealOperation(
               customFee: customFee,
-              gasLimit: gasLimit,
-              storageLimit: storageLimit,
+              customGasLimit: customGasLimit,
+              customStorageLimit: customStorageLimit,
             ));
 }

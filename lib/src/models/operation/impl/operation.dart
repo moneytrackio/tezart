@@ -60,6 +60,10 @@ class Operation {
   final int? customFee;
   @JsonKey(name: 'storage_limit', toJson: _toString)
   int? storageLimit;
+  @JsonKey(ignore: true)
+  int? customGasLimit;
+  @JsonKey(ignore: true)
+  int? customStorageLimit;
 
   Operation({
     required this.kind,
@@ -70,8 +74,8 @@ class Operation {
     this.script,
     this.customFee,
     this.entrypoint,
-    this.storageLimit,
-    this.gasLimit,
+    this.customGasLimit,
+    this.customStorageLimit,
   }) : fee = 0;
 
   @JsonKey(toJson: _keystoreToAddress)
