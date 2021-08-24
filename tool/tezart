@@ -182,7 +182,7 @@ tezart::run_pana() {
 	
 	score=$(dart tool/pana_output_parser.dart)
 	log::info "pub.dev Score is $score"
-	if [[ $score < 70 ]]
+	if (( $score < 70 ))
 	then
 		log::error_and_exit "You must improve the pana score"
 	else
