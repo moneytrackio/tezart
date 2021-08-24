@@ -1,3 +1,13 @@
+## [1.0.1]
+
+### Added
+- custom gas limit
+- custom storage limit
+
+### Changed
+
+### Fixed
+
 ## [1.0.0]
 
 ### Added
