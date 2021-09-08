@@ -43,7 +43,8 @@ class Keystore extends Equatable {
   factory Keystore.fromSecretKey(String secretKey) {
     return crypto.catchUnhandledErrors(() {
       if (secretKey.length != _secretKeyLength) {
-        throw crypto.CryptoError(type: crypto.CryptoErrorTypes.secretKeyLengthError);
+        throw crypto.CryptoError(
+            type: crypto.CryptoErrorTypes.secretKeyLengthError);
       }
       _validateChecksum(secretKey);
 
@@ -79,11 +80,14 @@ class Keystore extends Equatable {
   /// ```
   ///
   /// Throws [CryptoError] if [mnemonic] is invalid.
-  factory Keystore.fromMnemonic(String mnemonic, {String email = '', String password = ''}) {
+  factory Keystore.fromMnemonic(String mnemonic,
+      {String email = '', String password = ''}) {
     return crypto.catchUnhandledErrors(() {
       final passphrase = '$email$password';
-      final seedBytes = crypto.seedBytesFromMnemonic(mnemonic, passphrase: passphrase);
-      final seed = crypto.encodeWithPrefix(prefix: _seedPrefix, bytes: seedBytes);
+      final seedBytes =
+          crypto.seedBytesFromMnemonic(mnemonic, passphrase: passphrase);
+      final seed =
+          crypto.encodeWithPrefix(prefix: _seedPrefix, bytes: seedBytes);
       final secretKey = crypto.seedToSecretKey(seed);
 
       return Keystore._(
@@ -99,7 +103,8 @@ class Keystore extends Equatable {
   ) {
     return crypto.catchUnhandledErrors(() {
       if (encryptedSecretKey.length != _encryptedSecretKeyLength) {
-        throw crypto.CryptoError(type: crypto.CryptoErrorTypes.encryptedSecretKeyLengthError);
+        throw crypto.CryptoError(
+            type: crypto.CryptoErrorTypes.encryptedSecretKeyLengthError);
       }
 
       final seed = crypto.encryptedSecretKeyToSeed(
@@ -130,7 +135,7 @@ class Keystore extends Equatable {
 
         return crypto.encodeWithPrefix(
           prefix: _publicKeyPrefix,
-          bytes: pk,
+          bytes: Uint8List.fromList(pk.toList()),
         );
       });
 
