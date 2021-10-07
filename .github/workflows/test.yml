@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        sdk: [2.12.4]
+        sdk: [2.14.3]
 
     services:
       flextesa:
