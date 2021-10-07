@@ -1,3 +1,12 @@
+## [2.0.0]
+
+### Added
+
+### Changed
+- replace Uint8List by ByteList after breaking change introduced in pinacl
+
+### Fixed
+
 ## [1.0.1]
 
 ### Added
