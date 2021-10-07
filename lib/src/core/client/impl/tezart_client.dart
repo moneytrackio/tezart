@@ -51,20 +51,18 @@ class TezartClient {
     bool reveal = true,
   }) async {
     return _catchHttpError<OperationsList>(() async {
-      log.info(
-          'request transfer $amount µtz from $source.address to the destination $destination');
+      log.info('request transfer $amount µtz from $source.address to the destination $destination');
 
-      final operationsList =
-          OperationsList(source: source, rpcInterface: rpcInterface)
-            ..appendOperation(
-              TransactionOperation(
-                amount: amount,
-                destination: destination,
-                customFee: customFee,
-                customGasLimit: customGasLimit,
-                customStorageLimit: customStorageLimit,
-              ),
-            );
+      final operationsList = OperationsList(source: source, rpcInterface: rpcInterface)
+        ..appendOperation(
+          TransactionOperation(
+            amount: amount,
+            destination: destination,
+            customFee: customFee,
+            customGasLimit: customGasLimit,
+            customStorageLimit: customStorageLimit,
+          ),
+        );
       if (reveal) {
         await _prependRevealIfNotRevealed(
           operationsList,

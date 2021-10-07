@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
+import 'package:pinenacl/ed25519.dart';
 import 'package:tezart/src/common/validators/hex_validator.dart';
 import 'package:tezart/src/keystore/keystore.dart';
 
@@ -61,7 +62,7 @@ class Signature extends Equatable {
   }
 
   /// Signed bytes of this.
-  Uint8List get signedBytes {
+  ByteList get signedBytes {
     return crypto.catchUnhandledErrors(() {
       final watermarkedBytes =
           watermark == null ? bytes : Uint8List.fromList(crypto.hexDecode(_watermarkToHex[watermark]!) + bytes);
@@ -76,7 +77,7 @@ class Signature extends Equatable {
   /// Base 58 encoding of this using 'edsig' prefix.
   String get edsig {
     return crypto.catchUnhandledErrors(() {
-      return crypto.encodeWithPrefix(prefix: crypto.Prefixes.edsig, bytes: signedBytes);
+      return crypto.encodeWithPrefix(prefix: crypto.Prefixes.edsig, bytes: Uint8List.fromList(signedBytes.toList()));
     });
   }
 

@@ -15,7 +15,7 @@ dependencies:
   convert: ^3.0.0 # Encoders and decoders for converting between different data representations
   dio: ^4.0.0 # http client
   equatable: ^2.0.0
-  pinenacl: ^0.2.0 # Dart implementation of TweetNacl
+  pinenacl: ^0.3.3 # Dart implementation of TweetNacl
   json_serializable: ^4.1.0 # code generation for toJson and fromJson methods
   json_annotation: ^4.0.1 # Classes and helper functions that support JSON code generation via the `json_serializable` package.
   retry: ^3.1.0 # retry a function if an error happens

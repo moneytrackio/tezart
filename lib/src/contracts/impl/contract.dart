@@ -45,7 +45,7 @@ class Contract {
   /// - when [params] are incompatible with the entrypoint signature, a [TypeError] is thrown
   Future<OperationsList> callOperation({
     String entrypoint = 'default',
-    dynamic? params,
+    dynamic params,
     required Keystore source,
     int amount = 0,
     int? customFee,

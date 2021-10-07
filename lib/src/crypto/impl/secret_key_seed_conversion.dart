@@ -34,6 +34,6 @@ String seedToSecretKey(String seed) {
 
   return encodeWithPrefix(
     prefix: secretKeyPrefix,
-    bytes: secretKey,
+    bytes: Uint8List.fromList(secretKey.toList()),
   );
 }

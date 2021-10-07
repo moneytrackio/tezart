@@ -19,14 +19,14 @@ Uint8List seedBytesFromMnemonic(String mnemonic, {String passphrase = ''}) {
   return seedBytes.sublist(0, 32);
 }
 
-Uint8List secretKeyBytesFromSeedBytes(Uint8List seed) => signingKeyFromSeedBytes(seed);
+ByteList secretKeyBytesFromSeedBytes(Uint8List seed) => signingKeyFromSeedBytes(seed);
 
-Uint8List publicKeyBytesFromSeedBytes(Uint8List seed) => signingKeyFromSeedBytes(seed).verifyKey;
+ByteList publicKeyBytesFromSeedBytes(Uint8List seed) => signingKeyFromSeedBytes(seed).verifyKey;
 
 @visibleForTesting
 SigningKey signingKeyFromSeedBytes(Uint8List seed) => SigningKey(seed: seed);
 
-Uint8List signDetached({required Uint8List bytes, required Uint8List secretKey}) {
+ByteList signDetached({required Uint8List bytes, required Uint8List secretKey}) {
   final seed = secretKey.sublist(0, 32); // the seed is the first 32 bytes of the secret key
 
   return SigningKey(seed: seed).sign(bytes).sublist(0, 64);

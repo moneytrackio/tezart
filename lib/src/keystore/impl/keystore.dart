@@ -130,7 +130,7 @@ class Keystore extends Equatable {
 
         return crypto.encodeWithPrefix(
           prefix: _publicKeyPrefix,
-          bytes: pk,
+          bytes: Uint8List.fromList(pk.toList()),
         );
       });
 
