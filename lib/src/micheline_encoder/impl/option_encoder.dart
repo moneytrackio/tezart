@@ -2,7 +2,7 @@ import 'micheline_encoder.dart';
 
 class OptionEncoder implements MichelineEncoder {
   @override
-  final dynamic? params;
+  final dynamic params;
   @override
   final Map<String, dynamic> type;
 

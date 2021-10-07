@@ -23,8 +23,7 @@ String encryptedSecretKeyToSeed({
   );
 
   final secretbox = SecretBox(encryptionKey);
-  final decryptedBytes =
-      secretbox.decrypt(ByteList.fromList(secretKeyBytes), nonce: nonce);
+  final decryptedBytes = secretbox.decrypt(ByteList.fromList(secretKeyBytes), nonce: nonce);
 
   final seed = crypto.encodeWithPrefix(
     prefix: Prefixes.edsk2,

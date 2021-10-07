@@ -26,7 +26,9 @@ class AddressDecoder implements MichelineDecoder {
         prefix = Prefixes.tz2;
       } else if (stringBytes.startsWith('0002')) {
         prefix = Prefixes.tz3;
-      } else if (stringBytes.startsWith('01')) prefix = Prefixes.KT;
+      } else if (stringBytes.startsWith('01')) {
+        prefix = Prefixes.KT;
+      }
 
       return prefix == null ? data['bytes'] : encodeWithPrefix(prefix: prefix, bytes: bytes);
     }

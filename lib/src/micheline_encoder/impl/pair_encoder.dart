@@ -33,7 +33,7 @@ class PairEncoder implements MichelineEncoder {
     throw TypeError();
   }
 
-  dynamic? get _secondParams {
+  dynamic get _secondParams {
     if (params is Map) return params;
     if (params is List) {
       if (params.length > 2) return params.skip(1).toList();
