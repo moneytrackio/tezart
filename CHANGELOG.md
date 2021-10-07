@@ -1,3 +1,12 @@
+## [2.0.1]
+
+### Added
+
+### Changed
+
+### Fixed
+- change doc to docs at root level to allow github pages build process
+
 ## [2.0.0]
 
 ### Added
