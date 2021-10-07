@@ -52,11 +52,11 @@ Following is a sample of a correct setup :
 
 ### Edit this documentation
 
-The following documentation is provided in `tezart/doc/` directory and you call the following command to serve it 
+The following documentation is provided in `tezart/docs/` directory and you call the following command to serve it 
 locally : 
 
 ```bash
-./tezart doc
+./tezart docs
 ```
 
 <img src="img/a-sample-tezart-docs.png?raw=true"></img>

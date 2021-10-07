@@ -24,7 +24,7 @@ USAGE_HELP='Display this message'
 USAGE_RUN_DOCTOR='Process to run the setup of the project'
 USAGE_RUN_TESTS='Process to run tests'
 USAGE_RUN_COVERAGE='Process to run the code coverage in dev environment'
-USAGE_RUN_DOC='Process to launch the documentation in dev environment'
+USAGE_RUN_DOCS='Process to launch the documentation in dev environment'
 USAGE_RUN_PANA='Process for analyzing the package with pana'
 
 usage() {
@@ -39,7 +39,7 @@ usage() {
 	doctor		$USAGE_RUN_DOCTOR
 	tests		$USAGE_RUN_TESTS
 	coverage 	$USAGE_RUN_COVERAGE
-	doc 		$USAGE_RUN_DOC
+	docs 		$USAGE_RUN_DOCS
 	pana 		$USAGE_RUN_PANA
 	-h 		$USAGE_HELP
 
@@ -166,11 +166,11 @@ tezart::run_tests() {
 	pub run test
 }
 
-tezart::run_doc() {
-	log::info "$USAGE_RUN_DOC :"
+tezart::run_docs() {
+	log::info "$USAGE_RUN_DOCS :"
 
 	pub global activate dhttpd > /dev/null
-	dhttpd --path doc
+	dhttpd --path docs
 }
 
 tezart::run_pana() {
@@ -203,14 +203,14 @@ tezart::run_pana() {
 RUN_DOCTOR=
 RUN_TESTS=
 RUN_COVERAGE=
-RUN_DOC=
+RUN_DOCS=
 RUN_PANA=
 
 main() {
 	[[ -n $RUN_DOCTOR ]] && tezart::run_doctor
 	[[ -n $RUN_TESTS ]] && tezart::run_tests
 	[[ -n $RUN_COVERAGE ]] && tezart::run_coverage
-	[[ -n $RUN_DOC ]] && tezart::run_doc
+	[[ -n $RUN_DOCS ]] && tezart::run_docs
 	[[ -n $RUN_PANA ]] && tezart::run_pana
 	exit 0
 }
@@ -249,8 +249,8 @@ case "$subcommand" in
 	coverage)
 		RUN_COVERAGE=1
 		;;
-	doc)
-		RUN_DOC=1
+	docs)
+		RUN_DOCS=1
 		;;
 	pana)
 		RUN_PANA=1
