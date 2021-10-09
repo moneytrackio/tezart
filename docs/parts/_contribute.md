@@ -6,17 +6,36 @@ You can :
 - submit bug reports or feature requests,
 - ask questions about it on [r/Tezos](http://reddit.com/r/tezos/) or the [Tezos StackExchange](https://tezos.stackexchange.com/). 
 
-[Pull Requests are welcome as well !](#feature-requests-and-bugs)  
+[Pull Requests are welcome as well !](#feature-requests-and-bugs)
 
 ### Project versionning
 
-The versioning scheme we use is [SemVer](http://semver.org/). Given a version number MAJOR.MINOR.PATCH, increment the:
+The versioning scheme we use is [SemVer](http://semver.org/). Version numbers
+follows the MAJOR.MINOR.PATCH pattern:
 
-- **MAJOR** version when you make incompatible API changes,
-- **MINOR** version when you add functionality in a backwards compatible manner, and
-- **PATCH** version when you make backwards compatible bug fixes. 
+- **MAJOR** version for incompatible API changes,
+- **MINOR** version for backwards compatible features, and
+- **PATCH** version for make backwards compatible bug fixes.
 
 Read [dart package versioning](https://dart.dev/tools/pub/versioning) to learn more.
+
+### Branching model
+
+This repository use a simple branch model, because we will not maintain more
+than 1 major version of the library in parallel.
+
+- `main` branch is the stable branch, containing the latest released version of
+  the library;
+- `develop` branch is the development branch, from which all new features branch
+  must be created, and pull requests targeted.
+
+All the releases are created from tags, themselves created from `main` branch.
+
+Contributors must use the following rules when creating branches:
+
+- `release/<feature-name>` for major changes;
+- `feat/<feature-name>` for backwards compatible changes;
+- `fix/<fix-name>` for backwards compatible bug fixes.
 
 ### Setup your development environment
 
