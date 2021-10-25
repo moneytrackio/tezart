@@ -34,7 +34,7 @@ class TezartHttpClient {
   Future<http_client.Response> get(String path, {Map<String, dynamic>? params}) {
     log.info('request to get from path: $path');
 
-    return _retryOnTezartHttpError(
+    return _retryOnSocketException(
       () => _handleClientError(
         () => client.get(path, queryParameters: params),
       ),
@@ -45,7 +45,7 @@ class TezartHttpClient {
     String path, {
     Map<String, dynamic>? params,
   }) {
-    return _retryOnTezartHttpError(
+    return _retryOnSocketException(
       () => _handleClientError(
         () => client.get<http_client.ResponseBody>(
           path,
@@ -58,7 +58,7 @@ class TezartHttpClient {
     );
   }
 
-  Future<T> _retryOnTezartHttpError<T>(Future<T> Function() func) {
+  Future<T> _retryOnSocketException<T>(Future<T> Function() func) {
     final r = RetryOptions(maxAttempts: 3);
 
     return r.retry<T>(
