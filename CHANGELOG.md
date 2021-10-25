@@ -1,3 +1,12 @@
+## [2.0.2]
+
+### Added
+
+### Changed
+
+### Fixed
+- retry http get requests on SocketException
+
 ## [2.0.1]
 
 ### Added
