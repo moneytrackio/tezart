@@ -51,6 +51,7 @@ class OperationsMonitor {
   }
 
   Future<bool> _isOperationIdIncludedInBlock({required String blockHash, required String operationId}) async {
+    await Future.delayed(Duration(seconds: 2));
     final operationHashesList = await rpcInterface.transactionsOperationHashes(level: blockHash);
 
     return operationHashesList.contains(operationId);
