@@ -28,7 +28,11 @@ class TezartHttpClient {
 
   Future<http_client.Response> post(String path, {dynamic data}) {
     log.info('request to post to path: $path');
-    return _handleClientError(() => client.post(path, data: data));
+    return _retryOnSocketException(
+      () => _handleClientError(
+        () => client.post(path, data: data),
+      ),
+    );
   }
 
   Future<http_client.Response> get(String path, {Map<String, dynamic>? params}) {
