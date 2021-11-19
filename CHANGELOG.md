@@ -1,3 +1,12 @@
+## [2.0.3]
+
+### Added
+
+### Changed
+
+### Fixed
+- add sleep on operation monitor
+
 ## [2.0.2]
 
 ### Added
