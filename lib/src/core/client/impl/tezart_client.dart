@@ -51,18 +51,143 @@ class TezartClient {
     bool reveal = true,
   }) async {
     return _catchHttpError<OperationsList>(() async {
-      log.info('request transfer $amount µtz from $source.address to the destination $destination');
+      log.info(
+          'request transfer $amount µtz from $source.address to the destination $destination');
 
-      final operationsList = OperationsList(source: source, rpcInterface: rpcInterface)
-        ..appendOperation(
-          TransactionOperation(
-            amount: amount,
-            destination: destination,
-            customFee: customFee,
-            customGasLimit: customGasLimit,
-            customStorageLimit: customStorageLimit,
-          ),
+      final operationsList =
+          OperationsList(source: source, rpcInterface: rpcInterface)
+            ..appendOperation(
+              TransactionOperation(
+                amount: amount,
+                destination: destination,
+                customFee: customFee,
+                customGasLimit: customGasLimit,
+                customStorageLimit: customStorageLimit,
+              ),
+            );
+      if (reveal) {
+        await _prependRevealIfNotRevealed(
+          operationsList,
+          source,
+          customFee: customFee,
+          customGasLimit: customGasLimit,
+          customStorageLimit: customStorageLimit,
         );
+      }
+
+      return operationsList;
+    });
+  }
+
+  Future<OperationsList> transferFA12Tokens({
+    required Keystore source,
+    required String destination,
+    required String contractAddress,
+    required int amount,
+    int? customFee,
+    int? customGasLimit,
+    int? customStorageLimit,
+    bool reveal = true,
+  }) async {
+    final michelineParams = {
+      'prim': 'Pair',
+      'args': [
+        {'string': source.address},
+        {
+          'prim': 'Pair',
+          'args': [
+            {'string': destination},
+            {'int': amount.toString()}
+          ]
+        }
+      ]
+    };
+
+    return _catchHttpError<OperationsList>(() async {
+      log.info('Transfering FA1.2 Tokens');
+
+      final operationsList =
+          OperationsList(source: source, rpcInterface: rpcInterface)
+            ..appendOperation(
+              TransactionOperation(
+                entrypoint: 'transfer',
+                amount: amount,
+                destination: destination,
+                customFee: customFee,
+                customGasLimit: customGasLimit,
+                customStorageLimit: customStorageLimit,
+                params: michelineParams,
+              ),
+            );
+
+      if (reveal) {
+        await _prependRevealIfNotRevealed(
+          operationsList,
+          source,
+          customFee: customFee,
+          customGasLimit: customGasLimit,
+          customStorageLimit: customStorageLimit,
+        );
+      }
+
+      return operationsList;
+    });
+  }
+
+  Future<OperationsList> transferFA2Tokens({
+    required Keystore source,
+    required String destination,
+    required String contractAddress,
+    required int tokenID,
+    required int amount,
+    int? customFee,
+    int? customGasLimit,
+    int? customStorageLimit,
+    bool reveal = true,
+  }) async {
+    final michelineParams = {
+      'entrypoint': 'transfer',
+      'value': [
+        {
+          'prim': 'Pair',
+          'args': [
+            {'string': source.address},
+            [
+              {
+                'prim': 'Pair',
+                'args': [
+                  {'string': destination},
+                  {
+                    'prim': 'Pair',
+                    'args': [
+                      {'int': tokenID.toString()},
+                      {'int': amount.toString()},
+                    ]
+                  },
+                ],
+              }
+            ]
+          ]
+        }
+      ]
+    };
+
+    return _catchHttpError<OperationsList>(() async {
+      log.info('Transfering FA2 Tokens');
+
+      final operationsList =
+          OperationsList(source: source, rpcInterface: rpcInterface)
+            ..appendOperation(
+              TransactionOperation(
+                amount: amount,
+                destination: destination,
+                customFee: customFee,
+                customGasLimit: customGasLimit,
+                customStorageLimit: customStorageLimit,
+                params: michelineParams,
+              ),
+            );
+
       if (reveal) {
         await _prependRevealIfNotRevealed(
           operationsList,

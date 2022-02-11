@@ -88,8 +88,16 @@ class Operation {
   @JsonKey()
   Map<String, dynamic>? get parameters {
     var result = <String, dynamic>{};
-    if (entrypoint != null) result['entrypoint'] = entrypoint;
-    if (params != null) result['value'] = params;
+    if (params != null) {
+      if (params!.containsKey('entrypoint')) {
+        result = params!;
+      } else {
+        if (entrypoint != null) {
+          result['entrypoint'] = entrypoint;
+          result['value'] = params;
+        }
+      }
+    }
 
     return result.keys.isEmpty ? null : result;
   }
@@ -99,7 +107,8 @@ class Operation {
 
   Map<String, dynamic> toJson() => _$OperationToJson(this);
 
-  static String? _toString(int? integer) => integer == null ? null : integer.toString();
+  static String? _toString(int? integer) =>
+      integer == null ? null : integer.toString();
   static String _kindToString(Kinds kind) => EnumUtil.enumToString(kind);
   static String _keystoreToAddress(Keystore keystore) => keystore.address;
 
