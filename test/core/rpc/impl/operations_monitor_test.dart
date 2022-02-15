@@ -9,7 +9,6 @@ import 'package:tezart/src/core/rpc/impl/operations_monitor.dart';
 import 'package:tezart/src/core/rpc/impl/rpc_interface_paths.dart' as paths;
 import 'package:tezart/src/core/rpc/impl/tezart_http_client.dart';
 
-import 'package:tezart/src/core/rpc/rpc_interface.dart';
 import 'package:tezart/tezart.dart';
 
 import '../../../env/env.dart';

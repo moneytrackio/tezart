@@ -4,9 +4,9 @@ import 'operation.dart';
 
 class OperationFeesSetterVisitor implements OperationVisitor {
   static const _baseOperationMinimalFee = 100;
-  static const _gasBuffer = 100;
   static const _minimalFeePerByte = 1;
   static const _minimalFeePerGas = 0.1;
+  static const _signatureSize = 64;
 
   @override
   Future<void> visit(Operation operation) async {
@@ -32,12 +32,21 @@ class OperationFeesSetterVisitor implements OperationVisitor {
   int _operationFee(Operation operation) {
     if (operation.gasLimit == null) throw ArgumentError.notNull('operation.gasLimit');
 
-    return ((operation.gasLimit! + _gasBuffer) * _minimalFeePerGas + _operationSize(operation) * _minimalFeePerByte)
-        .ceil();
+    final gas_fee = operation.gasLimit! * _minimalFeePerGas;
+    final size_fee = _operationSize(operation) * _minimalFeePerByte;
+
+    return (gas_fee + size_fee).ceil();
   }
 
-  // TODO: Why divide by two ?
   int _operationSize(Operation operation) {
+    return (_signedOperationListSize(operation) / operation.operationsList!.operations.length).ceil();
+  }
+
+  int _signedOperationListSize(Operation operation) {
+    return (_unsignedOperationListSize(operation) + _signatureSize);
+  }
+
+  int _unsignedOperationListSize(Operation operation) {
     final operationsList = operation.operationsList;
     if (operationsList == null) throw ArgumentError.notNull('operation.operationsList');
 
@@ -45,11 +54,13 @@ class OperationFeesSetterVisitor implements OperationVisitor {
     if (operationsListResult.forgedOperation == null) {
       throw ArgumentError.notNull('operation.operationsList.result.forgedOperation');
     }
-
-    return (operationsList.result.forgedOperation!.length / 2 / operationsList.operations.length).ceil();
+    return (operationsList.result.forgedOperation!.length / 2).ceil();
   }
 
   Future<int> _totalCost(Operation operation) async {
-    return (await _burnFee(operation)) + _minimalFee(operation);
+    final burnFee = await _burnFee(operation);
+    final minimalFee = _minimalFee(operation);
+
+    return (burnFee + minimalFee);
   }
 }

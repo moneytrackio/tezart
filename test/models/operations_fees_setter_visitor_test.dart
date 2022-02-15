@@ -41,7 +41,7 @@ void main() {
 
     test('it computes the fees using the operation simulation', () async {
       await subject();
-      expect(operation.fee, lessThan(64592));
+      expect(operation.fee, lessThan(64657));
     });
   });
 }
