@@ -5,9 +5,11 @@ import 'package:tezart/src/models/operation/operation.dart';
 import 'operation.dart';
 
 class OperationLimitsSetterVisitor implements OperationVisitor {
+  static const _gasBuffer = 100;
+
   @override
   Future<void> visit(Operation operation) async {
-    operation.gasLimit = operation.customGasLimit ?? _simulationConsumedGas(operation);
+    operation.gasLimit = operation.customGasLimit ?? _gasLimitFromConsumed(operation);
     operation.storageLimit = operation.customStorageLimit ?? _simulationStorageSize(operation);
 
     if (operation.customStorageLimit != null) return;
@@ -26,6 +28,10 @@ class OperationLimitsSetterVisitor implements OperationVisitor {
 
   int _simulationStorageSize(Operation operation) {
     return int.parse(_simulationResult(operation)['metadata']['operation_result']['paid_storage_size_diff'] ?? '0');
+  }
+
+  int _gasLimitFromConsumed(Operation operation) {
+    return (_simulationConsumedGas(operation) + _gasBuffer);
   }
 
   int _simulationConsumedGas(Operation operation) {

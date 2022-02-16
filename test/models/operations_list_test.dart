@@ -51,10 +51,10 @@ void main() {
           final result = await subject(source, destination, amount);
           final operation = result.operations.first;
 
-          expect(operation.gasLimit, 1420);
+          expect(operation.gasLimit, 1520);
           expect(operation.storageLimit, 257);
           // can't test equality because there might be a difference of ~= 5 µtz because of the forged operation size difference
-          expect(operation.fee, lessThan(64597));
+          expect(operation.fee, lessThan(64656));
         });
       });
 
@@ -86,15 +86,15 @@ void main() {
           final revealOperation = result.operations.first;
           final transactionOperation = result.operations[1];
 
-          expect(revealOperation.gasLimit, 1000);
+          expect(revealOperation.gasLimit, 1100);
           expect(revealOperation.storageLimit, 0);
           // can't test equality because there might be a difference of ~= 5 µtz because of the forged operation size difference
-          expect(revealOperation.fee, lessThan(290));
+          expect(revealOperation.fee, lessThan(320));
 
-          expect(transactionOperation.gasLimit, 1420);
+          expect(transactionOperation.gasLimit, 1520);
           expect(transactionOperation.storageLimit, 257);
           // can't test equality because there might be a difference of ~= 5 µtz because of the forged operation size difference
-          expect(transactionOperation.fee, lessThan(64580));
+          expect(transactionOperation.fee, lessThan(64612));
         });
       });
     });
@@ -137,10 +137,10 @@ void main() {
           final result = await subject(keystore);
           final revealOperation = result.operations.first;
 
-          expect(revealOperation.gasLimit, 1000);
+          expect(revealOperation.gasLimit, 1100);
           expect(revealOperation.storageLimit, 0);
           // can't test equality because there might be a difference of ~= 5 µtz because of the forged operation size difference
-          expect(revealOperation.fee, lessThan(305));
+          expect(revealOperation.fee, lessThan(372));
         });
       });
 
@@ -200,10 +200,10 @@ void main() {
           );
           final originationOperation = result.operations.first;
 
-          expect(originationOperation.gasLimit, 1405);
+          expect(originationOperation.gasLimit, 1505);
           expect(originationOperation.storageLimit, 295);
           // can't test equality because there might be a difference of ~= 5 µtz because of the forged operation size difference
-          expect(originationOperation.fee, lessThan(74125));
+          expect(originationOperation.fee, lessThan(74171));
         });
       });
 

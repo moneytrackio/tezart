@@ -1,7 +1,4 @@
 import 'package:memoize/memoize.dart';
-import 'package:tezart/src/core/rpc/impl/rpc_interface.dart';
-import 'package:tezart/src/micheline_decoder/impl/micheline_decoder.dart';
-import 'package:tezart/src/micheline_encoder/impl/micheline_encoder.dart';
 import 'package:tezart/tezart.dart';
 
 /// A class that handles Tezos's contracts

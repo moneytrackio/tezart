@@ -1,8 +1,5 @@
-import 'dart:typed_data';
-
 import 'package:bip39/bip39.dart' as bip39;
 import 'package:meta/meta.dart';
-import 'package:pinenacl/api.dart';
 import 'package:pinenacl/ed25519.dart';
 import 'package:tezart/tezart.dart';
 
