@@ -1,5 +1,6 @@
 import 'package:ansicolor/ansicolor.dart';
 import 'package:logging/logging.dart';
+import 'dart:developer';
 
 final _green = AnsiPen()..green();
 final _cyan = AnsiPen()..cyan();
@@ -44,5 +45,13 @@ void enableTezartLogger({Level level = Level.ALL}) {
       level: record.level.name,
       message: record.message,
     );
+  });
+}
+
+/// Enables the developer logs.
+void enableTezartDevLogs({Level level = Level.ALL}) {
+  Logger.root.level = level;
+  Logger.root.onRecord.listen((record) {
+    log(record.message, level: record.level.value, time: record.time, name: record.loggerName);
   });
 }

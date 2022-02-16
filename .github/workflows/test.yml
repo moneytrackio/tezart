@@ -15,19 +15,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        sdk: [2.14.3]
+        sdk: [2.15.1]
 
     services:
       flextesa:
-        image: othmanemtk/flextesa-delphibox:1.0.2
+        image: moneytrack/flextesa:latest
         ports:
         - 20000:20000
         options: >-
           -e block_time=2
-          --health-cmd "curl -f localhost:20000/chains/main/mempool/pending_operations || exit 1"
-          --health-interval 2s
-          --health-timeout 60s
-
     steps:
     - name: Git checkout
       uses: actions/checkout@v2

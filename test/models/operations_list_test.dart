@@ -51,7 +51,7 @@ void main() {
           final result = await subject(source, destination, amount);
           final operation = result.operations.first;
 
-          expect(operation.gasLimit, 1427);
+          expect(operation.gasLimit, 1420);
           expect(operation.storageLimit, 257);
           // can't test equality because there might be a difference of ~= 5 µtz because of the forged operation size difference
           expect(operation.fee, lessThan(64597));
@@ -91,7 +91,7 @@ void main() {
           // can't test equality because there might be a difference of ~= 5 µtz because of the forged operation size difference
           expect(revealOperation.fee, lessThan(290));
 
-          expect(transactionOperation.gasLimit, 1427);
+          expect(transactionOperation.gasLimit, 1420);
           expect(transactionOperation.storageLimit, 257);
           // can't test equality because there might be a difference of ~= 5 µtz because of the forged operation size difference
           expect(transactionOperation.fee, lessThan(64580));
@@ -200,7 +200,7 @@ void main() {
           );
           final originationOperation = result.operations.first;
 
-          expect(originationOperation.gasLimit, 1564);
+          expect(originationOperation.gasLimit, 1405);
           expect(originationOperation.storageLimit, 295);
           // can't test equality because there might be a difference of ~= 5 µtz because of the forged operation size difference
           expect(originationOperation.fee, lessThan(74125));

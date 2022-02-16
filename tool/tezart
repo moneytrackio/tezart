@@ -110,7 +110,7 @@ tezart::_init_env_var() {
 }
 
 tezart::_run_build_runner() {
-	base_command="pub run build_runner build"
+	base_command="dart pub run build_runner build"
 	options=$([ "$CI" == true ] && echo "--delete-conflicting-outputs" || echo "")
 	command="$base_command $options"
 	eval $command
@@ -123,14 +123,14 @@ tezart::_run_build_runner() {
 tezart::run_coverage() {
 	log::info "$USAGE_RUN_COVERAGE :"
 
-	pub get
+	dart pub get
 	tezart::_run_build_runner
 
 	tezart::_check_localhost_chain
 	tezart::_init_env_var
 
-	pub run test --coverage ./coverage
-	pub global activate coverage > /dev/null
+	dart pub run test --coverage ./coverage
+	dart pub global activate coverage > /dev/null
 	export PATH="$PATH":"$HOME/.pub-cache/bin"
 	format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.packages --report-on=lib
 
@@ -160,25 +160,25 @@ tezart::run_tests() {
 
 	echo -e '\n'
 
-	pub get
+	dart pub get
 	tezart::_run_build_runner
 
-	pub run test
+	dart pub run test
 }
 
 tezart::run_docs() {
 	log::info "$USAGE_RUN_DOCS :"
 
-	pub global activate dhttpd > /dev/null
+	dart pub global activate dhttpd > /dev/null
 	dhttpd --path docs
 }
 
 tezart::run_pana() {
 	log::info "$USAGE_RUN_PANA :"
 
-	pub global activate pana 0.20.1 > /dev/null 
+	dart pub global activate pana 0.20.1 > /dev/null 
 	export PATH="$PATH":"$HOME/.pub-cache/bin"
-	pub global run pana -j > pana_output.json 
+	dart pub global run pana -j > pana_output.json 
 	
 	score=$(dart tool/pana_output_parser.dart)
 	log::info "pub.dev Score is $score"
