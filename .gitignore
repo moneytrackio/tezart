@@ -90,3 +90,6 @@ pubspec.lock
 
 # pana
 pana_output.json
+
+# mocks
+*.mocks.dart
