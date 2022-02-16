@@ -8,8 +8,8 @@ pre-commit:
   commands:
     dartanalyzer:
       files: &staged_files git status --short | grep '^\w.' | xargs ls -1 2>/dev/null | grep .dart$ | grep -v .mocks.dart$
-      run: dartanalyzer --fatal-infos --fatal-warnings {files}
+      run: dart analyze --fatal-infos --fatal-warnings {files}
 
     dartfmt:
       files: *staged_files
-      run: dartfmt --set-exit-if-changed -l "120" -n {files}
+      run:  dart format --set-exit-if-changed -l "120" {files}

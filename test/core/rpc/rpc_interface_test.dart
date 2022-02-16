@@ -15,7 +15,8 @@ void main() {
     test('it returns pending operations', () async {
       final result = await subject();
 
-      expect(result.keys, equals(['applied', 'refused', 'branch_refused', 'branch_delayed', 'unprocessed']));
+      expect(
+          result.keys, equals(['applied', 'refused', 'outdated', 'branch_refused', 'branch_delayed', 'unprocessed']));
     });
   });
 
