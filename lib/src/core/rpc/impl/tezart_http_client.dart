@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart' as http_client;
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:logging/logging.dart';
 import 'package:retry/retry.dart';
 
@@ -24,6 +25,14 @@ class TezartHttpClient {
 
     final options = http_client.BaseOptions(baseUrl: baseUrl, contentType: 'application/json');
     this.client = http_client.Dio(options);
+    this.client.interceptors.add(PrettyDioLogger(
+          logPrint: log.fine,
+          requestHeader: true,
+          requestBody: true,
+          responseBody: true,
+          responseHeader: false,
+          compact: false,
+        ));
   }
 
   Future<http_client.Response> post(String path, {dynamic data}) {

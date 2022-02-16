@@ -17,11 +17,17 @@ final rpcInterface = client.rpcInterface;
 
 ### Enable logging
 
-if you want this library to perform logging, you have to enable it :
-
+if you want this library to perform logging into the sandard output, you ay to enable it :
 ```dart
 enableTezartLogger();
 ```
+
+and/or if you want tezart to log into the [developer tools log](https://api.flutter.dev/flutter/dart-developer/dart-developer-library.html)
+```dart
+enableTezartDevLogs();
+```
+
+
 
 ### Tezos Chain Operations
 

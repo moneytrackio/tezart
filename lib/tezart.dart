@@ -7,6 +7,7 @@
 /// - [TezartClient]
 /// - [TezartNodeError]
 /// - [enableTezartLogger]
+/// - [enableTezartDevLogs]
 /// - [Contract]
 /// - [MichelineDecoder]
 /// - [MichelineEncoder]
