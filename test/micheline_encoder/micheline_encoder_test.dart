@@ -22,6 +22,10 @@ void main() {
                   {
                     'prim': 'string',
                     'annots': ['%id']
+                  },
+                  {
+                    'prim': 'string',
+                    'annots': ['%third']
                   }
                 ]
               },
@@ -42,6 +46,7 @@ void main() {
         'reference': 'reference',
         'id': 'id',
         'expires_at': DateTime.utc(2020, 1, 1),
+        'third': 'third'
       };
 
       test('it returns a valid value', () {
@@ -55,7 +60,8 @@ void main() {
                   'prim': 'Pair',
                   'args': [
                     {'int': '1577836800'},
-                    {'string': 'id'}
+                    {'string': 'id'},
+                    {'string': 'third'}
                   ]
                 },
                 {'bytes': 'payload'}
@@ -126,6 +132,35 @@ void main() {
           ],
           'prim': 'Pair',
         });
+      });
+    });
+  });
+
+  group('With a comb pair', () {
+    final params = ['1234', 'KT1UDJmqKvMYRcGzP2TSFhQqejS2CKaDsNEx', '4567'];
+    final type = {
+      'prim': 'pair',
+      'args': [
+        {
+          'prim': 'string',
+        },
+        {
+          'prim': 'string',
+        },
+        {
+          'prim': 'string',
+        }
+      ]
+    };
+
+    test('it returns a valid value', () {
+      expect(subject(type, params), {
+        'prim': 'Pair',
+        'args': [
+          {'string': '1234'},
+          {'string': 'KT1UDJmqKvMYRcGzP2TSFhQqejS2CKaDsNEx'},
+          {'string': '4567'}
+        ]
       });
     });
   });

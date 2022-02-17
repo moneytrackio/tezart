@@ -35,7 +35,7 @@ class PairEncoder implements MichelineEncoder {
   dynamic _paramN(int n) {
     if (params is Map) return params;
     if (params is List) {
-      var isLastArg = (n == type['args'].length);
+      var isLastArg = (n == type['args'].length - 1);
       // Handle the case when last arg is i Pair, which arguments are the last elements of the data
       if (isLastArg && params.length > _argsCount) {
         return params.skip(_argsCount - 1).toList();
