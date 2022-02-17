@@ -6,6 +6,6 @@ abstract class CommonException implements Exception {
 
   @override
   String toString() {
-    return '$runtimeType: got code $key with msg $message.';
+    return '$runtimeType: got code $key with msg `$message.`';
   }
 }
