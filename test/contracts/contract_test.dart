@@ -1,6 +1,4 @@
 import 'package:test/test.dart';
-import 'package:tezart/src/contracts/contract.dart';
-import 'package:tezart/src/core/rpc/rpc_interface.dart';
 import 'package:tezart/tezart.dart';
 
 import '../env/env.dart';
@@ -117,6 +115,49 @@ void main() {
       test('it throws an error', () {
         // TODO: throw TezartNodeError or ContractError ?
         expect(() => subject(), throwsA(predicate((e) => e is TezartHttpError)));
+      });
+    });
+  });
+
+  group('#multiparams_entrypoints', () {
+    final subject = () => Contract(
+          contractAddress: contractAddress,
+          rpcInterface: rpcInterface,
+        ).entrypoints;
+
+    group('when the contract address exists', () {
+      late Contract contract;
+
+      setUp(() async {
+        await originateContractSetUp(demoContract, {
+          'prim': 'Pair',
+          'args': [[], []]
+        });
+        contract = Contract(contractAddress: contractAddress, rpcInterface: rpcInterface);
+      });
+
+      test('it returns the entrypoints of the contract', () async {
+        expect(await subject(), ['always_fail', 'add_third', 'add_second', 'add_first']);
+      });
+      group('#callOperation', () {
+        final subject = (dynamic params, String entrypoint) async {
+          final operationsList = await contract.callOperation(source: source, entrypoint: entrypoint, params: params);
+          await operationsList.executeAndMonitor();
+        };
+
+        group('when the params are valid', () {
+          final params = {'first': '1', 'second': '2', 'third': '3', 'key': 'key'};
+          final entrypoint = 'add_third';
+
+          test('it updates the storage value correctly', () async {
+            await subject(params, entrypoint);
+            final storage = (await contract.storage);
+            final BigMap bigMap = storage['big_map_second'];
+            final value = await bigMap.fetch(key: 'key', rpcInterface: rpcInterface);
+
+            expect(value, '123');
+          });
+        });
       });
     });
   });

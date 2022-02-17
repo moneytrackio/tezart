@@ -411,3 +411,272 @@ final multipleStructuresContract = [
     ]
   }
 ];
+
+final List<Map<String, dynamic>> demoContract = [
+  {
+    'prim': 'storage',
+    'args': [
+      {
+        'prim': 'pair',
+        'args': [
+          {
+            'prim': 'big_map',
+            'args': [
+              {'prim': 'string'},
+              {'prim': 'int'}
+            ],
+            'annots': ['%big_map_first']
+          },
+          {
+            'prim': 'big_map',
+            'args': [
+              {'prim': 'string'},
+              {'prim': 'string'}
+            ],
+            'annots': ['%big_map_second']
+          }
+        ]
+      }
+    ]
+  },
+  {
+    'prim': 'parameter',
+    'args': [
+      {
+        'prim': 'or',
+        'args': [
+          {
+            'prim': 'or',
+            'args': [
+              {
+                'prim': 'pair',
+                'args': [
+                  {
+                    'prim': 'string',
+                    'annots': ['%key']
+                  },
+                  {
+                    'prim': 'int',
+                    'annots': ['%value']
+                  }
+                ],
+                'annots': ['%add_first']
+              },
+              {
+                'prim': 'pair',
+                'args': [
+                  {
+                    'prim': 'string',
+                    'annots': ['%key']
+                  },
+                  {
+                    'prim': 'string',
+                    'annots': ['%value']
+                  }
+                ],
+                'annots': ['%add_second']
+              }
+            ]
+          },
+          {
+            'prim': 'or',
+            'args': [
+              {
+                'prim': 'pair',
+                'args': [
+                  {
+                    'prim': 'pair',
+                    'args': [
+                      {
+                        'prim': 'string',
+                        'annots': ['%first']
+                      },
+                      {
+                        'prim': 'string',
+                        'annots': ['%key']
+                      }
+                    ]
+                  },
+                  {
+                    'prim': 'pair',
+                    'args': [
+                      {
+                        'prim': 'string',
+                        'annots': ['%second']
+                      },
+                      {
+                        'prim': 'string',
+                        'annots': ['%third']
+                      }
+                    ]
+                  }
+                ],
+                'annots': ['%add_third']
+              },
+              {
+                'prim': 'nat',
+                'annots': ['%always_fail']
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    'prim': 'code',
+    'args': [
+      [
+        {'prim': 'UNPAIR'},
+        {
+          'prim': 'IF_LEFT',
+          'args': [
+            [
+              {
+                'prim': 'IF_LEFT',
+                'args': [
+                  [
+                    {'prim': 'SWAP'},
+                    {'prim': 'UNPAIR'},
+                    {
+                      'prim': 'DUP',
+                      'args': [
+                        {'int': '3'}
+                      ]
+                    },
+                    {'prim': 'CDR'},
+                    {'prim': 'SOME'},
+                    {
+                      'prim': 'DIG',
+                      'args': [
+                        {'int': '3'}
+                      ]
+                    },
+                    {'prim': 'CAR'},
+                    {'prim': 'UPDATE'},
+                    {'prim': 'PAIR'}
+                  ],
+                  [
+                    {'prim': 'SWAP'},
+                    {'prim': 'UNPAIR'},
+                    {'prim': 'SWAP'},
+                    {
+                      'prim': 'DUP',
+                      'args': [
+                        {'int': '3'}
+                      ]
+                    },
+                    {'prim': 'CDR'},
+                    {'prim': 'SOME'},
+                    {
+                      'prim': 'DIG',
+                      'args': [
+                        {'int': '3'}
+                      ]
+                    },
+                    {'prim': 'CAR'},
+                    {'prim': 'UPDATE'},
+                    {'prim': 'SWAP'},
+                    {'prim': 'PAIR'}
+                  ]
+                ]
+              }
+            ],
+            [
+              {
+                'prim': 'IF_LEFT',
+                'args': [
+                  [
+                    {'prim': 'SWAP'},
+                    {'prim': 'UNPAIR'},
+                    {'prim': 'SWAP'},
+                    {
+                      'prim': 'DIG',
+                      'args': [
+                        {'int': '2'}
+                      ]
+                    },
+                    {'prim': 'DUP'},
+                    {
+                      'prim': 'GET',
+                      'args': [
+                        {'int': '4'}
+                      ]
+                    },
+                    {'prim': 'SWAP'},
+                    {'prim': 'DUP'},
+                    {
+                      'prim': 'GET',
+                      'args': [
+                        {'int': '3'}
+                      ]
+                    },
+                    {'prim': 'SWAP'},
+                    {'prim': 'DUP'},
+                    {
+                      'prim': 'DUG',
+                      'args': [
+                        {'int': '5'}
+                      ]
+                    },
+                    {'prim': 'CAR'},
+                    {'prim': 'CAR'},
+                    {'prim': 'CONCAT'},
+                    {'prim': 'CONCAT'},
+                    {'prim': 'SOME'},
+                    {
+                      'prim': 'DIG',
+                      'args': [
+                        {'int': '3'}
+                      ]
+                    },
+                    {'prim': 'CAR'},
+                    {'prim': 'CDR'},
+                    {'prim': 'UPDATE'},
+                    {'prim': 'SWAP'},
+                    {'prim': 'PAIR'}
+                  ],
+                  [
+                    {
+                      'prim': 'PUSH',
+                      'args': [
+                        {'prim': 'nat'},
+                        {'int': '0'}
+                      ]
+                    },
+                    {'prim': 'SWAP'},
+                    {'prim': 'COMPARE'},
+                    {'prim': 'GE'},
+                    {
+                      'prim': 'IF',
+                      'args': [
+                        [
+                          {
+                            'prim': 'PUSH',
+                            'args': [
+                              {'prim': 'string'},
+                              {'string': "I'm failing"}
+                            ]
+                          },
+                          {'prim': 'FAILWITH'}
+                        ],
+                        []
+                      ]
+                    }
+                  ]
+                ]
+              }
+            ]
+          ]
+        },
+        {
+          'prim': 'NIL',
+          'args': [
+            {'prim': 'operation'}
+          ]
+        },
+        {'prim': 'PAIR'}
+      ]
+    ]
+  }
+];
