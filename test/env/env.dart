@@ -5,4 +5,5 @@ part 'env.g.dart';
 abstract class Env {
   static const tezosNodeUrl = _Env.tezosNodeUrl;
   static const originatorSk = _Env.originatorSk;
+  static const logLevel = _Env.logLevel;
 }

@@ -4,9 +4,10 @@ import 'package:tezart/src/models/operation/impl/operation_hard_limits_setter_vi
 import 'package:tezart/tezart.dart';
 
 import '../env/env.dart';
+import '../test_utils/test_client.dart';
 
 void main() {
-  final tezart = TezartClient(Env.tezosNodeUrl);
+  final tezart = testClient();
   final originatorKeystore = Keystore.fromSecretKey(Env.originatorSk);
   final rpcInterface = tezart.rpcInterface;
   late Operation operation;
