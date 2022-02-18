@@ -1,13 +1,12 @@
 import 'package:test/test.dart';
-import 'package:tezart/src/contracts/contract.dart';
-import 'package:tezart/src/core/rpc/rpc_interface.dart';
 import 'package:tezart/tezart.dart';
 
 import '../env/env.dart';
 import '../test_utils/test_contract_script.dart';
+import '../test_utils/test_client.dart';
 
 void main() {
-  final tezart = TezartClient(Env.tezosNodeUrl);
+  final tezart = testClient();
   final rpcInterface = tezart.rpcInterface;
   final source = Keystore.fromSecretKey(Env.originatorSk);
   const balance = 10;

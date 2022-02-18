@@ -4,9 +4,10 @@ import 'package:tezart/src/models/operation/impl/operation_fees_setter_visitor.d
 import 'package:tezart/tezart.dart';
 
 import '../env/env.dart';
+import '../test_utils/test_client.dart';
 
 void main() {
-  final tezart = TezartClient(Env.tezosNodeUrl);
+  final tezart = testClient();
   final originatorKeystore = Keystore.fromSecretKey(Env.originatorSk);
   late Operation operation;
 
