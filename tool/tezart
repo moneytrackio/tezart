@@ -129,7 +129,7 @@ tezart::run_coverage() {
 	tezart::_check_localhost_chain
 	tezart::_init_env_var
 
-	dart pub run test --coverage ./coverage
+	dart pub run test --concurrency=1 --coverage ./coverage
 	dart pub global activate coverage > /dev/null
 	export PATH="$PATH":"$HOME/.pub-cache/bin"
 	format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.packages --report-on=lib
