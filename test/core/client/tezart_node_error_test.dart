@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_function_declarations_over_variables
+
 import 'package:dio/dio.dart';
 import 'package:test/test.dart';
 import 'package:tezart/src/core/rpc/impl/tezart_http_error.dart';

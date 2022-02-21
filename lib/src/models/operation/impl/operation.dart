@@ -2,9 +2,7 @@ import 'package:logging/logging.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:tezart/src/common/utils/enum_util.dart';
 import 'package:tezart/src/common/validators/simulation_result_validator.dart';
-import 'package:tezart/src/keystore/keystore.dart';
 import 'package:tezart/src/models/operation/impl/operation_visitor.dart';
-import 'package:tezart/src/models/operations_list/operations_list.dart';
 import 'package:tezart/tezart.dart';
 
 part 'operation.g.dart';
@@ -99,7 +97,7 @@ class Operation {
 
   Map<String, dynamic> toJson() => _$OperationToJson(this);
 
-  static String? _toString(int? integer) => integer == null ? null : integer.toString();
+  static String? _toString(int? integer) => integer?.toString();
   static String _kindToString(Kinds kind) => EnumUtil.enumToString(kind);
   static String _keystoreToAddress(Keystore keystore) => keystore.address;
 

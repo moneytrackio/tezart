@@ -5,7 +5,7 @@ class EnumUtil {
   /// if [stringType] doesn't exist a StateError is thrown
   static T? stringToEnum<T>(Iterable<T> values, String stringType) {
     return values.firstWhere(
-      (f) => "${f.toString().substring(f.toString().indexOf('.') + 1)}".toString() == stringType,
+      (f) => f.toString().substring(f.toString().indexOf('.') + 1).toString() == stringType,
     );
   }
 

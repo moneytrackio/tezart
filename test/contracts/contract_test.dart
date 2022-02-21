@@ -1,3 +1,6 @@
+// ignore_for_file: prefer_function_declarations_over_variables
+@Tags(["unstable"])
+
 import 'package:test/test.dart';
 import 'package:tezart/tezart.dart';
 
@@ -21,7 +24,7 @@ void main() {
     );
     await operationsList.executeAndMonitor();
     final originationOperation = operationsList.operations.last as OriginationOperation;
-    contractAddress = await originationOperation.contractAddress;
+    contractAddress = originationOperation.contractAddress;
   };
 
   group('#balance', () {

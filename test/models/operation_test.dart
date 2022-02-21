@@ -1,7 +1,6 @@
+// ignore_for_file: prefer_function_declarations_over_variables
+
 import 'package:test/test.dart';
-import 'package:tezart/src/core/rpc/impl/rpc_interface.dart';
-import 'package:tezart/src/models/operation/operation.dart';
-import 'package:tezart/src/models/operations_list/operations_list.dart';
 import 'package:tezart/tezart.dart';
 
 void main() {

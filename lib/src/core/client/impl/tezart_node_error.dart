@@ -50,7 +50,7 @@ class TezartNodeError extends CommonException {
     return {
       TezartNodeErrorTypes.alreadyRevealedKey: "You're trying to reveal an already revealed key.",
       TezartNodeErrorTypes.counterError: 'A counter error occured',
-      TezartNodeErrorTypes.unhandled: 'Unhandled error: ${_errorMsg}',
+      TezartNodeErrorTypes.unhandled: 'Unhandled error: $_errorMsg',
     };
   }
 
