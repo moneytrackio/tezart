@@ -35,7 +35,7 @@ void main() {
     });
 
     test('it converts to string correctly', () {
-      expect(subject().toString(), equals('CryptoError: got code prefixNotFound with msg Prefix not found.'));
+      expect(subject().toString(), equals('CryptoError: got code prefixNotFound with msg `Prefix not found.`'));
     });
 
     test('it sets originalException to null', () {

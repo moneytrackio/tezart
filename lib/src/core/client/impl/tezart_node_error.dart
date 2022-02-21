@@ -95,6 +95,10 @@ class TezartNodeError extends CommonException {
       return TezartNodeErrorTypes.alreadyRevealedKey;
     }
 
+    if (RegExp(r'counter_in_the_past').hasMatch(_errorId ?? '')) {
+      return TezartNodeErrorTypes.counterError;
+    }
+
     return TezartNodeErrorTypes.unhandled;
   }
 
@@ -113,9 +117,9 @@ class TezartNodeError extends CommonException {
     final response = cause?.responseBody;
 
     try {
-      return response.first['msg'];
+      return response.first['msg'] ?? response.first['id'];
     } on NoSuchMethodError {
-      return response;
+      return cause?.clientError.message;
     }
   }
 
