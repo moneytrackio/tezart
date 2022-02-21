@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_function_declarations_over_variables
+
 @Timeout(Duration(seconds: 60))
 import 'package:test/test.dart';
 import 'package:tezart/src/models/operation/impl/operation_fees_setter_visitor.dart';

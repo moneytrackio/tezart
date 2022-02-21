@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_function_declarations_over_variables
+
 final pendingOperations = (String chain) => '${_chainPath(chain)}/mempool/pending_operations';
 final branch = ({required String chain, required String level}) => '${_levelPath(chain: chain, level: level)}/hash';
 final block = ({required String chain, required String level}) => _levelPath(level: level, chain: chain);

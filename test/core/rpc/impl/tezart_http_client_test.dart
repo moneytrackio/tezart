@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_function_declarations_over_variables
+
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:dio/dio.dart';

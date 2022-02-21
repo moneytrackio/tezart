@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_function_declarations_over_variables
+
 import 'package:test/test.dart';
 import 'package:tezart/src/contracts/contract.dart';
 import 'package:tezart/src/micheline_decoder/micheline_decoder.dart';

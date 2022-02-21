@@ -1,4 +1,7 @@
+// ignore_for_file: prefer_function_declarations_over_variables
+
 @Timeout(Duration(seconds: 60))
+@Tags(["unstable"])
 
 import 'package:test/test.dart';
 import 'package:tezart/tezart.dart';
@@ -189,7 +192,7 @@ void main() {
             storage: {'int': '12'},
           );
 
-          final contractAddress = await (operationsList.operations.first as OriginationOperation).contractAddress;
+          final contractAddress = (operationsList.operations.first as OriginationOperation).contractAddress;
 
           expect(contractAddress.startsWith('KT'), true);
         });
