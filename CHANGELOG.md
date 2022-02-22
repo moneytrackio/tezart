@@ -1,3 +1,13 @@
+## [2.0.4]
+
+### Added
+- manage comb pairs
+
+### Changed
+
+### Fixed
+
+
 ## [2.0.3]
 
 ### Added

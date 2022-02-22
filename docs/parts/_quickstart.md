@@ -37,7 +37,7 @@ dart create -t console-full tezart_example
 
 ```yaml
 dependencies:
-  tezart: ^2.0.3
+  tezart: ^2.0.4
 ```
 
 ```bash
