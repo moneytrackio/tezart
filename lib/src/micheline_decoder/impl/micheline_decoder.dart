@@ -6,7 +6,7 @@ import 'micheline_decoder_factory.dart';
 /// [data] the Micheline data we want to convert
 class MichelineDecoder {
   final Map<String, dynamic> type;
-  final data;
+  final dynamic data;
 
   MichelineDecoder({required this.type, required this.data});
 

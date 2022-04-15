@@ -1,6 +1,6 @@
 name: tezart
 description: A Dart library to connect to Tezos clients. Send transactions and interact with smart contracts!
-version: 2.0.3
+version: 2.0.4
 homepage: https://moneytrackio.github.io/tezart/
 repository: https://github.com/moneytrackio/tezart
 issue_tracker: https://github.com/moneytrackio/tezart/issues
@@ -28,9 +28,9 @@ dependencies:
   pretty_dio_logger: ^1.1.1
 
 dev_dependencies:
-  pedantic: ^1.11.0 # linter
+  lints: ^1.0.1 # linter
   build_runner: ^2.0.0
-  mockito: ^5.0.3 # mocks
-  test: ^1.16.8
+  mockito: ^5.1.0 # mocks
+  test: ^1.20.1
   envify: ^2.0.0 # .env files management
   envify_generator: ^2.0.0 # code generation for envify

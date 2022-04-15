@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_function_declarations_over_variables
+
 import 'package:test/test.dart';
 import 'package:tezart/src/crypto/crypto.dart';
 
@@ -33,7 +35,7 @@ void main() {
     });
 
     test('it converts to string correctly', () {
-      expect(subject().toString(), equals('CryptoError: got code prefixNotFound with msg Prefix not found.'));
+      expect(subject().toString(), equals('CryptoError: got code prefixNotFound with msg `Prefix not found.`'));
     });
 
     test('it sets originalException to null', () {

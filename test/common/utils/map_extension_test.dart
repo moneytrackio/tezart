@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_function_declarations_over_variables
+
 import 'package:test/test.dart';
 import 'package:tezart/src/common/utils/map_extension.dart';
 

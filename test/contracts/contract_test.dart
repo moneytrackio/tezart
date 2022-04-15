@@ -1,13 +1,15 @@
+// ignore_for_file: prefer_function_declarations_over_variables
+@Tags(["unstable"])
+
 import 'package:test/test.dart';
-import 'package:tezart/src/contracts/contract.dart';
-import 'package:tezart/src/core/rpc/rpc_interface.dart';
 import 'package:tezart/tezart.dart';
 
 import '../env/env.dart';
 import '../test_utils/test_contract_script.dart';
+import '../test_utils/test_client.dart';
 
 void main() {
-  final tezart = TezartClient(Env.tezosNodeUrl);
+  final tezart = testClient();
   final rpcInterface = tezart.rpcInterface;
   final source = Keystore.fromSecretKey(Env.originatorSk);
   const balance = 10;
@@ -22,7 +24,7 @@ void main() {
     );
     await operationsList.executeAndMonitor();
     final originationOperation = operationsList.operations.last as OriginationOperation;
-    contractAddress = await originationOperation.contractAddress;
+    contractAddress = originationOperation.contractAddress;
   };
 
   group('#balance', () {
@@ -117,6 +119,49 @@ void main() {
       test('it throws an error', () {
         // TODO: throw TezartNodeError or ContractError ?
         expect(() => subject(), throwsA(predicate((e) => e is TezartHttpError)));
+      });
+    });
+  });
+
+  group('#multiparams_entrypoints', () {
+    final subject = () => Contract(
+          contractAddress: contractAddress,
+          rpcInterface: rpcInterface,
+        ).entrypoints;
+
+    group('when the contract address exists', () {
+      late Contract contract;
+
+      setUp(() async {
+        await originateContractSetUp(demoContract, {
+          'prim': 'Pair',
+          'args': [[], []]
+        });
+        contract = Contract(contractAddress: contractAddress, rpcInterface: rpcInterface);
+      });
+
+      test('it returns the entrypoints of the contract', () async {
+        expect(await subject(), ['always_fail', 'add_third', 'add_second', 'add_first']);
+      });
+      group('#callOperation', () {
+        final subject = (dynamic params, String entrypoint) async {
+          final operationsList = await contract.callOperation(source: source, entrypoint: entrypoint, params: params);
+          await operationsList.executeAndMonitor();
+        };
+
+        group('when the params are valid', () {
+          final params = {'first': '1', 'second': '2', 'third': '3', 'key': 'key'};
+          final entrypoint = 'add_third';
+
+          test('it updates the storage value correctly', () async {
+            await subject(params, entrypoint);
+            final storage = (await contract.storage);
+            final BigMap bigMap = storage['big_map_second'];
+            final value = await bigMap.fetch(key: 'key', rpcInterface: rpcInterface);
+
+            expect(value, '123');
+          });
+        });
       });
     });
   });

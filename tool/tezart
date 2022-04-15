@@ -110,7 +110,7 @@ tezart::_init_env_var() {
 }
 
 tezart::_run_build_runner() {
-	base_command="dart pub run build_runner build"
+	base_command="dart run build_runner build"
 	options=$([ "$CI" == true ] && echo "--delete-conflicting-outputs" || echo "")
 	command="$base_command $options"
 	eval $command
@@ -129,7 +129,7 @@ tezart::run_coverage() {
 	tezart::_check_localhost_chain
 	tezart::_init_env_var
 
-	dart pub run test --coverage ./coverage
+	dart run test --concurrency=1 --chain-stack-traces --coverage ./coverage
 	dart pub global activate coverage > /dev/null
 	export PATH="$PATH":"$HOME/.pub-cache/bin"
 	format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.packages --report-on=lib
@@ -163,7 +163,7 @@ tezart::run_tests() {
 	dart pub get
 	tezart::_run_build_runner
 
-	dart pub run test
+	dart run test --chain-stack-traces
 }
 
 tezart::run_docs() {

@@ -32,10 +32,10 @@ class OperationFeesSetterVisitor implements OperationVisitor {
   int _operationFee(Operation operation) {
     if (operation.gasLimit == null) throw ArgumentError.notNull('operation.gasLimit');
 
-    final gas_fee = operation.gasLimit! * _minimalFeePerGas;
-    final size_fee = _operationSize(operation) * _minimalFeePerByte;
+    final gasFee = operation.gasLimit! * _minimalFeePerGas;
+    final sizeFee = _operationSize(operation) * _minimalFeePerByte;
 
-    return (gas_fee + size_fee).ceil();
+    return (gasFee + sizeFee).ceil();
   }
 
   int _operationSize(Operation operation) {

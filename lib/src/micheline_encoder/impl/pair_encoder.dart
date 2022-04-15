@@ -11,34 +11,37 @@ class PairEncoder implements MichelineEncoder {
 
   @override
   Map<String, dynamic> encode() {
-    return {
-      'prim': 'Pair',
-      'args': [
-        MichelineEncoder(
-          type: type['args'].first,
-          params: _firstParams,
-        ).encode(),
-        MichelineEncoder(
-          type: type['args'][1],
-          params: _secondParams,
-        ).encode(),
-      ]
-    };
+    return {'prim': 'Pair', 'args': _args};
   }
 
-  dynamic get _firstParams {
-    if (params is Map) return params;
-    if (params is List) return params.first;
+  List<dynamic> get _args {
+    List type_args = type['args'];
+    final args_iterator = type_args.asMap().entries.map((entry) {
+      var idx = entry.key;
+      dynamic type_arg = entry.value;
 
-    throw TypeError();
+      return (MichelineEncoder(
+        type: type_arg,
+        params: _paramN(idx),
+      ).encode());
+    });
+    return args_iterator.toList();
   }
 
-  dynamic get _secondParams {
+  int get _argsCount {
+    return (type['args'].length);
+  }
+
+  dynamic _paramN(int n) {
     if (params is Map) return params;
     if (params is List) {
-      if (params.length > 2) return params.skip(1).toList();
-
-      return params.length == 2 ? params[1] : null;
+      var isLastArg = (n == type['args'].length - 1);
+      // Handle the case when last arg is i Pair, which arguments are the last elements of the data
+      if (isLastArg && params.length > _argsCount) {
+        return params.skip(_argsCount - 1).toList();
+      } else {
+        return params[n];
+      }
     }
     throw TypeError();
   }

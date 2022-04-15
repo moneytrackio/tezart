@@ -50,7 +50,7 @@ class TezartNodeError extends CommonException {
     return {
       TezartNodeErrorTypes.alreadyRevealedKey: "You're trying to reveal an already revealed key.",
       TezartNodeErrorTypes.counterError: 'A counter error occured',
-      TezartNodeErrorTypes.unhandled: 'Unhandled error: ${_errorMsg}',
+      TezartNodeErrorTypes.unhandled: 'Unhandled error: $_errorMsg',
     };
   }
 
@@ -95,6 +95,10 @@ class TezartNodeError extends CommonException {
       return TezartNodeErrorTypes.alreadyRevealedKey;
     }
 
+    if (RegExp(r'counter_in_the_past').hasMatch(_errorId ?? '')) {
+      return TezartNodeErrorTypes.counterError;
+    }
+
     return TezartNodeErrorTypes.unhandled;
   }
 
@@ -113,9 +117,9 @@ class TezartNodeError extends CommonException {
     final response = cause?.responseBody;
 
     try {
-      return response.first['msg'];
+      return response.first['msg'] ?? response.first['id'];
     } on NoSuchMethodError {
-      return response;
+      return cause?.clientError.message;
     }
   }
 

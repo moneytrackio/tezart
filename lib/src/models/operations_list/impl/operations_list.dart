@@ -213,7 +213,7 @@ class OperationsList {
   }
 
   Future<T> _retryOnCounterError<T>(func) {
-    final r = RetryOptions(maxAttempts: 3);
+    final r = RetryOptions(maxAttempts: 5);
     return r.retry<T>(
       func,
       retryIf: (e) => e is TezartNodeError && e.type == TezartNodeErrorTypes.counterError,

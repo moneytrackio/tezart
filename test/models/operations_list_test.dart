@@ -1,13 +1,17 @@
+// ignore_for_file: prefer_function_declarations_over_variables
+
 @Timeout(Duration(seconds: 60))
+@Tags(["unstable"])
 
 import 'package:test/test.dart';
 import 'package:tezart/tezart.dart';
 
 import '../env/env.dart';
 import '../test_utils/test_contract_script.dart';
+import '../test_utils/test_client.dart';
 
 void main() {
-  final tezart = TezartClient(Env.tezosNodeUrl);
+  final tezart = testClient();
   final originatorKeystore = Keystore.fromSecretKey(Env.originatorSk);
 
   group('#executeAndMonitor', () {
@@ -188,7 +192,7 @@ void main() {
             storage: {'int': '12'},
           );
 
-          final contractAddress = await (operationsList.operations.first as OriginationOperation).contractAddress;
+          final contractAddress = (operationsList.operations.first as OriginationOperation).contractAddress;
 
           expect(contractAddress.startsWith('KT'), true);
         });

@@ -1,8 +1,8 @@
+// ignore_for_file: prefer_function_declarations_over_variables
+
 import 'dart:typed_data';
 
 import 'package:test/test.dart';
-import 'package:tezart/src/crypto/crypto.dart';
-import 'package:tezart/src/signature/signature.dart';
 import 'package:tezart/tezart.dart';
 
 import 'expected_results/signature.dart' as expected_results;

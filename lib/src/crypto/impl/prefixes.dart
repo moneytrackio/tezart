@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 enum Prefixes {
   tz1,
   tz2,

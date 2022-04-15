@@ -1,12 +1,15 @@
+// ignore_for_file: prefer_function_declarations_over_variables
+
 @Timeout(Duration(seconds: 60))
 import 'package:test/test.dart';
 import 'package:tezart/src/models/operation/impl/operation_hard_limits_setter_visitor.dart';
 import 'package:tezart/tezart.dart';
 
 import '../env/env.dart';
+import '../test_utils/test_client.dart';
 
 void main() {
-  final tezart = TezartClient(Env.tezosNodeUrl);
+  final tezart = testClient();
   final originatorKeystore = Keystore.fromSecretKey(Env.originatorSk);
   final rpcInterface = tezart.rpcInterface;
   late Operation operation;
@@ -62,7 +65,7 @@ void main() {
           amount: 10000,
         );
         await operationsList.executeAndMonitor();
-        final revealOperation = await tezart.revealKeyOperation(destination);
+        final revealOperation = tezart.revealKeyOperation(destination);
         await revealOperation.executeAndMonitor();
 
         OperationsList(
