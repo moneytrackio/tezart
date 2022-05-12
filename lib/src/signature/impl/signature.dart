@@ -25,7 +25,7 @@ class Signature extends Equatable {
   final Keystore keystore;
   final Watermarks? watermark;
 
-  static final _watermarkToHex = {
+  static final watermarkToHex = {
     Watermarks.block: '01',
     Watermarks.endorsement: '02',
     Watermarks.generic: '03',
@@ -63,7 +63,7 @@ class Signature extends Equatable {
   ByteList get signedBytes {
     return crypto.catchUnhandledErrors(() {
       final watermarkedBytes =
-          watermark == null ? bytes : Uint8List.fromList(crypto.hexDecode(_watermarkToHex[watermark]!) + bytes);
+          watermark == null ? bytes : Uint8List.fromList(crypto.hexDecode(watermarkToHex[watermark]!) + bytes);
       var hashedBytes = crypto.hashWithDigestSize(size: 256, bytes: watermarkedBytes);
       var secretKey = keystore.secretKey;
       var secretKeyBytes = crypto.decodeWithoutPrefix(secretKey);
