@@ -1,3 +1,7 @@
+import 'dart:typed_data';
+
+import 'package:blockchain_signer/blockchain_signer.dart';
+import 'package:blockchain_signer/signer/response/sign_result.dart';
 import 'package:logging/logging.dart';
 import 'package:retry/retry.dart';
 import 'package:tezart/src/core/client/tezart_client.dart';
@@ -8,6 +12,8 @@ import 'package:tezart/src/models/operation/impl/operation_hard_limits_setter_vi
 import 'package:tezart/src/models/operation/impl/operation_limits_setter_visitor.dart';
 import 'package:tezart/src/models/operation/operation.dart';
 import 'package:tezart/src/signature/signature.dart';
+
+import 'package:tezart/src/crypto/crypto.dart' as crypto;
 
 import 'operations_list_result.dart';
 
@@ -23,8 +29,9 @@ class OperationsList {
   final result = OperationsListResult();
   final Keystore source;
   final RpcInterface rpcInterface;
+  RemoteSigner? remoteSigner;
 
-  OperationsList({required this.source, required this.rpcInterface});
+  OperationsList({required this.source, required this.rpcInterface, this.remoteSigner});
 
   /// Prepends [op] to this
   void prependOperation(Operation op) {
@@ -46,9 +53,23 @@ class OperationsList {
     await _catchHttpError<void>(() async {
       if (result.signature == null) throw ArgumentError.notNull('result.signature');
 
+      String signature;
+      print('remoteSigner,${remoteSigner != null}');
+      if (remoteSigner != null) {
+        final watermarkedBytes = crypto.hexDecode(Signature.watermarkToHex[Watermarks.generic]!) + crypto.hexDecode(result.forgedOperation!);
+        print('preapply result.forgedOperation, ${result.forgedOperation}');
+        print('preapply watermarked, ${Uint8List.fromList(crypto.hexDecode(Signature.watermarkToHex[Watermarks.generic]!))}');
+        SignResult signResult = await remoteSigner!.sign(result.forgedOperation!, Uint8List.fromList(watermarkedBytes));
+        signature = signResult.prefixSig;
+        print('preapply remote ,$signature');
+      } else {
+        signature = result.signature!.edsig;
+        print('preapply inmemory ,$signature');
+      }
+
       final simulationResults = await rpcInterface.preapplyOperations(
         operationsList: this,
-        signature: result.signature!.edsig,
+        signature: signature,
       );
 
       for (var i = 0; i < simulationResults.length; i++) {
@@ -100,7 +121,14 @@ class OperationsList {
     await _catchHttpError<void>(() async {
       if (result.signature == null) throw ArgumentError.notNull('result.signature');
 
-      result.id = await rpcInterface.injectOperation(result.signature!.hexIncludingPayload);
+      String signatureWithPayload;
+      if (remoteSigner != null) {
+        SignResult signResult = await remoteSigner!.sign(result.forgedOperation!, Uint8List.fromList(crypto.hexDecode(Signature.watermarkToHex[Watermarks.generic]!)));
+        signatureWithPayload = signResult.sig;
+      } else {
+        signatureWithPayload = result.signature!.hexIncludingPayload;
+      }
+      result.id = await rpcInterface.injectOperation(signatureWithPayload);
     });
   }
 

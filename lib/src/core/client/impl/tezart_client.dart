@@ -1,3 +1,4 @@
+import 'package:blockchain_signer/signer/remote/remote_signer.dart';
 import 'package:logging/logging.dart';
 import 'package:memoize/memoize.dart';
 import 'package:tezart/src/core/rpc/rpc_interface.dart';
@@ -21,9 +22,13 @@ class TezartClient {
 
   /// A [RpcInterface] instance, generated using `url`
   final RpcInterface rpcInterface;
+  RemoteSigner? signer;
 
   /// Default constructor.
   TezartClient(String url) : rpcInterface = RpcInterface(url);
+
+  /// Constructor with remote key management
+  TezartClient.signer(String url, RemoteSigner this.signer) : rpcInterface = RpcInterface(url);
 
   /// Returns an [OperationsList] containing a [TransactionOperation] that transfers [amount] from [source]
   /// to [destination] and returns the operation group id.\
@@ -53,7 +58,7 @@ class TezartClient {
     return _catchHttpError<OperationsList>(() async {
       log.info('request transfer $amount µtz from $source.address to the destination $destination');
 
-      final operationsList = OperationsList(source: source, rpcInterface: rpcInterface)
+      final operationsList = OperationsList(source: source, rpcInterface: rpcInterface, remoteSigner: signer)
         ..appendOperation(
           TransactionOperation(
             amount: amount,
