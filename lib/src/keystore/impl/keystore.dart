@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:blockchain_signer/blockchain_signer.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 
@@ -29,7 +30,10 @@ class Keystore extends Equatable {
 
   final String? mnemonic;
 
+  RemoteSigner? signer;
+
   Keystore._({required this.secretKey, this.mnemonic});
+  Keystore.fromRemoteSigner(RemoteSigner this.signer) : secretKey = '', mnemonic = null;
 
   /// A factory that generates a keystore from a secret key.
   ///
@@ -125,28 +129,36 @@ class Keystore extends Equatable {
 
   /// The public key of this.
   String get publicKey => crypto.catchUnhandledErrors(() {
-        final seedBytes = crypto.decodeWithoutPrefix(seed);
-        var pk = crypto.publicKeyBytesFromSeedBytes(seedBytes);
+    if (signer == null) {
+      final seedBytes = crypto.decodeWithoutPrefix(seed);
+      var pk = crypto.publicKeyBytesFromSeedBytes(seedBytes);
 
-        return crypto.encodeWithPrefix(
-          prefix: _publicKeyPrefix,
-          bytes: Uint8List.fromList(pk.toList()),
-        );
-      });
+      return crypto.encodeWithPrefix(
+        prefix: _publicKeyPrefix,
+        bytes: Uint8List.fromList(pk.toList()),
+      );
+    } else {
+      return signer?.publicKey as String;
+    }
+  });
 
   /// The address of this.
   String get address => crypto.catchUnhandledErrors(() {
-        final publicKeyBytes = crypto.decodeWithoutPrefix(publicKey);
-        final hash = crypto.hashWithDigestSize(
-          size: 160,
-          bytes: publicKeyBytes,
-        );
+    if (signer == null) {
+      final publicKeyBytes = crypto.decodeWithoutPrefix(publicKey);
+      final hash = crypto.hashWithDigestSize(
+        size: 160,
+        bytes: publicKeyBytes,
+      );
 
-        return crypto.encodeWithPrefix(
-          prefix: _addressPrefix,
-          bytes: hash,
-        );
-      });
+      return crypto.encodeWithPrefix(
+        prefix: _addressPrefix,
+        bytes: hash,
+      );
+    } else {
+      return signer?.address as String;
+    }
+  });
 
   /// The seed of this.
   String get seed => crypto.catchUnhandledErrors(() {
