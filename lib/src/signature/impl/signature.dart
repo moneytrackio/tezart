@@ -75,14 +75,14 @@ class Signature extends Equatable {
         final signedBytesInList = hex.decode(signedBytesHex);
         final signed = ByteList.fromList(Uint8List.fromList(signedBytesInList));
         return signed;
-      } else {
-        var hashedBytes = crypto.hashWithDigestSize(size: 256, bytes: watermarkedBytes);
-        var secretKey = keystore.secretKey;
-        var secretKeyBytes = crypto.decodeWithoutPrefix(secretKey);
-        var signed = crypto.signDetached(
-            bytes: hashedBytes, secretKey: secretKeyBytes);
-        return signed;
       }
+
+      var hashedBytes = crypto.hashWithDigestSize(size: 256, bytes: watermarkedBytes);
+      var secretKey = keystore.secretKey;
+      var secretKeyBytes = crypto.decodeWithoutPrefix(secretKey);
+      var signed = crypto.signDetached(
+          bytes: hashedBytes, secretKey: secretKeyBytes);
+      return signed;
     });
   }
 

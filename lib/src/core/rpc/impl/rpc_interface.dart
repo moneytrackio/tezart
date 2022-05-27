@@ -62,7 +62,6 @@ class RpcInterface {
   /// Injects the forged operation [data] in [chain] and returns the operation id
   Future<String> injectOperation(String data, [chain = 'main']) async {
     log.info('request for injectOperation [ chain:$chain]');
-    print('request for injectOperation $data');
     final response = await httpClient.post(paths.injectOperation(chain), data: jsonEncode(data));
 
     return response.data;
@@ -201,7 +200,6 @@ class RpcInterface {
       level: level,
       offset: 3,
     ));
-    // print("receved Message <=== \n ${response.toString()}");
     return response.data.cast<String>().toList();
   }
 
