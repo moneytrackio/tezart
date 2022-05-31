@@ -68,7 +68,7 @@ class Signature extends Equatable {
           watermark == null ? bytes : Uint8List.fromList(crypto.hexDecode(watermarkToHex[watermark]!) + bytes);
 
       if (keystore.signer != null) {
-        SignResult res = await keystore.signer?.sign(hex.encode(bytes), Uint8List.fromList(crypto.hexDecode(watermarkToHex[watermark]!))) as SignResult;
+        SignedResult res = await keystore.signer?.sign(hex.encode(bytes), Uint8List.fromList(crypto.hexDecode(watermarkToHex[watermark]!))) as SignedResult;
 
         /// sbytes from Taquito remoteSign is in the format of bytes+signature,
         /// extract the signature out and return
