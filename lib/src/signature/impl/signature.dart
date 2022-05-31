@@ -1,4 +1,4 @@
-import 'package:blockchain_signer/signer/response/sign_result.dart';
+import 'package:blockchain_signer/signer/response/signed_result.dart';
 import 'package:convert/convert.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
