@@ -26,7 +26,7 @@ class TezartHttpClient {
     final options = http_client.BaseOptions(baseUrl: baseUrl, contentType: 'application/json');
     this.client = http_client.Dio(options);
     this.client.interceptors.add(PrettyDioLogger(
-          logPrint: log.fine,
+          logPrint: log.finest,
           requestHeader: true,
           requestBody: true,
           responseBody: true,
