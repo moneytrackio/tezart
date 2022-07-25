@@ -3,7 +3,10 @@ on:
   # Trigger the workflow on pull requests on publish branch
   pull_request:
     branches:   
-      - publish
+      - main
+  push:
+    branches:
+      - main
       
 jobs:
   build:
