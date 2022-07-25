@@ -132,7 +132,7 @@ tezart::run_coverage() {
 	dart run test --concurrency=1 --chain-stack-traces --coverage ./coverage
 	dart pub global activate coverage > /dev/null
 	export PATH="$PATH":"$HOME/.pub-cache/bin"
-	format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.packages --report-on=lib
+	format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.dart_tool/package_config.json --report-on=lib
 
 	if [[ $CI != true ]]
 	then
