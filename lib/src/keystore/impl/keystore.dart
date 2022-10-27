@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-import 'package:blockchain_signer/blockchain_signer.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 
@@ -30,17 +29,7 @@ class Keystore extends Equatable {
 
   final String? mnemonic;
 
-  RemoteSigner? signer;
-
   Keystore._({required this.secretKey, this.mnemonic});
-
-  /// Generate a keyStore with a remote signer
-  ///
-  /// ```dart
-  /// await magic.tezos.fetchRemoteSigner();
-  /// Keystore.fromRemoteSigner(magic.tezos);
-  /// ```
-  Keystore.fromRemoteSigner(RemoteSigner this.signer) : secretKey = '', mnemonic = null;
 
   /// A factory that generates a keystore from a secret key.
   ///
@@ -136,37 +125,28 @@ class Keystore extends Equatable {
 
   /// The public key of this.
   String get publicKey => crypto.catchUnhandledErrors(() {
-    if (signer != null) {
-      return signer?.publicKey as String;
-    }
+        final seedBytes = crypto.decodeWithoutPrefix(seed);
+        var pk = crypto.publicKeyBytesFromSeedBytes(seedBytes);
 
-    final seedBytes = crypto.decodeWithoutPrefix(seed);
-    var pk = crypto.publicKeyBytesFromSeedBytes(seedBytes);
-
-    return crypto.encodeWithPrefix(
-      prefix: _publicKeyPrefix,
-      bytes: Uint8List.fromList(pk.toList()),
-    );
-  });
+        return crypto.encodeWithPrefix(
+          prefix: _publicKeyPrefix,
+          bytes: Uint8List.fromList(pk.toList()),
+        );
+      });
 
   /// The address of this.
   String get address => crypto.catchUnhandledErrors(() {
-    if (signer != null) {
-      return signer?.address as String;
-    }
+        final publicKeyBytes = crypto.decodeWithoutPrefix(publicKey);
+        final hash = crypto.hashWithDigestSize(
+          size: 160,
+          bytes: publicKeyBytes,
+        );
 
-    final publicKeyBytes = crypto.decodeWithoutPrefix(publicKey);
-    final hash = crypto.hashWithDigestSize(
-      size: 160,
-      bytes: publicKeyBytes,
-    );
-
-    return crypto.encodeWithPrefix(
-      prefix: _addressPrefix,
-      bytes: hash,
-    );
-
-  });
+        return crypto.encodeWithPrefix(
+          prefix: _addressPrefix,
+          bytes: hash,
+        );
+      });
 
   /// The seed of this.
   String get seed => crypto.catchUnhandledErrors(() {
