@@ -46,9 +46,11 @@ class OperationsList {
     await _catchHttpError<void>(() async {
       if (result.signature == null) throw ArgumentError.notNull('result.signature');
 
+      final edsig = await result.signature!.edsig;
+
       final simulationResults = await rpcInterface.preapplyOperations(
         operationsList: this,
-        signature: result.signature!.edsig,
+        signature: edsig,
       );
 
       for (var i = 0; i < simulationResults.length; i++) {
@@ -100,7 +102,9 @@ class OperationsList {
     await _catchHttpError<void>(() async {
       if (result.signature == null) throw ArgumentError.notNull('result.signature');
 
-      result.id = await rpcInterface.injectOperation(result.signature!.hexIncludingPayload);
+      final signatureWithPayload = await result.signature!.hexIncludingPayload;
+
+      result.id = await rpcInterface.injectOperation(signatureWithPayload);
     });
   }
 

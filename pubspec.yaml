@@ -26,6 +26,7 @@ dependencies:
   quiver: ^3.0.1 # used to zip two lists
   meta: ^1.3.0
   pretty_dio_logger: ^1.1.1
+  blockchain_signer: 0.1.0 # Remote Signer
 
 dev_dependencies:
   lints: ^1.0.1 # linter
