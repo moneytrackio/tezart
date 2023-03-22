@@ -13,7 +13,7 @@ dependencies:
   bip39: ^1.0.6 # Mnemonic code for generating deterministic keys
   pointycastle: ^3.0.1 # a library that implements popular crypto algorithms
   convert: ^3.0.0 # Encoders and decoders for converting between different data representations
-  dio: ^4.0.0 # http client
+  dio: ">=4.0.0 <6.0.0" # http client
   equatable: ^2.0.0
   pinenacl: ^0.3.3 # Dart implementation of TweetNacl
   json_serializable: ^6.1.4 # code generation for toJson and fromJson methods
